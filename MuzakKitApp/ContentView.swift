@@ -29,21 +29,21 @@ struct ContentView: View {
                             if let reason = recommendation.reason {
                                 Text(reason)
                                     .font(.system(.caption))
-                                    .foregroundStyle(.mint)
+                                    .foregroundStyle(.secondary)
                             }
 
                             if !recommendation.items.isEmpty {
-                              let items = recommendation.items
+                                let items = recommendation.items
 
                                 ScrollView(.horizontal, showsIndicators: false) {
-                                    LazyHGrid(rows: [GridItem(.flexible(minimum: 200, maximum: 250))], spacing: 12) {
+                                    LazyHGrid(rows: [GridItem(.adaptive(minimum: 200, maximum: 250))], spacing: 12) {
                                         ForEach(items, id: \.self) { item in
-                                            card(item: item, size: 180).onTapGesture {
+                                            itemCard(item: item, size: 180).onTapGesture {
                                                 getItemInfo(item)
                                             }
                                         }
                                     }.scrollTargetLayout()
-                                }.scrollTargetBehavior(.viewAligned)
+                                }
                             }
                         }
                     }
@@ -57,7 +57,7 @@ struct ContentView: View {
     }
 
     func getItemInfo(_ item: MusicPersonalRecommendation.Item) {
-        
+
         switch item.self {
         case .album(let album):
             print(album)
@@ -70,7 +70,7 @@ struct ContentView: View {
         }
     }
 
-    func card(item: MusicPersonalRecommendation.Item, size: CGFloat) -> some View {
+    func itemCard(item: MusicPersonalRecommendation.Item, size: CGFloat) -> some View {
         VStack(alignment: .leading) {
             if let artwork = item.artwork {
                 ArtworkImage(artwork, width: size, height: size)
@@ -98,16 +98,6 @@ struct ContentView: View {
                 print(String(describing: recommendations))
 
                 self.recommendations = recommendations.recommendations
-
-                let request = MusicCatalogChartsRequest(types: [Album.self, Song.self])
-                let response = try await request.response()
-
-                self.albums = response.albumCharts.first
-               // print(String(describing: response))
-
-//                let newRequest = MusicRecentlyPlayedRequest<Song>()
-//                let newResponse = try await newRequest.response()
-//                print(String(describing: newResponse))
             } catch {
                 print(error)
             }
