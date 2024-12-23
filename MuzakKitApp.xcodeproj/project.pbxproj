@@ -8,11 +8,25 @@
 
 /* Begin PBXFileReference section */
 		38A699D52D18FE6000650D6B /* MuzakKitApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MuzakKitApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		38A699E72D18FE9000650D6B /* MusicKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MusicKit.framework; path = System/Library/Frameworks/MusicKit.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		38A699EA2D190A2400650D6B /* Exceptions for "MuzakKitApp" folder in "MuzakKitApp" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 38A699D42D18FE6000650D6B /* MuzakKitApp */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		38A699D72D18FE6000650D6B /* MuzakKitApp */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				38A699EA2D190A2400650D6B /* Exceptions for "MuzakKitApp" folder in "MuzakKitApp" target */,
+			);
 			path = MuzakKitApp;
 			sourceTree = "<group>";
 		};
@@ -33,6 +47,7 @@
 			isa = PBXGroup;
 			children = (
 				38A699D72D18FE6000650D6B /* MuzakKitApp */,
+				38A699E62D18FE9000650D6B /* Frameworks */,
 				38A699D62D18FE6000650D6B /* Products */,
 			);
 			sourceTree = "<group>";
@@ -43,6 +58,14 @@
 				38A699D52D18FE6000650D6B /* MuzakKitApp.app */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		38A699E62D18FE9000650D6B /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				38A699E72D18FE9000650D6B /* MusicKit.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -255,11 +278,14 @@
 				DEVELOPMENT_TEAM = MMXH24PBRA;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = MuzakKitApp/Info.plist;
+				INFOPLIST_KEY_NSAppleMusicUsageDescription = "Needs permission to access library";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -284,11 +310,14 @@
 				DEVELOPMENT_TEAM = MMXH24PBRA;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = MuzakKitApp/Info.plist;
+				INFOPLIST_KEY_NSAppleMusicUsageDescription = "Needs permission to access library";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
