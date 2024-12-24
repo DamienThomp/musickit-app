@@ -36,11 +36,20 @@ struct ContentView: View {
                                 let items = recommendation.items
 
                                 ScrollView(.horizontal, showsIndicators: false) {
-                                    LazyHGrid(rows: [GridItem(.adaptive(minimum: 200, maximum: 250))], spacing: 12) {
+                                    LazyHGrid(
+                                        rows: [GridItem(
+                                            .adaptive(
+                                                minimum: 200,
+                                                maximum: 250
+                                            )
+                                        )],
+                                        alignment: .top,
+                                        spacing: 12
+                                    ) {
                                         ForEach(items, id: \.self) { item in
-                                            itemCard(item: item, size: 180).onTapGesture {
-                                                getItemInfo(item)
-                                            }
+                                            NavigationLink(value: item.self) {
+                                                itemCard(item: item, size: 180)
+                                            }.tint(.primary)
                                         }
                                     }.scrollTargetLayout()
                                 }
@@ -56,19 +65,6 @@ struct ContentView: View {
         }.navigationTitle("Browse")
     }
 
-    func getItemInfo(_ item: MusicPersonalRecommendation.Item) {
-
-        switch item.self {
-        case .album(let album):
-            print(album)
-        case .playlist(let playlist):
-            print(playlist)
-        case .station(let station):
-            print(station)
-        @unknown default:
-            print("do nothing")
-        }
-    }
 
     func itemCard(item: MusicPersonalRecommendation.Item, size: CGFloat) -> some View {
         VStack(alignment: .leading) {
