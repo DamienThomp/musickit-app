@@ -1,4 +1,12 @@
 //
+//  PlaylistDetailScreen.swift
+//  MuzakKitApp
+//
+//  Created by Damien L Thompson on 2024-12-24.
+//
+
+
+//
 //  AlbumDetailScreen.swift
 //  MuzakKitApp
 //
@@ -8,57 +16,61 @@
 import SwiftUI
 import MusicKit
 
-struct AlbumDetailScreen: View {
+struct PlaylistDetailScreen: View {
 
-    let album: Album
+    let playlist: Playlist
 
     @State private var tracks: MusicItemCollection<Track>?
 
     private var artwork: Artwork? {
-        album.artwork
+        playlist.artwork
     }
 
-    private var title: String {
-        album.title
+    private var name: String {
+        playlist.name
     }
 
-    private var artistName: String {
-        album.artistName
+    private var curatorName: String? {
+        playlist.curatorName
     }
 
     var body: some View {
         List {
-            header
-                .padding(.bottom)
-                .listStyle(.plain)
-                .frame(maxWidth: .infinity)
-                .listRowBackground(Color.clear)
-                .listRowSeparator(.hidden)
+                header
+                    .padding(.bottom)
+                    .listStyle(.plain)
+                    .frame(maxWidth: .infinity)
+                    .listRowBackground(Color.clear)
+                    .listRowSeparator(.hidden)
 
-            actions
-                .padding(.bottom)
-                .listStyle(.plain)
-                .listRowBackground(Color.clear)
-                .listRowSeparator(.hidden)
+                actions
+                    .padding(.bottom)
+                    .listStyle(.plain)
+                    .listRowBackground(Color.clear)
+                    .listRowSeparator(.hidden)
 
             if let tracks = tracks, !tracks.isEmpty {
-                ForEach(tracks) { track in
-                    HStack(spacing: 4) {
-                        Text(track.trackNumber ?? 0, format: .number)
-                            .foregroundStyle(.secondary)
-                        Text(track.title)
-                            .padding(.vertical, 8)
-                            .padding(.horizontal, 8)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                        Spacer()
-                        Image(systemName: "ellipsis").foregroundStyle(.pink)
+                    ForEach(tracks) { track in
+                        HStack(spacing: 4) {
+
+                            if let artwork = track.artwork {
+                                ArtworkImage(artwork, width: 40).clipShape(RoundedRectangle(cornerRadius: 8))
+                            }
+
+                            Text(track.title)
+                                .lineLimit(1)
+                                .padding(.vertical, 8)
+                                .padding(.horizontal, 8)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                            Spacer()
+                            Image(systemName: "ellipsis").foregroundStyle(.pink)
+                        }
                     }
-                }
             }
         }.listStyle(.plain)
-            .task {
-                try? await loadTracks()
-            }
+        .task {
+            try? await loadTracks()
+        }
     }
 
     private var header: some View {
@@ -73,14 +85,16 @@ struct AlbumDetailScreen: View {
                 .padding(.bottom)
             }
 
-            Text(title)
+            Text(name)
                 .font(.system(.title2))
                 .fontWeight(.semibold)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 12)
-            Text(artistName)
-                .font(.system(.title2))
-                .foregroundStyle(.pink)
+            if let curatorName {
+                Text(curatorName)
+                    .font(.system(.title2))
+                    .foregroundStyle(.pink)
+            }
         }
     }
 
@@ -112,8 +126,8 @@ struct AlbumDetailScreen: View {
     }
 
     private func loadTracks() async throws {
-        let album = try await album.with([.tracks])
-        update(tracks: album.tracks)
+        let playlist = try await playlist.with([.tracks])
+        update(tracks: playlist.tracks)
     }
 
     @MainActor
