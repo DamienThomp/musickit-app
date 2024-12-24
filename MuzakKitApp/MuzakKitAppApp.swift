@@ -26,7 +26,7 @@ struct MuzakKitAppApp: App {
                             Text("Unknown type")
                         }
                     }
-            }
+            }.tint(.pink)
         }
     }
 }

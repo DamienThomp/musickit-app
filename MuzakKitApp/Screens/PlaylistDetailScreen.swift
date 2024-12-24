@@ -67,7 +67,9 @@ struct PlaylistDetailScreen: View {
                         }
                     }
             }
-        }.listStyle(.plain)
+        }
+        .tint(.pink)
+        .listStyle(.plain)
         .task {
             try? await loadTracks()
         }
