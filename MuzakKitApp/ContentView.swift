@@ -71,7 +71,15 @@ struct ContentView: View {
             if let artwork = item.artwork {
                 ArtworkImage(artwork, width: size, height: size)
                     .cornerRadius(8)
+            } else {
+                Image(systemName: "music.mic")
+                    .resizable()
+                    .foregroundStyle(.pink)
+                    .background(.secondary)
+                    .clipShape(RoundedRectangle(cornerRadius: 8))
+                    .frame(width: size, height: size)
             }
+
             Text(item.title)
                 .font(.system(.subheadline))
                 .lineLimit(1)

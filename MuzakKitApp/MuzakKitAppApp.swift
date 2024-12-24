@@ -19,7 +19,7 @@ struct MuzakKitAppApp: App {
                         case .album(let album):
                             AlbumDetailScreen(album: album)
                         case .playlist(let playlist):
-                            Text("playlist \(playlist.name)")
+                            PlaylistDetailScreen(playlist: playlist)
                         case .station(let station):
                             Text("station: \(station.name)")
                         @unknown default:
