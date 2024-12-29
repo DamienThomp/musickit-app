@@ -10,14 +10,12 @@ import MusicKit
 
 struct ContentView: View {
 
-    @State var albums: MusicCatalogChart<Album>?
-    @State var songs: MusicRecentlyPlayedResponse<Song>?
-
     @State var recommendations: MusicItemCollection<MusicPersonalRecommendation>?
 
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 30) {
+
                 if let recommendations = recommendations {
                     ForEach(recommendations, id: \.self) { recommendation in
 
@@ -48,7 +46,7 @@ struct ContentView: View {
                                     ) {
                                         ForEach(items, id: \.self) { item in
                                             NavigationLink(value: item.self) {
-                                                itemCard(item: item, size: 180)
+                                                itemCard(item: item, size: 160)
                                             }.tint(.primary)
                                         }
                                     }.scrollTargetLayout()
