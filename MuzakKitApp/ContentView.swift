@@ -21,11 +21,14 @@ struct ContentView: View {
 
                         VStack(alignment: .leading) {
                             if let title = recommendation.title {
-                                Text(title).font(.system(.title2))
+                                Text(title)
+                                    .padding(.leading)
+                                    .font(.system(.title2))
                             }
 
                             if let reason = recommendation.reason {
                                 Text(reason)
+                                    .padding(.leading)
                                     .font(.system(.caption))
                                     .foregroundStyle(.secondary)
                             }
@@ -46,17 +49,17 @@ struct ContentView: View {
                                     ) {
                                         ForEach(items, id: \.self) { item in
                                             NavigationLink(value: item.self) {
-                                                itemCard(item: item, size: 160)
+                                                itemCard(item: item, size: 168)
                                             }.tint(.primary)
                                         }
-                                    }.scrollTargetLayout()
+                                    }.padding(.leading)
+                                    .scrollTargetLayout()
                                 }
                             }
                         }
                     }
                 }
             }
-            .padding(.leading)
             .task {
                 await fetchLibrary()
             }

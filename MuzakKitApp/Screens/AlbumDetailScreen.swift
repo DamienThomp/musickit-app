@@ -45,23 +45,31 @@ struct AlbumDetailScreen: View {
                 .listRowSeparator(.hidden)
 
             if let tracks = tracks, !tracks.isEmpty {
-
-                ForEach(tracks) { track in
-                    HStack(spacing: 4) {
-                        Text(track.trackNumber ?? 0, format: .number)
-                            .foregroundStyle(.secondary)
-                        Text(track.title)
-                            .padding(.vertical, 8)
-                            .padding(.horizontal, 8)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                        Spacer()
-                        Image(systemName: "ellipsis").foregroundStyle(.pink)
+                Section {
+                    ForEach(tracks) { track in
+                        HStack(spacing: 4) {
+                            Text(track.trackNumber ?? 0, format: .number)
+                                .foregroundStyle(.secondary)
+                            Text(track.title)
+                                .padding(.vertical, 8)
+                                .padding(.horizontal, 8)
+                                .lineLimit(1)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                            Spacer()
+                            Image(systemName: "ellipsis").foregroundStyle(.pink)
+                        }
+                        .onTapGesture {
+                            handleTrackSelected(for: track)
+                        }
                     }
-                    .onTapGesture {
-                        handleTrackSelected(for: track)
+                } footer: {
+                    if let copyright = album.copyright {
+                        Text(copyright)
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                            .padding(.vertical)
                     }
                 }
-                .padding(.bottom)
             }
 
             if let related = related, !related.isEmpty {
@@ -69,6 +77,7 @@ struct AlbumDetailScreen: View {
                 VStack(alignment: .leading, spacing: 12) {
 
                     Text("More by \(album.artistName)")
+                        .padding(.leading)
                         .font(.system(.title2))
 
                     ScrollView(.horizontal) {
@@ -86,10 +95,10 @@ struct AlbumDetailScreen: View {
                                 itemCard(item: related, size: 160)
                             }
                         }
-                    }
+                        .padding(.leading)
+                    }.scrollIndicators(.hidden)
                 }
                 .padding([.top, .bottom], 16)
-                .padding(.leading, 22)
                 .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
                 .listRowSeparator(.hidden)
                 .background(Color(.systemGray6))
@@ -100,6 +109,7 @@ struct AlbumDetailScreen: View {
 
                     if let title = similarArtists.title {
                         Text(title)
+                            .padding(.leading)
                             .font(.system(.title2))
                     }
 
@@ -117,17 +127,14 @@ struct AlbumDetailScreen: View {
                             ForEach(similarArtists, id: \.self) { artist in
                                 artistCard(item: artist, size: 160)
                             }
-                        }
-                    }
+                        }.padding(.leading)
+                    }.scrollIndicators(.hidden)
                 }
                 .padding([.top, .bottom], 16)
-                .padding(.leading, 22)
                 .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
                 .listRowSeparator(.hidden)
                 .background(Color(.systemGray6))
             }
-
-
         }
         .listStyle(.plain)
         .task {
@@ -194,11 +201,17 @@ struct AlbumDetailScreen: View {
                 .multilineTextAlignment(.center)
             HStack {
                 Text(album.genreNames.first ?? "N/A")
-                Text(album.copyright ?? "N/A")
+
+                if let releaseDate = album.releaseDate {
+                    Image(systemName: "circle.fill")
+                        .imageScale(.small)
+                        .font(.system(size: 8))
+                    Text(releaseDate, format: .dateTime.year())
+                }
             }
             .font(.system(.caption2))
             .foregroundStyle(.secondary)
-        }
+        }.lineLimit(2)
     }
 
     private var actions: some View {

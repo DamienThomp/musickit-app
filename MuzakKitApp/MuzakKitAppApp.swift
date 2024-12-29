@@ -26,6 +26,8 @@ struct MuzakKitAppApp: App {
                             AlbumDetailScreen(album: album)
                         case .playlist(let playlist):
                             PlaylistDetailScreen(playlist: playlist)
+                        case .station(let station):
+                            Text("Play station \(station.description)")
                         @unknown default:
                             Text("Unknown type")
                         }
