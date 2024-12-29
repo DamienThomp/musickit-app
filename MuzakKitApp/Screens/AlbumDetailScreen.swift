@@ -52,6 +52,7 @@ struct AlbumDetailScreen: View {
                             Text(track.trackNumber ?? 0, format: .number)
                                 .foregroundStyle(.secondary)
                             Text(track.title)
+                                .font(.callout)
                                 .padding(.vertical, 8)
                                 .padding(.horizontal, 8)
                                 .lineLimit(1)
@@ -60,7 +61,7 @@ struct AlbumDetailScreen: View {
                             Image(systemName: "ellipsis").foregroundStyle(.pink)
                         }
                         .onTapGesture {
-                            handleTrackSelected(for: track)
+                            musicPlayer.handleTrackSelected(for: track, from: tracks)
                         }
                     }
                 } footer: {
@@ -184,9 +185,14 @@ struct AlbumDetailScreen: View {
 
     private var actions: some View {
         DetailPageActions {
-            handlePlayback()
+
+            if musicPlayer.isPlaying {
+                musicPlayer.togglePlayBack()
+            } else {
+                musicPlayer.handlePlayback(for: album)
+            }
         } _: {
-            handleShuffle()
+            musicPlayer.shufflePlayback(for: album)
         }
     }
 
@@ -216,22 +222,5 @@ struct AlbumDetailScreen: View {
             self.tracks = tracks
             self.related = related
         }
-    }
-
-    private func handleTrackSelected(for track: Track) {
-        guard let loadedTracks = tracks else { return }
-        musicPlayer.handleTrackSelected(for: track, from: loadedTracks)
-    }
-
-    private func handlePlayback() {
-        if musicPlayer.isPlaying {
-            musicPlayer.togglePlayBack()
-        } else {
-            musicPlayer.handlePlayback(for: album)
-        }
-    }
-
-    private func handleShuffle() {
-        musicPlayer.shufflePlayback(for: album)
     }
 }
