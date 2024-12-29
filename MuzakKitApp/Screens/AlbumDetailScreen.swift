@@ -75,101 +75,29 @@ struct AlbumDetailScreen: View {
 
             if let artistAlbums = artistAlbums, !artistAlbums.isEmpty {
 
-                VStack(alignment: .leading, spacing: 12) {
-
-                    Text("More by \(album.artistName)")
-                        .padding(.leading)
-                        .font(.system(.title2))
-
-                    ScrollView(.horizontal) {
-                        LazyHGrid(
-                            rows: [GridItem(
-                                .adaptive(
-                                    minimum: 200,
-                                    maximum: 250
-                                )
-                            )],
-                            alignment: .top,
-                            spacing: 12
-                        ) {
-                            ForEach(artistAlbums, id: \.self) { related in
-                                itemCard(item: related, size: 160)
-                            }
-                        }
-                        .padding(.leading)
-                    }.scrollIndicators(.hidden)
+                ItemsSectionView("More by \(album.artistName)") {
+                    ForEach(artistAlbums, id: \.self) { item in
+                        itemCard(item: item, size: 160)
+                    }
                 }
-                .padding([.top, .bottom], 16)
-                .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
-                .listRowSeparator(.hidden)
-                .background(Color(.systemGray6))
             }
 
             if let related = related, !related.isEmpty {
 
-                VStack(alignment: .leading, spacing: 12) {
-
-                    if let title = related.title {
-                        Text(title)
-                            .padding(.leading)
-                            .font(.system(.title2))
-
+                ItemsSectionView(related.title) {
+                    ForEach(related, id: \.self) { related in
+                        itemCard(item: related, size: 160)
                     }
-
-                    ScrollView(.horizontal) {
-                        LazyHGrid(
-                            rows: [GridItem(
-                                .adaptive(
-                                    minimum: 200,
-                                    maximum: 250
-                                )
-                            )],
-                            alignment: .top,
-                            spacing: 12
-                        ) {
-                            ForEach(related, id: \.self) { related in
-                                itemCard(item: related, size: 160)
-                            }
-                        }
-                        .padding(.leading)
-                    }.scrollIndicators(.hidden)
                 }
-                .padding([.top, .bottom], 16)
-                .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
-                .listRowSeparator(.hidden)
-                .background(Color(.systemGray6))
             }
 
             if let similarArtists = similarArtists, !similarArtists.isEmpty {
-                VStack(alignment: .leading, spacing: 12) {
 
-                    if let title = similarArtists.title {
-                        Text(title)
-                            .padding(.leading)
-                            .font(.system(.title2))
+                ItemsSectionView(similarArtists.title) {
+                    ForEach(similarArtists, id: \.self) { artist in
+                        artistCard(item: artist, size: 160)
                     }
-
-                    ScrollView(.horizontal) {
-                        LazyHGrid(
-                            rows: [GridItem(
-                                .adaptive(
-                                    minimum: 200,
-                                    maximum: 250
-                                )
-                            )],
-                            alignment: .top,
-                            spacing: 12
-                        ) {
-                            ForEach(similarArtists, id: \.self) { artist in
-                                artistCard(item: artist, size: 160)
-                            }
-                        }.padding(.leading)
-                    }.scrollIndicators(.hidden)
                 }
-                .padding([.top, .bottom], 16)
-                .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
-                .listRowSeparator(.hidden)
-                .background(Color(.systemGray6))
             }
         }
         .listStyle(.plain)
@@ -189,6 +117,7 @@ struct AlbumDetailScreen: View {
     }
 
     func itemCard(item: Album, size: CGFloat) -> some View {
+
         VStack(alignment: .leading) {
             if let artwork = item.artwork {
                 ArtworkImage(artwork, width: size, height: size)
@@ -216,7 +145,9 @@ struct AlbumDetailScreen: View {
     }
 
     private var header: some View {
-        return VStack(alignment: .center, spacing: 2) {
+
+        VStack(alignment: .center, spacing: 2) {
+
             if let artwork {
                 ArtworkImage(
                     artwork,
@@ -252,30 +183,11 @@ struct AlbumDetailScreen: View {
     }
 
     private var actions: some View {
-        HStack {
-            Button {
-                handlePlayback()
-            } label: {
-                HStack {
-                    Image(systemName: musicPlayer.isPlaying ? "pause.fill" : "play.fill")
-                    Text(musicPlayer.isPlaying ? "Pause" : "Play")
-                }.frame(maxWidth: .infinity)
-            }.buttonStyle(.bordered)
-
-            Button {
-                handleShuffle()
-            } label: {
-                HStack {
-                    Image(systemName: "shuffle")
-                    Text("Shuffle")
-                }.frame(maxWidth: .infinity)
-            }.buttonStyle(.bordered)
+        DetailPageActions {
+            handlePlayback()
+        } _: {
+            handleShuffle()
         }
-        .frame(maxWidth: .infinity)
-        .controlSize(.large)
-        .padding(.horizontal, 24)
-        .tint(.secondary)
-        .foregroundStyle(.pink)
     }
 
     private func loadTracks() async throws {
