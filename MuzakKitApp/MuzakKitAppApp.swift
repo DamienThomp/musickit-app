@@ -10,6 +10,12 @@ import MusicKit
 
 @main
 struct MuzakKitAppApp: App {
+    let musicPlayerManager: MusicPlayerManager
+
+    init() {
+        self.musicPlayerManager = MusicPlayerManager()
+    }
+
     var body: some Scene {
         WindowGroup {
             NavigationStack {
@@ -26,7 +32,9 @@ struct MuzakKitAppApp: App {
                             Text("Unknown type")
                         }
                     }
-            }.tint(.pink)
+            }
+            .tint(.pink)
+            .environment(musicPlayerManager)
         }
     }
 }

@@ -18,6 +18,8 @@ import MusicKit
 
 struct PlaylistDetailScreen: View {
 
+    @Environment(MusicPlayerManager.self) private var musicPlayer
+
     let playlist: Playlist
 
     @State private var tracks: MusicItemCollection<Track>?
@@ -36,36 +38,38 @@ struct PlaylistDetailScreen: View {
 
     var body: some View {
         List {
-                header
-                    .padding(.bottom)
-                    .listStyle(.plain)
-                    .frame(maxWidth: .infinity)
-                    .listRowBackground(Color.clear)
-                    .listRowSeparator(.hidden)
+            header
+                .padding(.bottom)
+                .listStyle(.plain)
+                .frame(maxWidth: .infinity)
+                .listRowBackground(Color.clear)
+                .listRowSeparator(.hidden)
 
-                actions
-                    .padding(.bottom)
-                    .listStyle(.plain)
-                    .listRowBackground(Color.clear)
-                    .listRowSeparator(.hidden)
+            actions
+                .padding(.bottom)
+                .listStyle(.plain)
+                .listRowBackground(Color.clear)
+                .listRowSeparator(.hidden)
 
             if let tracks = tracks, !tracks.isEmpty {
-                    ForEach(tracks) { track in
-                        HStack(spacing: 4) {
+                ForEach(tracks) { track in
+                    HStack(spacing: 4) {
 
-                            if let artwork = track.artwork {
-                                ArtworkImage(artwork, width: 40).clipShape(RoundedRectangle(cornerRadius: 8))
-                            }
-
-                            Text(track.title)
-                                .lineLimit(1)
-                                .padding(.vertical, 8)
-                                .padding(.horizontal, 8)
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                            Spacer()
-                            Image(systemName: "ellipsis").foregroundStyle(.pink)
+                        if let artwork = track.artwork {
+                            ArtworkImage(artwork, width: 40).clipShape(RoundedRectangle(cornerRadius: 8))
                         }
+
+                        Text(track.title)
+                            .lineLimit(1)
+                            .padding(.vertical, 8)
+                            .padding(.horizontal, 8)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                        Spacer()
+                        Image(systemName: "ellipsis").foregroundStyle(.pink)
+                    }.onTapGesture {
+                        handleTrackSelected(for: track)
                     }
+                }
             }
         }
         .tint(.pink)
@@ -103,7 +107,7 @@ struct PlaylistDetailScreen: View {
     private var actions: some View {
         HStack {
             Button {
-                // todo
+                handlePlayback()
             } label: {
                 HStack {
                     Image(systemName: "play.fill")
@@ -112,7 +116,7 @@ struct PlaylistDetailScreen: View {
             }.buttonStyle(.bordered)
 
             Button {
-                // todo
+                handleShuffle()
             } label: {
                 HStack {
                     Image(systemName: "shuffle")
@@ -137,5 +141,22 @@ struct PlaylistDetailScreen: View {
         withAnimation {
             self.tracks = tracks
         }
+    }
+
+    private func handleTrackSelected(for track: Track) {
+        guard let loadedTracks = tracks else { return }
+        musicPlayer.handleTrackSelected(for: track, from: loadedTracks)
+    }
+
+    private func handlePlayback() {
+        if musicPlayer.isPlaying {
+            musicPlayer.togglePlayBack()
+        } else {
+            musicPlayer.handlePlayback(for: playlist)
+        }
+    }
+
+    private func handleShuffle() {
+        musicPlayer.shufflePlayback(for: playlist)
     }
 }
