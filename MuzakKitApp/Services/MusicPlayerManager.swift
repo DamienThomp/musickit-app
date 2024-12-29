@@ -21,7 +21,7 @@ class MusicPlayerManager {
     }
 
     func handleTrackSelected(for track: Track, from loadedTracks: MusicItemCollection<Track>) {
-        player.queue = ApplicationMusicPlayer.Queue(for: loadedTracks, startingAt: track)
+        player.queue = .init(for: loadedTracks, startingAt: track)
         beginPlaying()
     }
 
