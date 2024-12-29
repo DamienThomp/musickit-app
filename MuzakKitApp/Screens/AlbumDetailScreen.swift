@@ -17,6 +17,7 @@ struct AlbumDetailScreen: View {
     @State private var tracks: MusicItemCollection<Track>?
     @State private var related: MusicItemCollection<Album>?
     @State private var similarArtists: MusicItemCollection<Artist>?
+    @State private var artistAlbums: MusicItemCollection<Album>?
 
     private var artwork: Artwork? {
         album.artwork
@@ -45,31 +46,75 @@ struct AlbumDetailScreen: View {
                 .listRowSeparator(.hidden)
 
             if let tracks = tracks, !tracks.isEmpty {
-
-                ForEach(tracks) { track in
-                    HStack(spacing: 4) {
-                        Text(track.trackNumber ?? 0, format: .number)
-                            .foregroundStyle(.secondary)
-                        Text(track.title)
-                            .padding(.vertical, 8)
-                            .padding(.horizontal, 8)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                        Spacer()
-                        Image(systemName: "ellipsis").foregroundStyle(.pink)
+                Section {
+                    ForEach(tracks) { track in
+                        HStack(spacing: 4) {
+                            Text(track.trackNumber ?? 0, format: .number)
+                                .foregroundStyle(.secondary)
+                            Text(track.title)
+                                .padding(.vertical, 8)
+                                .padding(.horizontal, 8)
+                                .lineLimit(1)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                            Spacer()
+                            Image(systemName: "ellipsis").foregroundStyle(.pink)
+                        }
+                        .onTapGesture {
+                            handleTrackSelected(for: track)
+                        }
                     }
-                    .onTapGesture {
-                        handleTrackSelected(for: track)
+                } footer: {
+                    if let copyright = album.copyright {
+                        Text(copyright)
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                            .padding(.vertical)
                     }
                 }
-                .padding(.bottom)
+            }
+
+            if let artistAlbums = artistAlbums, !artistAlbums.isEmpty {
+
+                VStack(alignment: .leading, spacing: 12) {
+
+                    Text("More by \(album.artistName)")
+                        .padding(.leading)
+                        .font(.system(.title2))
+
+                    ScrollView(.horizontal) {
+                        LazyHGrid(
+                            rows: [GridItem(
+                                .adaptive(
+                                    minimum: 200,
+                                    maximum: 250
+                                )
+                            )],
+                            alignment: .top,
+                            spacing: 12
+                        ) {
+                            ForEach(artistAlbums, id: \.self) { related in
+                                itemCard(item: related, size: 160)
+                            }
+                        }
+                        .padding(.leading)
+                    }.scrollIndicators(.hidden)
+                }
+                .padding([.top, .bottom], 16)
+                .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
+                .listRowSeparator(.hidden)
+                .background(Color(.systemGray6))
             }
 
             if let related = related, !related.isEmpty {
 
                 VStack(alignment: .leading, spacing: 12) {
 
-                    Text("More by \(album.artistName)")
-                        .font(.system(.title2))
+                    if let title = related.title {
+                        Text(title)
+                            .padding(.leading)
+                            .font(.system(.title2))
+
+                    }
 
                     ScrollView(.horizontal) {
                         LazyHGrid(
@@ -86,10 +131,10 @@ struct AlbumDetailScreen: View {
                                 itemCard(item: related, size: 160)
                             }
                         }
-                    }
+                        .padding(.leading)
+                    }.scrollIndicators(.hidden)
                 }
                 .padding([.top, .bottom], 16)
-                .padding(.leading, 22)
                 .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
                 .listRowSeparator(.hidden)
                 .background(Color(.systemGray6))
@@ -100,6 +145,7 @@ struct AlbumDetailScreen: View {
 
                     if let title = similarArtists.title {
                         Text(title)
+                            .padding(.leading)
                             .font(.system(.title2))
                     }
 
@@ -117,17 +163,14 @@ struct AlbumDetailScreen: View {
                             ForEach(similarArtists, id: \.self) { artist in
                                 artistCard(item: artist, size: 160)
                             }
-                        }
-                    }
+                        }.padding(.leading)
+                    }.scrollIndicators(.hidden)
                 }
                 .padding([.top, .bottom], 16)
-                .padding(.leading, 22)
                 .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
                 .listRowSeparator(.hidden)
                 .background(Color(.systemGray6))
             }
-
-
         }
         .listStyle(.plain)
         .task {
@@ -164,16 +207,16 @@ struct AlbumDetailScreen: View {
                 .lineLimit(1)
 
 
-                Text(item.artistName)
-                    .font(.system(.caption2))
-                    .foregroundStyle(.secondary)
-                    .lineLimit(1)
+            Text(item.artistName)
+                .font(.system(.caption2))
+                .foregroundStyle(.secondary)
+                .lineLimit(1)
 
         }.frame(maxWidth: size)
     }
 
     private var header: some View {
-        VStack(alignment: .center, spacing: 2) {
+        return VStack(alignment: .center, spacing: 2) {
             if let artwork {
                 ArtworkImage(
                     artwork,
@@ -194,11 +237,18 @@ struct AlbumDetailScreen: View {
                 .multilineTextAlignment(.center)
             HStack {
                 Text(album.genreNames.first ?? "N/A")
-                Text(album.copyright ?? "N/A")
+
+                if let releaseDate = album.releaseDate {
+                    Image(systemName: "circle.fill")
+                        .imageScale(.small)
+                        .font(.system(size: 8))
+                    Text(releaseDate, format: .dateTime.year())
+                }
             }
             .font(.system(.caption2))
             .foregroundStyle(.secondary)
         }
+        .lineLimit(2)
     }
 
     private var actions: some View {
@@ -238,11 +288,12 @@ struct AlbumDetailScreen: View {
 
         guard let artist = artists?.first else { return }
 
-        let response = try await artist.with([.similarArtists])
+        let response = try await artist.with([.similarArtists, .albums])
 
         Task { @MainActor in
             withAnimation {
                 self.similarArtists = response.similarArtists
+                self.artistAlbums = response.albums
             }
         }
     }
