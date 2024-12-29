@@ -25,13 +25,8 @@ class MusicPlayerManager {
         beginPlaying()
     }
 
-    func handlePlayback(for album: Album) {
-        player.queue = [album]
-        beginPlaying()
-    }
-
-    func handlePlayback(for playlist: Playlist) {
-        player.queue = [playlist]
+    func handlePlayback(for items: PlayableMusicItem) {
+        player.queue = [items]
         beginPlaying()
     }
 
@@ -44,17 +39,10 @@ class MusicPlayerManager {
         }
     }
 
-    func shufflePlayback(for album: Album) {
+    func shufflePlayback(for items: PlayableMusicItem) {
 
         toggleSuffleState()
-        player.queue = [album]
-        beginPlaying()
-    }
-
-    func shufflePlayback(for playlist: Playlist) {
-
-        toggleSuffleState()
-        player.queue = [playlist]
+        player.queue = [items]
         beginPlaying()
     }
 
