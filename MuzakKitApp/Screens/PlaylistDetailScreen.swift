@@ -67,7 +67,7 @@ struct PlaylistDetailScreen: View {
                         Spacer()
                         Image(systemName: "ellipsis").foregroundStyle(.pink)
                     }.onTapGesture {
-                        handleTrackSelected(for: track)
+                        musicPlayer.handleTrackSelected(for: track, from: tracks)
                     }
                 }
             }
@@ -105,34 +105,20 @@ struct PlaylistDetailScreen: View {
     }
 
     private var actions: some View {
-        HStack {
-            Button {
-                handlePlayback()
-            } label: {
-                HStack {
-                    Image(systemName: "play.fill")
-                    Text("Play")
-                }.frame(maxWidth: .infinity)
-            }.buttonStyle(.bordered)
-
-            Button {
-                handleShuffle()
-            } label: {
-                HStack {
-                    Image(systemName: "shuffle")
-                    Text("Shuffle")
-                }.frame(maxWidth: .infinity)
-            }.buttonStyle(.bordered)
+        DetailPageActions {
+            if musicPlayer.isPlaying {
+                musicPlayer.togglePlayBack()
+            } else {
+                musicPlayer.handlePlayback(for: playlist)
+            }
+        } _: {
+            musicPlayer.shufflePlayback(for: playlist)
         }
-        .frame(maxWidth: .infinity)
-        .controlSize(.large)
-        .padding(.horizontal, 24)
-        .tint(.secondary)
-        .foregroundStyle(.pink)
+
     }
 
     private func loadTracks() async throws {
-        let playlist = try await playlist.with([.tracks])
+        let playlist = try await playlist.with([.tracks, .featuredArtists])
         update(tracks: playlist.tracks)
     }
 
@@ -141,22 +127,5 @@ struct PlaylistDetailScreen: View {
         withAnimation {
             self.tracks = tracks
         }
-    }
-
-    private func handleTrackSelected(for track: Track) {
-        guard let loadedTracks = tracks else { return }
-        musicPlayer.handleTrackSelected(for: track, from: loadedTracks)
-    }
-
-    private func handlePlayback() {
-        if musicPlayer.isPlaying {
-            musicPlayer.togglePlayBack()
-        } else {
-            musicPlayer.handlePlayback(for: playlist)
-        }
-    }
-
-    private func handleShuffle() {
-        musicPlayer.shufflePlayback(for: playlist)
     }
 }
