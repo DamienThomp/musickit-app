@@ -56,7 +56,8 @@ struct PlaylistDetailScreen: View {
                     HStack(spacing: 4) {
 
                         if let artwork = track.artwork {
-                            ArtworkImage(artwork, width: 40).clipShape(RoundedRectangle(cornerRadius: 8))
+                            ArtworkImage(artwork, width: 40)
+                                .clipShape(RoundedRectangle(cornerRadius: 8))
                         }
 
                         Text(track.title)
