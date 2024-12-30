@@ -35,7 +35,7 @@ struct ContentView: View {
 
                             if !recommendation.items.isEmpty {
                                 let items = recommendation.items
-
+                                
                                 ScrollView(.horizontal, showsIndicators: false) {
                                     LazyHGrid(
                                         rows: [GridItem(
@@ -48,7 +48,7 @@ struct ContentView: View {
                                         spacing: 12
                                     ) {
                                         ForEach(items, id: \.self) { item in
-                                            NavigationLink(value: item.self) {
+                                            NavigationLink(value: item) {
                                                 itemCard(item: item, size: 168)
                                             }.tint(.primary)
                                         }

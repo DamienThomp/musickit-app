@@ -77,8 +77,10 @@ struct AlbumDetailScreen: View {
             if let artistAlbums = artistAlbums, !artistAlbums.isEmpty {
 
                 ItemsSectionView("More by \(album.artistName)") {
-                    ForEach(artistAlbums, id: \.self) { item in
-                        itemCard(item: item, size: 160)
+                    ForEach(artistAlbums, id: \.self) { album in
+                        NavigationLink(value: album) {
+                            itemCard(item: album, size: 160)
+                        }.tint(.primary)
                     }
                 }
             }
@@ -87,7 +89,9 @@ struct AlbumDetailScreen: View {
 
                 ItemsSectionView(related.title) {
                     ForEach(related, id: \.self) { related in
-                        itemCard(item: related, size: 160)
+                        NavigationLink(value: related) {
+                            itemCard(item: related, size: 160)
+                        }.tint(.primary)
                     }
                 }
             }
@@ -96,7 +100,9 @@ struct AlbumDetailScreen: View {
 
                 ItemsSectionView(similarArtists.title) {
                     ForEach(similarArtists, id: \.self) { artist in
-                        artistCard(item: artist, size: 160)
+                        NavigationLink(value: artist) {
+                            artistCard(item: artist, size: 160)
+                        }.tint(.primary)
                     }
                 }
             }
@@ -155,7 +161,7 @@ struct AlbumDetailScreen: View {
                     width: 240,
                     height: 240
                 )
-                .cornerRadius(12)
+                .clipShape(RoundedRectangle(cornerRadius: 12))
                 .padding(.bottom, 14)
             }
 
@@ -184,6 +190,7 @@ struct AlbumDetailScreen: View {
     }
 
     private var actions: some View {
+
         DetailPageActions {
 
             if musicPlayer.isPlaying {
