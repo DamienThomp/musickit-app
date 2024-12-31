@@ -10,6 +10,7 @@ import MusicKit
 
 struct ContentView: View {
 
+    @Environment(MusicPlayerManager.self) private var musicPlayer
     @State var recommendations: MusicItemCollection<MusicPersonalRecommendation>?
 
     var body: some View {
@@ -48,9 +49,7 @@ struct ContentView: View {
                                         spacing: 12
                                     ) {
                                         ForEach(items, id: \.self) { item in
-                                            NavigationLink(value: item) {
-                                                itemCard(item: item, size: 168)
-                                            }.tint(.primary)
+                                            renderCard(item: item)
                                         }
                                     }.padding(.leading)
                                     .scrollTargetLayout()
@@ -66,8 +65,30 @@ struct ContentView: View {
         }.navigationTitle("Browse")
     }
 
+    @ViewBuilder
+    private func renderCard(item: MusicPersonalRecommendation.Item) -> some View {
 
-    func itemCard(item: MusicPersonalRecommendation.Item, size: CGFloat) -> some View {
+        switch item.self {
+        case .album(let album):
+            NavigationLink(value: album) {
+                itemCard(item: item, size: 168)
+            }.tint(.primary)
+        case .playlist(let playlist):
+            NavigationLink(value: playlist) {
+                itemCard(item: item, size: 168)
+            }.tint(.primary)
+        case .station(let station):
+            itemCard(item: item, size: 168)
+                .onTapGesture {
+                    playStation(station)
+                }
+        @unknown default:
+            Text("Unknown View")
+        }
+    }
+
+
+    private func itemCard(item: MusicPersonalRecommendation.Item, size: CGFloat) -> some View {
         VStack(alignment: .leading) {
             if let artwork = item.artwork {
                 ArtworkImage(artwork, width: size, height: size)
@@ -92,6 +113,10 @@ struct ContentView: View {
                     .lineLimit(1)
             }
         }.frame(maxWidth: size)
+    }
+
+    private func playStation(_ station: Station) {
+        musicPlayer.handlePlayback(for: station)
     }
 
     private func getMusic() {
@@ -133,5 +158,5 @@ struct ContentView: View {
 }
 
 #Preview {
-    ContentView()
+    ContentView().environment(MusicPlayerManager())
 }
