@@ -11,9 +11,11 @@ import MusicKit
 struct ContentView: View {
 
     @Environment(MusicPlayerManager.self) private var musicPlayer
+
     @State var recommendations: MusicItemCollection<MusicPersonalRecommendation>?
 
     var body: some View {
+
         ScrollView {
             VStack(alignment: .leading, spacing: 30) {
 
@@ -49,7 +51,7 @@ struct ContentView: View {
                                         spacing: 12
                                     ) {
                                         ForEach(items, id: \.self) { item in
-                                            renderCard(item: item)
+                                            renderCard(item: item).tint(.primary)
                                         }
                                     }.padding(.leading)
                                     .scrollTargetLayout()
@@ -72,11 +74,11 @@ struct ContentView: View {
         case .album(let album):
             NavigationLink(value: album) {
                 itemCard(item: item, size: 168)
-            }.tint(.primary)
+            }
         case .playlist(let playlist):
             NavigationLink(value: playlist) {
                 itemCard(item: item, size: 168)
-            }.tint(.primary)
+            }
         case .station(let station):
             itemCard(item: item, size: 168)
                 .onTapGesture {
@@ -86,7 +88,6 @@ struct ContentView: View {
             Text("Unknown View")
         }
     }
-
 
     private func itemCard(item: MusicPersonalRecommendation.Item, size: CGFloat) -> some View {
         VStack(alignment: .leading) {

@@ -21,20 +21,6 @@ struct MuzakKitApp: App {
         WindowGroup {
             NavigationStack {
                 ContentView()
-//                    .navigationDestination(for: MusicPersonalRecommendation.Item.self) { item in
-//                        switch item.self {
-//                        case .album(let album):
-//                            AlbumDetailScreen(album: album)
-//                                .navigationBarTitleDisplayMode(.inline)
-//                        case .playlist(let playlist):
-//                            PlaylistDetailScreen(playlist: playlist)
-//                                .navigationBarTitleDisplayMode(.inline)
-//                        case .station(let station):
-//                            Text("Play station \(station.description)")
-//                        @unknown default:
-//                            Text("Unknown type")
-//                        }
-//                    }
                     .navigationDestination(for: Album.self) { item in
                         AlbumDetailScreen(album: item)
                             .navigationBarTitleDisplayMode(.inline)
