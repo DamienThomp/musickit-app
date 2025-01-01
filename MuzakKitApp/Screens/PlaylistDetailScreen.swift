@@ -53,23 +53,14 @@ struct PlaylistDetailScreen: View {
 
             if let tracks = tracks, !tracks.isEmpty {
                 ForEach(tracks) { track in
-                    HStack(spacing: 4) {
-
-                        if let artwork = track.artwork {
-                            ArtworkImage(artwork, width: 40)
-                                .clipShape(RoundedRectangle(cornerRadius: 8))
+                    PlaylistTrackCell(track: track)
+                        .onTapGesture {
+                            musicPlayer
+                                .handleTrackSelected(
+                                    for: track,
+                                    from: tracks
+                                )
                         }
-
-                        Text(track.title)
-                            .lineLimit(1)
-                            .padding(.vertical, 8)
-                            .padding(.horizontal, 8)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                        Spacer()
-                        Image(systemName: "ellipsis").foregroundStyle(.pink)
-                    }.onTapGesture {
-                        musicPlayer.handleTrackSelected(for: track, from: tracks)
-                    }
                 }
             }
         }
