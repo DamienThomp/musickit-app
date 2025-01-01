@@ -48,21 +48,14 @@ struct AlbumDetailScreen: View {
             if let tracks = tracks, !tracks.isEmpty {
                 Section {
                     ForEach(tracks) { track in
-                        HStack(spacing: 4) {
-                            Text(track.trackNumber ?? 0, format: .number)
-                                .foregroundStyle(.secondary)
-                            Text(track.title)
-                                .font(.callout)
-                                .padding(.vertical, 8)
-                                .padding(.horizontal, 8)
-                                .lineLimit(1)
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                            Spacer()
-                            Image(systemName: "ellipsis").foregroundStyle(.pink)
-                        }
-                        .onTapGesture {
-                            musicPlayer.handleTrackSelected(for: track, from: tracks)
-                        }
+                        AlbumTrackCell(track: track)
+                            .onTapGesture {
+                                musicPlayer
+                                    .handleTrackSelected(
+                                        for: track,
+                                        from: tracks
+                                    )
+                            }
                     }
                 } footer: {
                     if let copyright = album.copyright {
@@ -115,6 +108,7 @@ struct AlbumDetailScreen: View {
 
     func artistCard(item: Artist, size: CGFloat) -> some View {
         VStack {
+
             if let artwork = item.artwork {
                 ArtworkImage(artwork, width: size, height: size)
                     .clipShape(Circle())
@@ -126,10 +120,13 @@ struct AlbumDetailScreen: View {
     func itemCard(item: Album, size: CGFloat) -> some View {
 
         VStack(alignment: .leading) {
+
             if let artwork = item.artwork {
+
                 ArtworkImage(artwork, width: size, height: size)
                     .cornerRadius(8)
             } else {
+
                 Image(systemName: "music.mic")
                     .resizable()
                     .foregroundStyle(.pink)
@@ -204,8 +201,11 @@ struct AlbumDetailScreen: View {
     }
 
     private func loadTracks() async throws {
+
         let album = try await album.with([.tracks, .relatedAlbums, .artists])
+
         try await loadSimilarArtists(album.artists)
+
         update(tracks: album.tracks, related: album.relatedAlbums)
     }
 
