@@ -108,7 +108,6 @@ struct AlbumDetailScreen: View {
 
     func artistCard(item: Artist, size: CGFloat) -> some View {
         VStack {
-
             if let artwork = item.artwork {
                 ArtworkImage(artwork, width: size, height: size)
                     .clipShape(Circle())
@@ -145,6 +144,8 @@ struct AlbumDetailScreen: View {
                 .foregroundStyle(.secondary)
                 .lineLimit(1)
 
+
+
         }.frame(maxWidth: size)
     }
 
@@ -166,10 +167,12 @@ struct AlbumDetailScreen: View {
                 .font(.system(.title2))
                 .fontWeight(.semibold)
                 .multilineTextAlignment(.center)
+
             Text(artistName)
                 .font(.system(.title2))
                 .foregroundStyle(.pink)
                 .multilineTextAlignment(.center)
+
             HStack {
                 Text(album.genreNames.first ?? "N/A")
 
