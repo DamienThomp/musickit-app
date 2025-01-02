@@ -12,9 +12,8 @@ struct ArtistPageScreen: View {
 
     let artist: Artist
 
-    @State private var albums: MusicItemCollection<Album>?
-    @State private var appearsOn: MusicItemCollection<Album>?
-    @State private var similarArtists: MusicItemCollection<Artist>?
+    @State private var artistDetails: Artist?
+    @State private var isLoading: Bool = true
 
     private var artwork: Artwork? {
         artist.artwork
@@ -25,6 +24,7 @@ struct ArtistPageScreen: View {
     }
 
     var body: some View {
+
         List {
             header
                 .listStyle(.plain)
@@ -33,7 +33,7 @@ struct ArtistPageScreen: View {
                 .listRowSeparator(.hidden)
                 .padding(.bottom, 24)
 
-            if let albums = albums, !albums.isEmpty {
+            if let albums = artistDetails?.albums, !albums.isEmpty {
 
                 ItemsSectionView("Albums by \(artist.name)") {
                     ForEach(albums, id: \.self) { album in
@@ -44,11 +44,57 @@ struct ArtistPageScreen: View {
                 }
             }
 
-            if let appearsOn = appearsOn, !appearsOn.isEmpty {
+            if let singles = artistDetails?.singles, !singles.isEmpty {
+
+                ItemsSectionView(singles.title) {
+                    ForEach(singles, id: \.self) { album in
+                        NavigationLink(value: album) {
+                            AlbumItemCell(item: album, size: 160)
+                        }.tint(.primary)
+                    }
+                }
+            }
+
+
+            if let appearsOn = artistDetails?.appearsOnAlbums, !appearsOn.isEmpty {
+
                 ItemsSectionView(appearsOn.title) {
                     ForEach(appearsOn, id: \.self) { album in
                         NavigationLink(value: album) {
                             AlbumItemCell(item: album, size: 160)
+                        }.tint(.primary)
+                    }
+                }
+            }
+
+            if let featured = artistDetails?.featuredAlbums, !featured.isEmpty {
+
+                ItemsSectionView(featured.title) {
+                    ForEach(featured, id: \.self) { album in
+                        NavigationLink(value: album) {
+                            AlbumItemCell(item: album, size: 160)
+                        }.tint(.primary)
+                    }
+                }
+            }
+
+            if let playlists = artistDetails?.playlists, !playlists.isEmpty {
+
+                ItemsSectionView("Playlists") {
+                    ForEach(playlists, id: \.self) { item in
+                        NavigationLink(value: item) {
+                            PlaylistItemCell(item: item, size: 160)
+                        }.tint(.primary)
+                    }
+                }
+            }
+
+            if let similarArtists = artistDetails?.similarArtists, !similarArtists.isEmpty {
+
+                ItemsSectionView(similarArtists.title) {
+                    ForEach(similarArtists, id: \.self) { item in
+                        NavigationLink(value: item) {
+                            ArtistItemCell(item: item, size: 160)
                         }.tint(.primary)
                     }
                 }
@@ -85,7 +131,16 @@ struct ArtistPageScreen: View {
     private func loadSections() {
         Task {
             do {
-                let artistDetails = try await artist.with([.albums, .appearsOnAlbums, .similarArtists])
+                let artistDetails = try await artist.with(
+                    [
+                        .albums,
+                        .singles,
+                        .appearsOnAlbums,
+                        .similarArtists,
+                        .featuredAlbums,
+                        .playlists
+                    ]
+                )
                 updateSections(with: artistDetails)
             } catch {
                 print("can't load data: \(error.localizedDescription)")
@@ -96,9 +151,8 @@ struct ArtistPageScreen: View {
     @MainActor
     private func updateSections(with artist: Artist) {
         withAnimation {
-            self.albums = artist.albums
-            self.appearsOn = artist.appearsOnAlbums
-            self.similarArtists = artist.similarArtists
+            self.isLoading = false
+            self.artistDetails = artist
         }
     }
 }
