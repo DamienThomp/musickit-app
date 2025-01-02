@@ -30,7 +30,8 @@ struct MuzakKitApp: App {
                             .navigationBarTitleDisplayMode(.inline)
                     }
                     .navigationDestination(for: Artist.self) { item in
-                        Text("Artist page for \(item.name)")
+                        ArtistPageScreen(artist: item)
+                            .navigationBarTitleDisplayMode(.inline)
                     }
             }
             .tint(.pink)

@@ -43,7 +43,7 @@ struct ContentView: View {
                                     LazyHGrid(
                                         rows: [GridItem(
                                             .adaptive(
-                                                minimum: 200,
+                                                minimum: 250,
                                                 maximum: 250
                                             )
                                         )],
