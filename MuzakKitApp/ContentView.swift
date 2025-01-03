@@ -125,7 +125,6 @@ struct ContentView: View {
             do {
                 let recommendationsRequest = MusicPersonalRecommendationsRequest()
                 let recommendations = try await recommendationsRequest.response()
-
                 self.recommendations = recommendations.recommendations
             } catch {
                 print(error)
