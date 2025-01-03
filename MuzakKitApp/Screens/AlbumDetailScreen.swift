@@ -103,6 +103,22 @@ struct AlbumDetailScreen: View {
         .listStyle(.plain)
         .task {
             try? await loadTracks()
+
+        }.toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button {
+                    // todo
+                } label: {
+                    Image(systemName: "plus.circle")
+                }
+            }
+            ToolbarItem(placement: .topBarTrailing) {
+                Button {
+                    // todo
+                } label: {
+                    Image(systemName: "ellipsis")
+                }
+            }
         }
     }
 
@@ -206,6 +222,7 @@ struct AlbumDetailScreen: View {
     private func loadTracks() async throws {
 
         let album = try await album.with([.tracks, .relatedAlbums, .artists])
+        print(String(describing: album.libraryAddedDate))
 
         try await loadSimilarArtists(album.artists)
 
