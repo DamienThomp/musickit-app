@@ -115,7 +115,7 @@ struct AlbumDetailScreen: View {
             }
             ToolbarItem(placement: .topBarTrailing) {
                 Button {
-                    // todo
+                    // TODO: - toggle context menu
                 } label: {
                     Image(systemName: "ellipsis")
                 }

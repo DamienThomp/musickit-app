@@ -5,14 +5,6 @@
 //  Created by Damien L Thompson on 2024-12-24.
 //
 
-
-//
-//  AlbumDetailScreen.swift
-//  MuzakKitApp
-//
-//  Created by Damien L Thompson on 2024-12-23.
-//
-
 import SwiftUI
 import MusicKit
 
@@ -72,7 +64,9 @@ struct PlaylistDetailScreen: View {
     }
 
     private var header: some View {
+
         VStack(alignment: .center) {
+
             if let artwork {
                 ArtworkImage(
                     artwork,
@@ -97,6 +91,7 @@ struct PlaylistDetailScreen: View {
     }
 
     private var actions: some View {
+
         DetailPageActions {
             if musicPlayer.isPlaying {
                 musicPlayer.togglePlayBack()
@@ -106,7 +101,6 @@ struct PlaylistDetailScreen: View {
         } _: {
             musicPlayer.shufflePlayback(for: playlist)
         }
-
     }
 
     private func loadTracks() async throws {
