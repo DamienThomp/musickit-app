@@ -156,5 +156,6 @@ struct BrowseView: View {
 }
 
 #Preview {
-    BrowseView().environment(MusicPlayerManager())
+    BrowseView()
+        .environment(MusicPlayerManager())
 }
