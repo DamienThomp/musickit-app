@@ -18,6 +18,7 @@ struct AlbumDetailScreen: View {
     @State private var related: MusicItemCollection<Album>?
     @State private var similarArtists: MusicItemCollection<Artist>?
     @State private var artistAlbums: MusicItemCollection<Album>?
+    @State private var isInLibrary: Bool = false
 
     private var artwork: Artwork? {
         album.artwork
@@ -102,14 +103,14 @@ struct AlbumDetailScreen: View {
         }
         .listStyle(.plain)
         .task {
+            try? await checkLibraryState(for: album)
             try? await loadTracks()
-
         }.toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Button {
-                    // todo
+                    addToLibrary(album)
                 } label: {
-                    Image(systemName: "plus.circle")
+                    Image(systemName: isInLibrary ? "checkmark.circle.fill" : "plus.circle")
                 }
             }
             ToolbarItem(placement: .topBarTrailing) {
@@ -219,10 +220,34 @@ struct AlbumDetailScreen: View {
         }
     }
 
+    private func addToLibrary(_ album: Album) {
+
+        guard !isInLibrary else { return }
+
+        Task { @MainActor in
+            do {
+                let library = MusicLibrary.shared
+                try await library.add(album)
+                self.isInLibrary = true
+            } catch {
+                print("can't add to library: \(error.localizedDescription)")
+            }
+        }
+    }
+
+    private func checkLibraryState(for album: Album) async throws {
+
+        var request: MusicLibraryRequest<Album> = MusicLibraryRequest()
+        request.filter(matching: \.id, equalTo: album.id)
+
+        let response = try await request.response()
+
+        updateLibraryState(for: response)
+    }
+
     private func loadTracks() async throws {
 
         let album = try await album.with([.tracks, .relatedAlbums, .artists])
-        print(String(describing: album.libraryAddedDate))
 
         try await loadSimilarArtists(album.artists)
 
@@ -240,6 +265,14 @@ struct AlbumDetailScreen: View {
                 self.similarArtists = response.similarArtists
                 self.artistAlbums = response.albums
             }
+        }
+    }
+
+    @MainActor
+    private func updateLibraryState(for response: MusicLibraryResponse<Album>) {
+        withAnimation {
+            print("!response.items.isEmpty: \(!response.items.isEmpty)")
+            self.isInLibrary = !response.items.isEmpty
         }
     }
 

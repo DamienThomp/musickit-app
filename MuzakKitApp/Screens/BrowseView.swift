@@ -1,5 +1,5 @@
 //
-//  ContentView.swift
+//  BrowseView.swift
 //  MuzakKitApp
 //
 //  Created by Damien L Thompson on 2024-12-22.
@@ -8,7 +8,7 @@
 import SwiftUI
 import MusicKit
 
-struct ContentView: View {
+struct BrowseView: View {
 
     @Environment(MusicPlayerManager.self) private var musicPlayer
 
@@ -156,5 +156,5 @@ struct ContentView: View {
 }
 
 #Preview {
-    ContentView().environment(MusicPlayerManager())
+    BrowseView().environment(MusicPlayerManager())
 }

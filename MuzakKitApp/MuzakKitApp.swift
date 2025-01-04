@@ -18,21 +18,41 @@ struct MuzakKitApp: App {
     }
 
     var body: some Scene {
+
         WindowGroup {
+
             NavigationStack {
-                ContentView()
-                    .navigationDestination(for: Album.self) { item in
-                        AlbumDetailScreen(album: item)
-                            .navigationBarTitleDisplayMode(.inline)
-                    }
-                    .navigationDestination(for: Playlist.self) { item in
-                        PlaylistDetailScreen(playlist: item)
-                            .navigationBarTitleDisplayMode(.inline)
-                    }
-                    .navigationDestination(for: Artist.self) { item in
-                        ArtistPageScreen(artist: item)
-                            .navigationBarTitleDisplayMode(.inline)
-                    }
+
+                TabView {
+
+                    BrowseView()
+                        .tabItem {
+                            Label("Browse", systemImage: "square.grid.2x2.fill")
+                        }
+
+                    Text("Library View")
+                        .tabItem {
+                            Label("Library", systemImage: "music.note.list")
+                        }
+
+                    Text("Search")
+                        .tabItem {
+                            Label("Search", systemImage: "magnifyingglass")
+                        }
+
+                }
+                .navigationDestination(for: Album.self) { item in
+                    AlbumDetailScreen(album: item)
+                        .navigationBarTitleDisplayMode(.inline)
+                }
+                .navigationDestination(for: Playlist.self) { item in
+                    PlaylistDetailScreen(playlist: item)
+                        .navigationBarTitleDisplayMode(.inline)
+                }
+                .navigationDestination(for: Artist.self) { item in
+                    ArtistPageScreen(artist: item)
+                        .navigationBarTitleDisplayMode(.inline)
+                }
             }
             .tint(.pink)
             .environment(musicPlayerManager)
