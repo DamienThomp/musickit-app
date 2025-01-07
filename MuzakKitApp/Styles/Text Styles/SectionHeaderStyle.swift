@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct SectionHeaderStyle: ViewModifier {
+
     func body(content: Content) -> some View {
         content
             .font(.system(.title2))
@@ -17,6 +18,7 @@ struct SectionHeaderStyle: ViewModifier {
 }
 
 struct SectionSubtitleStyle: ViewModifier {
+    
     func body(content: Content) -> some View {
         content
             .font(.system(.caption))

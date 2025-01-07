@@ -8,7 +8,16 @@
 import SwiftUI
 
 extension Text {
-    func textStyle<Style: ViewModifier>(_ style: Style) -> some View {
+
+    func textStyle<T: ViewModifier>(_ style: T) -> some View {
         ModifiedContent(content: self, modifier: style)
+    }
+
+    func sectionHeader() -> some View {
+        modifier(SectionHeaderStyle())
+    }
+
+    func sectionSubtitle() -> some View {
+        modifier(SectionSubtitleStyle())
     }
 }
