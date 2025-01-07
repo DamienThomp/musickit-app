@@ -103,8 +103,12 @@ struct AlbumDetailScreen: View {
         }
         .listStyle(.plain)
         .task {
-            try? await checkLibraryState(for: album)
-            try? await loadTracks()
+            do {
+                try await checkLibraryState(for: album)
+                try await loadTracks()
+            } catch {
+                print(error.localizedDescription)
+            }
         }.toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Button {
@@ -271,7 +275,6 @@ struct AlbumDetailScreen: View {
     @MainActor
     private func updateLibraryState(for response: MusicLibraryResponse<Album>) {
         withAnimation {
-            print("!response.items.isEmpty: \(!response.items.isEmpty)")
             self.isInLibrary = !response.items.isEmpty
         }
     }
@@ -282,5 +285,12 @@ struct AlbumDetailScreen: View {
             self.tracks = tracks
             self.related = related
         }
+    }
+}
+
+#Preview {
+    if let album = albumMock {
+        AlbumDetailScreen(album: album)
+            .environment(MusicPlayerManager())
     }
 }

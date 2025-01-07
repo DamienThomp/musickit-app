@@ -11,7 +11,7 @@ import MusicKit
 
 struct LibraryView: View {
 
-    @State private var items: MusicItemCollection<Album>?
+    @State var items: MusicItemCollection<Album>? = nil
 
     var body: some View {
 
@@ -20,7 +20,7 @@ struct LibraryView: View {
             List {
 
                 ForEach(LibraryList.allCases, id: \.id) { item in
-                    
+
                     NavigationLink {
                         Text(item.title)
                     } label: {
@@ -114,9 +114,11 @@ extension LibraryView {
     }
 }
 
+
+
 #Preview {
     NavigationStack {
-        LibraryView()
+        LibraryView(items: albumitems)
     }
 }
 
