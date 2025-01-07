@@ -73,7 +73,7 @@ struct AlbumDetailScreen: View {
                 ItemsSectionView("More by \(album.artistName)") {
                     ForEach(artistAlbums, id: \.self) { album in
                         NavigationLink(value: album) {
-                            itemCard(item: album, size: 160)
+                            AlbumItemCell(item: album, size: 160)
                         }.tint(.primary)
                     }
                 }
@@ -84,7 +84,7 @@ struct AlbumDetailScreen: View {
                 ItemsSectionView(related.title) {
                     ForEach(related, id: \.self) { related in
                         NavigationLink(value: related) {
-                            itemCard(item: related, size: 160)
+                            AlbumItemCell(item: related, size: 160)
                         }.tint(.primary)
                     }
                 }
@@ -95,7 +95,7 @@ struct AlbumDetailScreen: View {
                 ItemsSectionView(similarArtists.title) {
                     ForEach(similarArtists, id: \.self) { artist in
                         NavigationLink(value: artist) {
-                            artistCard(item: artist, size: 160)
+                            ArtistItemCell(item: artist, size: 160)
                         }.tint(.primary)
                     }
                 }
@@ -125,49 +125,6 @@ struct AlbumDetailScreen: View {
                 }
             }
         }
-    }
-
-    func artistCard(item: Artist, size: CGFloat) -> some View {
-        VStack {
-            if let artwork = item.artwork {
-                ArtworkImage(artwork, width: size, height: size)
-                    .clipShape(Circle())
-            }
-            Text(item.name)
-        }.frame(maxWidth: size)
-    }
-
-    func itemCard(item: Album, size: CGFloat) -> some View {
-
-        VStack(alignment: .leading) {
-
-            if let artwork = item.artwork {
-
-                ArtworkImage(artwork, width: size, height: size)
-                    .cornerRadius(8)
-            } else {
-
-                Image(systemName: "music.mic")
-                    .resizable()
-                    .foregroundStyle(.pink)
-                    .background(.secondary)
-                    .clipShape(RoundedRectangle(cornerRadius: 8))
-                    .frame(width: size, height: size)
-            }
-
-            Text(item.title)
-                .font(.system(.subheadline))
-                .lineLimit(1)
-
-
-            Text(item.artistName)
-                .font(.system(.caption2))
-                .foregroundStyle(.secondary)
-                .lineLimit(1)
-
-
-
-        }.frame(maxWidth: size)
     }
 
     private var header: some View {
@@ -223,6 +180,9 @@ struct AlbumDetailScreen: View {
             musicPlayer.shufflePlayback(for: album)
         }
     }
+}
+
+extension AlbumDetailScreen {
 
     private func addToLibrary(_ album: Album) {
 

@@ -29,7 +29,9 @@ struct PlaylistDetailScreen: View {
     }
 
     var body: some View {
+
         List {
+            
             header
                 .padding(.bottom)
                 .listStyle(.plain)
@@ -44,6 +46,7 @@ struct PlaylistDetailScreen: View {
                 .listRowSeparator(.hidden)
 
             if let tracks = tracks, !tracks.isEmpty {
+
                 ForEach(tracks) { track in
                     PlaylistTrackCell(track: track)
                         .onTapGesture {
@@ -102,6 +105,9 @@ struct PlaylistDetailScreen: View {
             musicPlayer.shufflePlayback(for: playlist)
         }
     }
+}
+
+extension PlaylistDetailScreen {
 
     private func loadTracks() async throws {
         let playlist = try await playlist.with([.tracks, .featuredArtists])

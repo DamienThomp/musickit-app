@@ -12,11 +12,12 @@ let albumItemsJson = "[{\"id\":\"420783673600460988\",\"type\":\"library-albums\
 
 
 var albumitems: MusicItemCollection<Album>? {
+
     guard let data = albumItemsJson else { return nil }
+    
     do {
-        let decoded = try JSONDecoder().decode([Album].self, from: data)
-        let albums = MusicItemCollection(decoded)
-        return albums
+        let albums = try JSONDecoder().decode([Album].self, from: data)
+        return MusicItemCollection(albums)
     } catch {
         return nil
     }
