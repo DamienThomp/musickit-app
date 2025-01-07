@@ -50,9 +50,11 @@ struct BrowseView: View {
                                         spacing: 12
                                     ) {
                                         ForEach(items, id: \.self) { item in
-                                            renderCard(item: item).tint(.primary)
+                                            renderCard(for: item)
+                                                .tint(.primary)
                                         }
-                                    }.padding(.leading)
+                                    }
+                                    .padding(.leading)
                                     .scrollTargetLayout()
                                 }
                             }
@@ -67,52 +69,25 @@ struct BrowseView: View {
     }
 
     @ViewBuilder
-    private func renderCard(item: MusicPersonalRecommendation.Item) -> some View {
+    private func renderCard(for item: MusicPersonalRecommendation.Item) -> some View {
 
         switch item.self {
         case .album(let album):
             NavigationLink(value: album) {
-                itemCard(item: item, size: 168)
+                AlbumItemCell(item: album, size: 168)
             }
         case .playlist(let playlist):
             NavigationLink(value: playlist) {
-                itemCard(item: item, size: 168)
+                PlaylistItemCell(item: playlist, size: 168)
             }
         case .station(let station):
-            itemCard(item: item, size: 168)
+            StationItemCell(item: station, size: 168)
                 .onTapGesture {
                     playStation(station)
                 }
         @unknown default:
             Text("Unknown View")
         }
-    }
-
-    private func itemCard(item: MusicPersonalRecommendation.Item, size: CGFloat) -> some View {
-        VStack(alignment: .leading) {
-            if let artwork = item.artwork {
-                ArtworkImage(artwork, width: size, height: size)
-                    .cornerRadius(8)
-            } else {
-                Image(systemName: "music.mic")
-                    .resizable()
-                    .foregroundStyle(.pink)
-                    .background(.secondary)
-                    .clipShape(RoundedRectangle(cornerRadius: 8))
-                    .frame(width: size, height: size)
-            }
-
-            Text(item.title)
-                .font(.system(.subheadline))
-                .lineLimit(1)
-
-            if let subtitle = item.subtitle {
-                Text(subtitle)
-                    .font(.system(.caption2))
-                    .foregroundStyle(.secondary)
-                    .lineLimit(1)
-            }
-        }.frame(maxWidth: size)
     }
 
     private func playStation(_ station: Station) {
