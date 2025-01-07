@@ -70,9 +70,9 @@ let albumJSON = """
 var albumMock: Album? {
 
     guard let data = albumJSON else { return nil }
+    
     do {
-        let decoded = try JSONDecoder().decode(Album.self, from: data)
-        return decoded
+        return try JSONDecoder().decode(Album.self, from: data)
     } catch {
         print(error.localizedDescription)
         return nil
