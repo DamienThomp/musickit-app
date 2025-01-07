@@ -19,10 +19,27 @@ struct LibraryView: View {
 
             List {
 
+                ForEach(LibraryList.allCases, id: \.id) { item in
+                    
+                    NavigationLink {
+                        Text(item.title)
+                    } label: {
+                        HStack {
+                            Image(systemName: item.icon)
+                                .frame(minWidth: 30)
+                                .imageScale(.large)
+                                .foregroundStyle(.pink)
+                                .padding(.horizontal, 6)
+                            Text(item.title).font(.title2)
+                        }
+                    }
+                }
+
                 if let items = items {
 
                     Text("Recently Added")
                         .textStyle(SectionHeaderStyle())
+                        .padding(.top, 14)
 
                     LazyVGrid(
                         columns: [
@@ -40,11 +57,44 @@ struct LibraryView: View {
             }.listStyle(.plain)
         }.task {
             try? await loadRecentlyAdded()
-        }
+        }.navigationTitle("Library")
     }
 }
 
 extension LibraryView {
+
+    enum LibraryList: String, CaseIterable, Identifiable {
+
+        case playlists
+        case artists
+        case albums
+        case songs
+        case genres
+
+        var id: String {
+            self.rawValue
+        }
+
+        var icon: String {
+
+            switch self {
+            case .playlists:
+                "music.note.list"
+            case .artists:
+                "music.mic"
+            case .albums:
+                "square.stack"
+            case .songs:
+                "music.note"
+            case .genres:
+                "guitars"
+            }
+        }
+
+        var title: String {
+            self.rawValue.capitalized
+        }
+    }
 
     private func loadRecentlyAdded() async throws {
 
@@ -63,3 +113,10 @@ extension LibraryView {
         }
     }
 }
+
+#Preview {
+    NavigationStack {
+        LibraryView()
+    }
+}
+

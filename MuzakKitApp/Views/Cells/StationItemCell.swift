@@ -16,9 +16,13 @@ struct StationItemCell: View {
     var body: some View {
 
         VStack(alignment: .leading) {
+
             if let artwork = item.artwork {
-                ArtworkImage(artwork, width: size)
+                ArtworkImage(artwork, width: size, height: size)
                     .clipShape(RoundedRectangle(cornerRadius: 8))
+            } else {
+                RoundedRectangle(cornerRadius: 8)
+                    .frame(width: size, height: size)
             }
 
             Text(item.name)
