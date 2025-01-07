@@ -17,21 +17,24 @@ struct BrowseView: View {
     var body: some View {
 
         ScrollView {
+
             VStack(alignment: .leading, spacing: 30) {
 
                 if let recommendations = recommendations {
+
                     ForEach(recommendations, id: \.self) { recommendation in
 
                         VStack(alignment: .leading) {
+
                             if let title = recommendation.title {
                                 Text(title)
-                                    .textStyle(SectionHeaderStyle())
+                                    .sectionHeader()
                                     .padding(.leading)
                             }
 
                             if let reason = recommendation.reason {
                                 Text(reason)
-                                    .textStyle(SectionSubtitleStyle())
+                                    .sectionSubtitle()
                                     .padding(.leading)
                             }
 
@@ -39,6 +42,7 @@ struct BrowseView: View {
                                 let items = recommendation.items
                                 
                                 ScrollView(.horizontal, showsIndicators: false) {
+
                                     LazyHGrid(
                                         rows: [GridItem(
                                             .adaptive(
@@ -50,6 +54,7 @@ struct BrowseView: View {
                                         spacing: 12
                                     ) {
                                         ForEach(items, id: \.self) { item in
+                                            
                                             renderCard(for: item)
                                                 .tint(.primary)
                                         }
@@ -73,14 +78,17 @@ struct BrowseView: View {
 
         switch item.self {
         case .album(let album):
+
             NavigationLink(value: album) {
                 AlbumItemCell(item: album, size: 168)
             }
         case .playlist(let playlist):
+
             NavigationLink(value: playlist) {
                 PlaylistItemCell(item: playlist, size: 168)
             }
         case .station(let station):
+
             StationItemCell(item: station, size: 168)
                 .onTapGesture {
                     playStation(station)
@@ -89,12 +97,16 @@ struct BrowseView: View {
             Text("Unknown View")
         }
     }
+}
+
+extension BrowseView {
 
     private func playStation(_ station: Station) {
         musicPlayer.handlePlayback(for: station)
     }
 
     private func getMusic() {
+
         Task { @MainActor in
             do {
                 let recommendationsRequest = MusicPersonalRecommendationsRequest()
@@ -107,6 +119,7 @@ struct BrowseView: View {
     }
 
     private func fetchLibrary() async {
+
         let status = await MusicAuthorization.request()
         switch status {
 

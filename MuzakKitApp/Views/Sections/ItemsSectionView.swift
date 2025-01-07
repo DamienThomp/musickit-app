@@ -24,7 +24,7 @@ struct ItemsSectionView<Content: View>: View {
 
             if let title {
                 Text(title)
-                    .textStyle(SectionHeaderStyle())
+                    .sectionHeader()
                     .padding(.leading)
             }
 
