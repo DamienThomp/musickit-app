@@ -22,8 +22,7 @@ struct LibraryView: View {
                 if let items = items {
 
                     Text("Recently Added")
-                        .font(.system(.title2))
-                        .fontWeight(.bold)
+                        .textStyle(SectionHeaderStyle())
 
                     LazyVGrid(
                         columns: [

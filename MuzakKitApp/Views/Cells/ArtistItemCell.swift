@@ -18,6 +18,12 @@ struct ArtistItemCell: View {
             if let artwork = item.artwork {
                 ArtworkImage(artwork, width: size, height: size)
                     .clipShape(Circle())
+            } else {
+                Rectangle()
+                    .fill(LinearGradient(colors: [.pink, .black], startPoint: .topLeading, endPoint: .bottomTrailing))
+                    .frame(width: size, height: size)
+                    .clipShape(Circle())
+
             }
             Text(item.name)
         }.frame(maxWidth: size)
