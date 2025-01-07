@@ -30,7 +30,7 @@ struct MuzakKitApp: App {
                             Label("Browse", systemImage: "square.grid.2x2.fill")
                         }
 
-                    Text("Library View")
+                    LibraryView()
                         .tabItem {
                             Label("Library", systemImage: "music.note.list")
                         }

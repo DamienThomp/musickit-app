@@ -24,7 +24,7 @@ struct AlbumItemCell: View {
 
                 Image(systemName: "music.mic")
                     .resizable()
-                    .foregroundStyle(.pink)
+                    .foregroundStyle(.pink, .black)
                     .background(.secondary)
                     .clipShape(RoundedRectangle(cornerRadius: 8))
                     .frame(width: size, height: size)
