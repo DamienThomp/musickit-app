@@ -25,15 +25,14 @@ struct BrowseView: View {
                         VStack(alignment: .leading) {
                             if let title = recommendation.title {
                                 Text(title)
+                                    .textStyle(SectionHeaderStyle())
                                     .padding(.leading)
-                                    .font(.system(.title2))
                             }
 
                             if let reason = recommendation.reason {
                                 Text(reason)
+                                    .textStyle(SectionSubtitleStyle())
                                     .padding(.leading)
-                                    .font(.system(.caption))
-                                    .foregroundStyle(.secondary)
                             }
 
                             if !recommendation.items.isEmpty {

@@ -24,8 +24,8 @@ struct ItemsSectionView<Content: View>: View {
 
             if let title {
                 Text(title)
+                    .textStyle(SectionHeaderStyle())
                     .padding(.leading)
-                    .font(.system(.title2))
             }
 
             ScrollView(.horizontal) {
