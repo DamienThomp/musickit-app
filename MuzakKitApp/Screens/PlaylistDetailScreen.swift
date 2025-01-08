@@ -15,6 +15,7 @@ struct PlaylistDetailScreen: View {
     let playlist: Playlist
 
     @State private var tracks: MusicItemCollection<Track>?
+    @State private var featuredArtists: MusicItemCollection<Artist>?
 
     private var artwork: Artwork? {
         playlist.artwork
@@ -26,6 +27,10 @@ struct PlaylistDetailScreen: View {
 
     private var curatorName: String? {
         playlist.curatorName
+    }
+
+    private var count: Int? {
+        tracks?.count
     }
 
     var body: some View {
@@ -46,16 +51,37 @@ struct PlaylistDetailScreen: View {
                 .listRowSeparator(.hidden)
 
             if let tracks = tracks, !tracks.isEmpty {
+                Section {
+                    ForEach(tracks) { track in
+                        PlaylistTrackCell(track: track)
+                            .onTapGesture {
+                                musicPlayer
+                                    .handleTrackSelected(
+                                        for: track,
+                                        from: tracks
+                                    )
+                            }
+                    }
+                } footer: {
+                    HStack {
+                        if let count = count {
+                            Text("\(count) songs")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
 
-                ForEach(tracks) { track in
-                    PlaylistTrackCell(track: track)
-                        .onTapGesture {
-                            musicPlayer
-                                .handleTrackSelected(
-                                    for: track,
-                                    from: tracks
-                                )
                         }
+                    }.padding(.vertical)
+                }
+            }
+
+            if let artists = featuredArtists, !artists.isEmpty {
+
+                ItemsSectionView(artists.title ?? "Featured Artists") {
+                    ForEach(artists, id: \.self) { artist in
+                        NavigationLink(value: artist) {
+                            ArtistItemCell(item: artist, size: 160)
+                        }.tint(.primary)
+                    }
                 }
             }
         }
@@ -111,13 +137,14 @@ extension PlaylistDetailScreen {
 
     private func loadTracks() async throws {
         let playlist = try await playlist.with([.tracks, .featuredArtists])
-        update(tracks: playlist.tracks)
+        update(tracks: playlist.tracks, artists: playlist.featuredArtists)
     }
 
     @MainActor
-    private func update(tracks: MusicItemCollection<Track>?) {
+    private func update(tracks: MusicItemCollection<Track>?, artists: MusicItemCollection<Artist>?) {
         withAnimation {
             self.tracks = tracks
+            self.featuredArtists = artists
         }
     }
 }
