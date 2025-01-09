@@ -61,8 +61,9 @@ struct AlbumDetailScreen: View {
                             .font(.caption)
                             .foregroundStyle(.secondary)
                             .padding(.vertical)
+                            .listRowSeparator(.hidden)
                     }
-                }.listRowSeparator(.hidden)
+                }
             }
 
             if let artistAlbums = artistAlbums, !artistAlbums.isEmpty {
@@ -279,8 +280,9 @@ extension AlbumDetailScreen {
     
     if let album = albumMock,
        let tracks = albumTracksMock {
-
-        AlbumDetailScreen(album: album, tracks: tracks)
-            .environment(MusicPlayerManager())
+        NavigationStack {
+            AlbumDetailScreen(album: album, tracks: tracks)
+                .environment(MusicPlayerManager())
+        }.tint(.pink)
     }
 }
