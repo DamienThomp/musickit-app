@@ -27,10 +27,8 @@ struct ArtistPageScreen: View {
 
         List {
             header
-                .listStyle(.plain)
+                .plainHeaderStyle()
                 .frame(maxWidth: .infinity)
-                .listRowBackground(Color.clear)
-                .listRowSeparator(.hidden)
                 .padding(.bottom, 24)
 
             if let albums = artistDetails?.albums, !albums.isEmpty {

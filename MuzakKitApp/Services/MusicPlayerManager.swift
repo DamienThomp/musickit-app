@@ -21,11 +21,13 @@ class MusicPlayerManager {
     }
 
     func handleTrackSelected(for track: Track, from loadedTracks: MusicItemCollection<Track>) {
+        
         player.queue = .init(for: loadedTracks, startingAt: track)
         beginPlaying()
     }
 
     func handlePlayback(for items: PlayableMusicItem) {
+
         player.queue = [items]
         beginPlaying()
     }
@@ -88,11 +90,18 @@ class MusicPlayerManager {
         }
     }
 
-    private func getNextIndex(for track: Track, from loadedTracks: MusicItemCollection<Track>) {
-        
+    func skipToPrevious() {
+
+        Task {
+            do {
+                try await player.skipToPreviousEntry()
+            } catch {
+                print("Failed to play previous track with error: \(error).")
+            }
+        }
     }
 
-    private func skipToNext() {
+    func skipToNext() {
 
         Task {
             do {
@@ -104,6 +113,7 @@ class MusicPlayerManager {
     }
 
     private func beginPlaying() {
+
         Task {
             do {
                 try await player.play()

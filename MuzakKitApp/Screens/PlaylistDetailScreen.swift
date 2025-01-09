@@ -38,17 +38,12 @@ struct PlaylistDetailScreen: View {
         List {
             
             header
-                .padding(.bottom)
-                .listStyle(.plain)
+                .plainHeaderStyle()
                 .frame(maxWidth: .infinity)
-                .listRowBackground(Color.clear)
-                .listRowSeparator(.hidden)
 
             actions
+                .plainHeaderStyle()
                 .padding(.bottom)
-                .listStyle(.plain)
-                .listRowBackground(Color.clear)
-                .listRowSeparator(.hidden)
 
             if let tracks = tracks, !tracks.isEmpty {
                 Section {

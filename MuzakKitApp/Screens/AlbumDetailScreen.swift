@@ -35,16 +35,11 @@ struct AlbumDetailScreen: View {
     var body: some View {
         List {
             header
-                .listStyle(.plain)
-                .frame(maxWidth: .infinity)
-                .listRowBackground(Color.clear)
-                .listRowSeparator(.hidden)
+                .plainHeaderStyle()
 
             actions
+                .plainHeaderStyle()
                 .padding(.bottom)
-                .listStyle(.plain)
-                .listRowBackground(Color.clear)
-                .listRowSeparator(.hidden)
 
             if let tracks = tracks, !tracks.isEmpty {
                 Section {
@@ -67,7 +62,7 @@ struct AlbumDetailScreen: View {
                             .foregroundStyle(.secondary)
                             .padding(.vertical)
                     }
-                }
+                }.listRowSeparator(.hidden)
             }
 
             if let artistAlbums = artistAlbums, !artistAlbums.isEmpty {
@@ -166,6 +161,7 @@ struct AlbumDetailScreen: View {
             .font(.system(.caption2))
             .foregroundStyle(.secondary)
         }
+        .frame(maxWidth: .infinity)
         .lineLimit(2)
     }
 
@@ -200,7 +196,6 @@ struct AlbumDetailScreen: View {
             } else {
                 musicPlayer.playNext()
             }
-
         } label: {
             Label("Play Next", systemImage: "text.line.first.and.arrowtriangle.forward")
         }
