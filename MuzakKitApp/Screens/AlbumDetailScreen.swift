@@ -56,6 +56,8 @@ struct AlbumDetailScreen: View {
                                         for: track,
                                         from: tracks
                                     )
+                            }.contextMenu {
+                                createContextMenu(for: track)
                             }
                     }
                 } footer: {
@@ -118,12 +120,41 @@ struct AlbumDetailScreen: View {
                 }
             }
             ToolbarItem(placement: .topBarTrailing) {
-                Button {
-                    // TODO: - toggle context menu
+                Menu {
+                    createContextMenu(for: album)
                 } label: {
                     Image(systemName: "ellipsis")
                 }
             }
+        }
+    }
+
+    @ViewBuilder
+    private func createContextMenu<T: MusicItem>(for item: T) -> some View {
+        Button {
+            print("add to playlist")
+        } label: {
+            Label("Add to Playlist", systemImage: "music.note.list")
+        }
+
+        Divider()
+
+        Button {
+
+            if let track = item as? Track {
+                musicPlayer.playNext(track, tracks)
+            } else {
+                musicPlayer.playNext()
+            }
+
+        } label: {
+            Label("Play Next", systemImage: "text.line.first.and.arrowtriangle.forward")
+        }
+
+        Button {
+            musicPlayer.playLast()
+        } label: {
+            Label("Play Last", systemImage: "text.line.last.and.arrowtriangle.forward")
         }
     }
 

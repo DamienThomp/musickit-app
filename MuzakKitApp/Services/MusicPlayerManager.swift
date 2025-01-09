@@ -46,6 +46,35 @@ class MusicPlayerManager {
         beginPlaying()
     }
 
+    func playNext(_ track: Track? = nil, _ loadedTracks: MusicItemCollection<Track>? = nil) {
+
+        if let track,
+           let loadedTracks,
+           let index = loadedTracks.firstIndex(where: { $0.id == track.id }) {
+
+            if index < loadedTracks.count - 1 {
+                let nextIndex = loadedTracks.index(after: index)
+                let nextItem = loadedTracks[nextIndex]
+
+                player.queue = .init(for: loadedTracks, startingAt: nextItem)
+                beginPlaying()
+            }
+        } else {
+            skipToNext()
+        }
+    }
+
+    func playLast() {
+        //TODO: - add condition for first play where queue is empty
+        guard player.isPreparedToPlay, !player.queue.entries.isEmpty else { return }
+
+        let lastTrack = player.queue.entries.last
+        let entries = player.queue.entries
+        player.queue = .init(entries, startingAt: lastTrack)
+
+        beginPlaying()
+    }
+
     private func toggleSuffleState() {
 
         if isPlaying {
@@ -56,6 +85,21 @@ class MusicPlayerManager {
             playerState.shuffleMode = .songs
         } else {
             playerState.shuffleMode = .off
+        }
+    }
+
+    private func getNextIndex(for track: Track, from loadedTracks: MusicItemCollection<Track>) {
+        
+    }
+
+    private func skipToNext() {
+
+        Task {
+            do {
+                try await player.skipToNextEntry()
+            } catch {
+                print("Failed to play next track with error: \(error).")
+            }
         }
     }
 

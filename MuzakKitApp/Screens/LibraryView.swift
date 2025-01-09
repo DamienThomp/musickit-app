@@ -75,6 +75,10 @@ extension LibraryView {
             self.rawValue
         }
 
+        var title: String {
+            self.rawValue.capitalized
+        }
+
         var icon: String {
 
             switch self {
@@ -89,10 +93,6 @@ extension LibraryView {
             case .genres:
                 "guitars"
             }
-        }
-
-        var title: String {
-            self.rawValue.capitalized
         }
     }
 
