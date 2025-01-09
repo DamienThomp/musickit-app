@@ -25,23 +25,19 @@ struct ItemsSectionView<Content: View>: View {
             if let title {
                 Text(title)
                     .sectionHeader()
+                    .lineLimit(1)
                     .padding(.leading)
             }
 
             ScrollView(.horizontal) {
                 LazyHGrid(
-                    rows: [GridItem(
-                        .adaptive(
-                            minimum: 200,
-                            maximum: 250
-                        )
-                    )],
+                    rows: [GridItem(.adaptive(minimum: 200))],
                     alignment: .top,
                     spacing: 12
                 ) {
                     content
                 }
-                .padding(.leading)
+                .padding(.horizontal)
             }.scrollIndicators(.hidden)
         }
         .padding([.top, .bottom], 16)
