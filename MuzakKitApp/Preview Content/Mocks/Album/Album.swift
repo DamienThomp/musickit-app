@@ -35,7 +35,7 @@ let albumJSON = """
         "audioVariants": [
             "lossless"
         ],
-        "artistName": "DoMakeSayThink",
+        "artistName": "Do Make Say Think",
         "genreNames": [
 
         ],
