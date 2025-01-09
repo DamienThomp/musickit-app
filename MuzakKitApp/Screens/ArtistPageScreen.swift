@@ -29,7 +29,6 @@ struct ArtistPageScreen: View {
             header
                 .plainHeaderStyle()
                 .frame(maxWidth: .infinity)
-                .padding(.bottom, 24)
 
             if let albums = artistDetails?.albums, !albums.isEmpty {
 
@@ -126,9 +125,16 @@ struct ArtistPageScreen: View {
         .lineLimit(2)
     }
 
+
+}
+
+extension ArtistPageScreen {
+
     private func loadSections() {
+
         Task {
             do {
+
                 let artistDetails = try await artist.with(
                     [
                         .albums,
@@ -149,6 +155,7 @@ struct ArtistPageScreen: View {
     @MainActor
     private func updateSections(with artist: Artist) {
         withAnimation {
+            
             self.isLoading = false
             self.artistDetails = artist
         }
