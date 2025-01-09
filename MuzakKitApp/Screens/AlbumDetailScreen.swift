@@ -117,7 +117,7 @@ struct AlbumDetailScreen: View {
                     addToLibrary(album)
                 } label: {
                     Image(systemName: isInLibrary ? "checkmark.circle.fill" : "plus.circle")
-                }
+                }.sensoryFeedback(.success, trigger: isInLibrary)
             }
             ToolbarItem(placement: .topBarTrailing) {
                 Menu {
@@ -126,35 +126,6 @@ struct AlbumDetailScreen: View {
                     Image(systemName: "ellipsis")
                 }
             }
-        }
-    }
-
-    @ViewBuilder
-    private func createContextMenu<T: MusicItem>(for item: T) -> some View {
-        Button {
-            print("add to playlist")
-        } label: {
-            Label("Add to Playlist", systemImage: "music.note.list")
-        }
-
-        Divider()
-
-        Button {
-
-            if let track = item as? Track {
-                musicPlayer.playNext(track, tracks)
-            } else {
-                musicPlayer.playNext()
-            }
-
-        } label: {
-            Label("Play Next", systemImage: "text.line.first.and.arrowtriangle.forward")
-        }
-
-        Button {
-            musicPlayer.playLast()
-        } label: {
-            Label("Play Last", systemImage: "text.line.last.and.arrowtriangle.forward")
         }
     }
 
@@ -209,6 +180,35 @@ struct AlbumDetailScreen: View {
             }
         } _: {
             musicPlayer.shufflePlayback(for: album)
+        }
+    }
+
+    @ViewBuilder
+    private func createContextMenu<T: MusicItem>(for item: T) -> some View {
+        Button {
+            print("add to playlist")
+        } label: {
+            Label("Add to Playlist", systemImage: "music.note.list")
+        }
+
+        Divider()
+
+        Button {
+
+            if let track = item as? Track {
+                musicPlayer.playNext(track, tracks)
+            } else {
+                musicPlayer.playNext()
+            }
+
+        } label: {
+            Label("Play Next", systemImage: "text.line.first.and.arrowtriangle.forward")
+        }
+
+        Button {
+            musicPlayer.playLast()
+        } label: {
+            Label("Play Last", systemImage: "text.line.last.and.arrowtriangle.forward")
         }
     }
 }
