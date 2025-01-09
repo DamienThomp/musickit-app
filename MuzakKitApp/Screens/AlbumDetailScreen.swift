@@ -14,7 +14,7 @@ struct AlbumDetailScreen: View {
 
     let album: Album
 
-    @State private var tracks: MusicItemCollection<Track>?
+    @State var tracks: MusicItemCollection<Track>? = nil
     @State private var related: MusicItemCollection<Album>?
     @State private var similarArtists: MusicItemCollection<Artist>?
     @State private var artistAlbums: MusicItemCollection<Album>?
@@ -268,6 +268,7 @@ extension AlbumDetailScreen {
     @MainActor
     private func update(tracks: MusicItemCollection<Track>?, related: MusicItemCollection<Album>?) {
         withAnimation {
+
             self.tracks = tracks
             self.related = related
         }
@@ -275,8 +276,11 @@ extension AlbumDetailScreen {
 }
 
 #Preview {
-    if let album = albumMock {
-        AlbumDetailScreen(album: album)
+    
+    if let album = albumMock,
+       let tracks = albumTracksMock {
+
+        AlbumDetailScreen(album: album, tracks: tracks)
             .environment(MusicPlayerManager())
     }
 }
