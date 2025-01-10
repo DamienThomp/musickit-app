@@ -8,32 +8,51 @@
 import SwiftUI
 import MusicKit
 
-struct AlbumTrackCell: View {
+struct AlbumTrackCell<Content: View>: View {
 
     let track: Track
+
+    @ViewBuilder let menuContent: Content
 
     var body: some View {
 
         HStack(spacing: 4) {
 
-            if let trackNumber = track.trackNumber {
-                Text(trackNumber, format: .number)
-                    .foregroundStyle(.secondary)
-            } else {
-                Image(systemName: "minus")
+            HStack {
+
+                if let trackNumber = track.trackNumber {
+                    Text(trackNumber, format: .number)
+                        .foregroundStyle(.secondary)
+                } else {
+                    Image(systemName: "minus")
+                }
+
+                Text(track.title)
+                    .font(.callout)
+                    .padding(.vertical, 8)
+                    .padding(.horizontal, 8)
+                    .lineLimit(1)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+
+                Spacer()
+
+            }.contentShape(Rectangle())
+
+            Menu {
+                menuContent
+            } label: {
+                Image(systemName: "ellipsis")
+                    .frame(maxHeight: .infinity)
+                    .padding(.leading)
+                    .foregroundStyle(.pink)
             }
-
-            Text(track.title)
-                .font(.callout)
-                .padding(.vertical, 8)
-                .padding(.horizontal, 8)
-                .lineLimit(1)
-                .frame(maxWidth: .infinity, alignment: .leading)
-
-            Spacer()
-
-            Image(systemName: "ellipsis")
-                .foregroundStyle(.pink)
         }
+    }
+}
+
+#Preview(traits: .fixedLayout(width: 350, height: 50)) {
+    if let tracks = albumTracksMock,
+       let track = tracks.first {
+        AlbumTrackCell(track: track) {}
     }
 }

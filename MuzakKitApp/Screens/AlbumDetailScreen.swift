@@ -34,6 +34,7 @@ struct AlbumDetailScreen: View {
 
     var body: some View {
         List {
+
             header
                 .plainHeaderStyle()
 
@@ -43,17 +44,21 @@ struct AlbumDetailScreen: View {
 
             if let tracks = tracks, !tracks.isEmpty {
                 Section {
+
                     ForEach(tracks) { track in
-                        AlbumTrackCell(track: track)
-                            .onTapGesture {
-                                musicPlayer
-                                    .handleTrackSelected(
-                                        for: track,
-                                        from: tracks
-                                    )
-                            }.contextMenu {
-                                createContextMenu(for: track)
-                            }
+                        AlbumTrackCell(track: track) {
+                            createContextMenu(for: track)
+                        }
+                        .onTapGesture {
+                            musicPlayer
+                                .handleTrackSelected(
+                                    for: track,
+                                    from: tracks
+                                )
+                        }
+                        .contextMenu {
+                            createContextMenu(for: track)
+                        }
                     }
                 } footer: {
                     if let copyright = album.copyright {
@@ -113,7 +118,7 @@ struct AlbumDetailScreen: View {
                     addToLibrary(album)
                 } label: {
                     Image(systemName: isInLibrary ? "checkmark.circle.fill" : "plus.circle")
-                }.sensoryFeedback(.success, trigger: isInLibrary)
+                }
             }
             ToolbarItem(placement: .topBarTrailing) {
                 Menu {
@@ -124,6 +129,7 @@ struct AlbumDetailScreen: View {
             }
         }
     }
+
 
     private var header: some View {
 
@@ -182,6 +188,7 @@ struct AlbumDetailScreen: View {
 
     @ViewBuilder
     private func createContextMenu<T: MusicItem>(for item: T) -> some View {
+        
         Button {
             print("add to playlist")
         } label: {
@@ -277,7 +284,7 @@ extension AlbumDetailScreen {
 }
 
 #Preview {
-    
+
     if let album = albumMock,
        let tracks = albumTracksMock {
         NavigationStack {

@@ -29,6 +29,7 @@ class MusicPlayerManager {
     func handlePlayback(for items: PlayableMusicItem) {
 
         player.queue = [items]
+        let item = player.queue.currentEntry
         beginPlaying()
     }
 
