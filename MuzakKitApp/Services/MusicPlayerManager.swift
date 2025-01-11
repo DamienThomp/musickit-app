@@ -16,6 +16,14 @@ class MusicPlayerManager {
 
     var playerState = ApplicationMusicPlayer.shared.state
 
+    var currentItem: ApplicationMusicPlayer.Queue.Entries.Element? {
+        player.queue.currentEntry
+    }
+
+    var queue: ApplicationMusicPlayer.Queue? {
+        player.queue
+    }
+
     var isPlaying: Bool {
         return (playerState.playbackStatus == .playing)
     }
@@ -29,7 +37,6 @@ class MusicPlayerManager {
     func handlePlayback(for items: PlayableMusicItem) {
 
         player.queue = [items]
-        let item = player.queue.currentEntry
         beginPlaying()
     }
 

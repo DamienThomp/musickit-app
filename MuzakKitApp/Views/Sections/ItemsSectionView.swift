@@ -11,12 +11,7 @@ import MusicKit
 struct ItemsSectionView<Content: View>: View {
 
     let title: String?
-    let content: Content
-
-    init(_ title: String?, @ViewBuilder _ content: () -> Content) {
-        self.title = title
-        self.content = content()
-    }
+    @ViewBuilder let content: Content
 
     var body: some View {
 
