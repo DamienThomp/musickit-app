@@ -12,10 +12,13 @@ import MusicKit
 struct LibraryView: View {
 
     @State var items: MusicItemCollection<Album>? = nil
+    @Environment(NavPath.self) private var navigation
 
     var body: some View {
 
         GeometryReader { geometry in
+
+            let width = (geometry.size.width / 2) - 24
 
             List {
 
@@ -45,14 +48,17 @@ struct LibraryView: View {
                         columns: [
                             GridItem(spacing: 12),
                             GridItem(spacing: 12)
-                        ],alignment: .center,
+                        ],
+                        alignment: .center,
                         spacing: 24
                     ) {
                         ForEach(items, id: \.self) { item in
-                            AlbumItemCell(item: item, size: (geometry.size.width / 2) - 24)
+                            
+                            AlbumItemCell(item: item, size: width).onTapGesture {
+                                navigation.path.append(item)
+                            }
                         }
                     }
-
                 }
             }.listStyle(.plain)
         }.task {
@@ -115,7 +121,9 @@ extension LibraryView {
 }
 
 #Preview {
-    NavigationStack {
+    AppRootNavigation {
         LibraryView(items: albumitems)
     }
+    .environment(MusicPlayerManager())
+    .environment(NavPath())
 }

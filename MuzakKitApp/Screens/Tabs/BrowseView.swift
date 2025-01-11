@@ -143,6 +143,8 @@ extension BrowseView {
 }
 
 #Preview {
-    BrowseView()
-        .environment(MusicPlayerManager())
+    AppRootNavigation {
+        BrowseView()
+            .environment(MusicPlayerManager())
+    }
 }
