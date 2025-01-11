@@ -12,50 +12,21 @@ import MusicKit
 struct MuzakKitApp: App {
 
     let musicPlayerManager: MusicPlayerManager
+    let navigation: NavPath
+
+    @State private var selection: AppRootScreen = .browse
 
     init() {
         self.musicPlayerManager = MusicPlayerManager()
+        self.navigation = NavPath()
     }
 
     var body: some Scene {
 
         WindowGroup {
-
-            NavigationStack {
-
-                TabView {
-
-                    BrowseView()
-                        .tabItem {
-                            Label("Browse", systemImage: "square.grid.2x2.fill")
-                        }
-
-                    LibraryView()
-                        .tabItem {
-                            Label("Library", systemImage: "music.note.list")
-                        }
-
-                    Text("Search")
-                        .tabItem {
-                            Label("Search", systemImage: "magnifyingglass")
-                        }
-
-                }
-                .navigationDestination(for: Album.self) { item in
-                    AlbumDetailScreen(album: item)
-                        .navigationBarTitleDisplayMode(.inline)
-                }
-                .navigationDestination(for: Playlist.self) { item in
-                    PlaylistDetailScreen(playlist: item)
-                        .navigationBarTitleDisplayMode(.inline)
-                }
-                .navigationDestination(for: Artist.self) { item in
-                    ArtistPageScreen(artist: item)
-                        .navigationBarTitleDisplayMode(.inline)
-                }
-            }
-            .tint(.pink)
-            .environment(musicPlayerManager)
+            AppRootView(selection: $selection)
+                .environment(musicPlayerManager)
+                .environment(navigation)
         }
     }
 }
