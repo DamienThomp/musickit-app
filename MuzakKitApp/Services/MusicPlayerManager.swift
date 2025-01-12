@@ -5,31 +5,56 @@
 //  Created by Damien L Thompson on 2024-12-28.
 //
 
-import Foundation
 import MusicKit
 import Observation
+import Combine
 
 @Observable
 class MusicPlayerManager {
 
-    private let player = ApplicationMusicPlayer.shared
+    private var player: ApplicationMusicPlayer
+    private var playerState: MusicPlayer.State
+    private var playbackStatePublisher: AnyCancellable?
 
-    var playerState = ApplicationMusicPlayer.shared.state
+    var playbackState: MusicPlayer.PlaybackStatus = .stopped
+    var currentItem: MusicPlayer.Queue.Entry? = nil
 
-    var currentItem: ApplicationMusicPlayer.Queue.Entries.Element? {
-        player.queue.currentEntry
+    init() {
+        self.player = ApplicationMusicPlayer.shared
+        self.playerState = ApplicationMusicPlayer.shared.state
+        setupPlayerStateListener()
     }
 
-    var queue: ApplicationMusicPlayer.Queue? {
-        player.queue
-    }
-
-    var isPlaying: Bool {
+    private var isPlaying: Bool {
         return (playerState.playbackStatus == .playing)
     }
 
+    private func setupPlayerStateListener() {
+
+        playbackStatePublisher = player.state.objectWillChange
+            .sink { [weak self] state in
+                self?.updateCurrentEntry()
+                self?.updatePlaybackState()
+            }
+    }
+
+    private func updateCurrentEntry() {
+
+        self.currentItem = player.queue.currentEntry
+
+    }
+
+    private func updatePlaybackState() {
+
+        self.playbackState = playerState.playbackStatus
+    }
+}
+
+//MARK: - Player controls
+extension MusicPlayerManager {
+
     func handleTrackSelected(for track: Track, from loadedTracks: MusicItemCollection<Track>) {
-        
+
         player.queue = .init(for: loadedTracks, startingAt: track)
         beginPlaying()
     }
