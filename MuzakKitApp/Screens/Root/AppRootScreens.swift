@@ -44,7 +44,7 @@ extension AppRootScreen {
 
         case .search:
             AppRootNavigation {
-                Text("Search").navigationTitle("Search Catalog")
+                SearchView().navigationTitle("Search Catalog")
             }
         }
     }

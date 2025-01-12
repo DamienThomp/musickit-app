@@ -37,6 +37,9 @@ struct AppRootNavigation<Content: View>: View {
                     ArtistPageScreen(artist: item)
                         .navigationBarTitleDisplayMode(.inline)
                 }
+                .navigationDestination(for: Genre.self) { item in
+                    GenreView(genre: item).navigationTitle("Genre: \(item.name)")
+                }
         }.tint(.pink)
     }
 }

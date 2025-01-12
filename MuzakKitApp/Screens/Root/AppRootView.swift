@@ -16,7 +16,7 @@ struct AppRootView: View {
             ForEach(AppRootScreen.allCases, id: \.self) { screen in
                 buildTab(for: screen)
             }
-        }
+        }.tint(.pink)
     }
 
     @available(iOS 18.0, *)
