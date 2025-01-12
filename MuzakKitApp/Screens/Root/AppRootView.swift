@@ -8,7 +8,9 @@
 import SwiftUI
 
 struct AppRootView: View {
-    
+
+    @Environment(NavPath.self) private var navigation
+
     @Binding var selection: AppRootScreen
 
     var body: some View {
@@ -16,7 +18,11 @@ struct AppRootView: View {
             ForEach(AppRootScreen.allCases, id: \.self) { screen in
                 buildTab(for: screen)
             }
-        }.tint(.pink)
+        }
+        .onChange(of: selection) {
+           navigation.path = NavigationPath()
+        }
+        .tint(.pink)
     }
 
     @available(iOS 18.0, *)
@@ -39,4 +45,5 @@ struct AppRootView: View {
 #Preview {
     AppRootView(selection: .constant(.browse))
         .environment(MusicPlayerManager())
+        .environment(NavPath())
 }
