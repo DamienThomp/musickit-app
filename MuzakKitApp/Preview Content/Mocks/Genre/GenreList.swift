@@ -15,7 +15,9 @@ var mockGenrelist: MusicCatalogChartsResponse? {
     guard let data = genreListJson else { return nil }
 
     do {
-        return try JSONDecoder().decode(MusicCatalogChartsResponse.self, from: data)
+        let mock = try JSONDecoder().decode(MusicCatalogChartsResponse.self, from: data)
+        print(String(describing: mock))
+        return mock
     } catch {
         print(error.localizedDescription)
         return nil

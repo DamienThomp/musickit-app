@@ -23,6 +23,9 @@ struct AppRootView: View {
            navigation.path = NavigationPath()
         }
         .tint(.pink)
+        .overlay(alignment: .bottom) {
+            MiniMusicPlayer()
+        }
     }
 
     @available(iOS 18.0, *)
