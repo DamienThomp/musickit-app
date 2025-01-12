@@ -10,21 +10,22 @@ import SwiftUI
 struct AppRootView: View {
 
     @Environment(NavPath.self) private var navigation
+    @Environment(MusicPlayerManager.self) private var musicPlayerManager
 
     @Binding var selection: AppRootScreen
 
     var body: some View {
         TabView(selection: $selection) {
             ForEach(AppRootScreen.allCases, id: \.self) { screen in
-                buildTab(for: screen)
+                buildTab(for: screen).padding(.bottom, 40)
             }
         }
         .onChange(of: selection) {
-           navigation.path = NavigationPath()
+            navigation.path = NavigationPath()
         }
         .tint(.pink)
-        .overlay(alignment: .bottom) {
-            MiniMusicPlayer()
+        .safeAreaInset(edge: .bottom) {
+            showMiniPlayer()
         }
     }
 
@@ -42,6 +43,15 @@ struct AppRootView: View {
         screen.destination
             .tag(screen as AppRootScreen?)
             .tabItem { screen.label }
+    }
+
+    @ViewBuilder
+    private func showMiniPlayer() -> some View {
+        if musicPlayerManager.hasQueue {
+            withAnimation {
+                MiniMusicPlayer()
+            }
+        }
     }
 }
 
