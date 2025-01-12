@@ -117,11 +117,7 @@ struct PlaylistDetailScreen: View {
     private var actions: some View {
 
         DetailPageActions {
-            if musicPlayer.isPlaying {
-                musicPlayer.togglePlayBack()
-            } else {
-                musicPlayer.handlePlayback(for: playlist)
-            }
+            musicPlayer.handlePlayback(for: playlist)
         } _: {
             musicPlayer.shufflePlayback(for: playlist)
         }

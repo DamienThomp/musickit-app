@@ -18,8 +18,10 @@ class MusicPlayerManager {
 
     var playbackState: MusicPlayer.PlaybackStatus = .stopped
     var currentItem: MusicPlayer.Queue.Entry? = nil
+    var hasQueue: Bool = false
 
     init() {
+
         self.player = ApplicationMusicPlayer.shared
         self.playerState = ApplicationMusicPlayer.shared.state
         setupPlayerStateListener()
@@ -33,8 +35,10 @@ class MusicPlayerManager {
 
         playbackStatePublisher = player.state.objectWillChange
             .sink { [weak self] state in
+
                 self?.updateCurrentEntry()
                 self?.updatePlaybackState()
+                self?.updateHasQueue()
             }
     }
 
@@ -47,6 +51,11 @@ class MusicPlayerManager {
     private func updatePlaybackState() {
 
         self.playbackState = playerState.playbackStatus
+    }
+
+    private func updateHasQueue() {
+
+        self.hasQueue = self.player.queue.entries != nil
     }
 }
 

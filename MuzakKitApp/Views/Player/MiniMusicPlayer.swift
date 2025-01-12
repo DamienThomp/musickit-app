@@ -13,7 +13,7 @@ struct MiniMusicPlayer: View {
     @Environment(MusicPlayerManager.self) var musicPlayerManager
 
     var body: some View {
-
+        
             HStack(spacing: 12) {
 
                 if let artwork = musicPlayerManager.currentItem?.artwork {
@@ -25,9 +25,19 @@ struct MiniMusicPlayer: View {
                         .clipShape(RoundedRectangle(cornerRadius: 8))
                 }
 
-                if let title = musicPlayerManager.currentItem?.title {
-                    Text(title)
-                        .lineLimit(1)
+                VStack(alignment: .leading) {
+                    
+                    if let title = musicPlayerManager.currentItem?.title {
+                        Text(title)
+                            .lineLimit(1)
+                    }
+
+                    if let subtitle = musicPlayerManager.currentItem?.subtitle {
+                        Text(subtitle)
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                            .lineLimit(1)
+                    }
                 }
 
                 Spacer()
@@ -53,7 +63,7 @@ struct MiniMusicPlayer: View {
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(.vertical, 10)
             .padding(.horizontal, 16)
-            .background(.thinMaterial)
+            .background(.thickMaterial)
             .clipShape(RoundedRectangle(cornerRadius: 8))
             .offset(y: -48)
     }

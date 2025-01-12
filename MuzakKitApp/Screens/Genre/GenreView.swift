@@ -10,6 +10,8 @@ import MusicKit
 
 struct GenreView: View {
 
+    @Environment(NavPath.self) private var navigation
+
     let genre: Genre
 
     @State var items: MusicCatalogChartsResponse? = nil
@@ -73,7 +75,7 @@ struct GenreView: View {
                                 ForEach(section.items, id: \.self) { item in
 
                                     AlbumItemCell(item: item, size: 168).onTapGesture {
-
+                                        navigation.path.append(item)
                                     }
                                 }
                             }
@@ -105,7 +107,7 @@ struct GenreView: View {
                                 ForEach(section.items, id: \.self) { item in
 
                                     PlaylistItemCell(item: item, size: 168).onTapGesture {
-
+                                        navigation.path.append(item)
                                     }
                                 }
                             }

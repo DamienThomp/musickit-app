@@ -175,12 +175,7 @@ struct AlbumDetailScreen: View {
     private var actions: some View {
 
         DetailPageActions {
-
-            if musicPlayer.isPlaying {
-                musicPlayer.togglePlayBack()
-            } else {
-                musicPlayer.handlePlayback(for: album)
-            }
+            musicPlayer.handlePlayback(for: album)
         } _: {
             musicPlayer.shufflePlayback(for: album)
         }
@@ -188,7 +183,7 @@ struct AlbumDetailScreen: View {
 
     @ViewBuilder
     private func createContextMenu<T: MusicItem>(for item: T) -> some View {
-        
+
         Button {
             print("add to playlist")
         } label: {
