@@ -12,7 +12,7 @@ struct DetailPlainSection: ViewModifier {
     func body(content: Content) -> some View {
         content
             .listStyle(.plain)
-            .listRowBackground(Color.clear)
+            .listRowBackground(Color.black)
             .listRowSeparator(.hidden)
     }
 }
