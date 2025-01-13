@@ -104,6 +104,7 @@ struct AlbumDetailScreen: View {
                 }
             }
         }
+        .background(Color(.systemGray6), ignoresSafeAreaEdges: .bottom)
         .listStyle(.plain)
         .task {
             do {

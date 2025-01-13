@@ -23,6 +23,7 @@ struct AlbumTrackCell<Content: View>: View {
                 if let trackNumber = track.trackNumber {
                     Text(trackNumber, format: .number)
                         .foregroundStyle(.secondary)
+                        .frame(minWidth: 20)
                 } else {
                     Image(systemName: "minus")
                 }
@@ -34,25 +35,32 @@ struct AlbumTrackCell<Content: View>: View {
                     .lineLimit(1)
                     .frame(maxWidth: .infinity, alignment: .leading)
 
-                Spacer()
-
-            }.contentShape(Rectangle())
+            }
 
             Menu {
                 menuContent
             } label: {
                 Image(systemName: "ellipsis")
                     .frame(maxHeight: .infinity)
-                    .padding(.leading)
+                    .padding(.horizontal)
                     .foregroundStyle(.pink)
-            }
-        }
+            }.highPriorityGesture(TapGesture())
+        }.contentShape(Rectangle())
     }
 }
 
-#Preview(traits: .fixedLayout(width: 350, height: 50)) {
+#Preview {
     if let tracks = albumTracksMock,
        let track = tracks.first {
-        AlbumTrackCell(track: track) {}
+        List {
+            AlbumTrackCell(track: track) {
+                Button {} label: {
+                    Label("Add to Playlist", systemImage: "music.note.list")
+                }
+            }
+            .onTapGesture {
+                print("tapped")
+            }
+        }.listStyle(.plain)
     }
 }

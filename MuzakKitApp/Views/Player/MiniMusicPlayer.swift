@@ -18,11 +18,11 @@ struct MiniMusicPlayer: View {
 
                 if let artwork = musicPlayerManager.currentItem?.artwork {
                     ArtworkImage(artwork, width: 34, height: 34)
-                        .clipShape(RoundedRectangle(cornerRadius: 8))
+                        .clipShape(RoundedRectangle(cornerRadius: 6))
                 } else {
                     Rectangle()
                         .frame(width: 34, height: 34)
-                        .clipShape(RoundedRectangle(cornerRadius: 8))
+                        .clipShape(RoundedRectangle(cornerRadius: 6))
                 }
 
                 VStack(alignment: .leading) {
@@ -65,14 +65,14 @@ struct MiniMusicPlayer: View {
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(10)
+            .padding(.trailing, 6)
             .background(.thickMaterial)
             .clipShape(RoundedRectangle(cornerRadius: 8))
-            .offset(y: -48)
             .padding(8)
     }
 }
 
-#Preview {
+#Preview(traits: .sizeThatFitsLayout) {
     MiniMusicPlayer()
         .environment(MusicPlayerManager())
 }

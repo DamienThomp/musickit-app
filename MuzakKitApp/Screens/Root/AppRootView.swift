@@ -52,6 +52,7 @@ struct AppRootView: View {
         if musicPlayerManager.hasQueue {
             withAnimation {
                 MiniMusicPlayer()
+                    .offset(y: -48)
             }
         }
     }

@@ -39,7 +39,7 @@ struct DetailPageActions: View {
         }
         .frame(maxWidth: .infinity)
         .controlSize(.large)
-        .padding(.horizontal, 24)
+        .padding(.horizontal, 16)
         .tint(.secondary)
         .foregroundStyle(.pink)
     }
