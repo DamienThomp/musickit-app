@@ -116,6 +116,8 @@ struct AlbumDetailScreen: View {
         }.toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Button {
+                    let impactLight = UIImpactFeedbackGenerator(style: .light)
+                    impactLight.impactOccurred()
                     addToLibrary(album)
                 } label: {
                     Image(systemName: isInLibrary ? "checkmark.circle.fill" : "plus.circle")
