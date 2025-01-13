@@ -15,9 +15,11 @@ struct AppRootView: View {
     @Binding var selection: AppRootScreen
 
     var body: some View {
+
         TabView(selection: $selection) {
+
             ForEach(AppRootScreen.allCases, id: \.self) { screen in
-                buildTab(for: screen).padding(.bottom, 40)
+                buildTab(for: screen)
             }
         }
         .onChange(of: selection) {

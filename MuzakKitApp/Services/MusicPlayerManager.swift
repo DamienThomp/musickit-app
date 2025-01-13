@@ -8,6 +8,7 @@
 import MusicKit
 import Observation
 import Combine
+import Foundation
 
 @Observable
 class MusicPlayerManager {
@@ -15,6 +16,8 @@ class MusicPlayerManager {
     private var player: ApplicationMusicPlayer
     private var playerState: MusicPlayer.State
     private var playbackStatePublisher: AnyCancellable?
+
+    private var queueChangePublisher: AnyCancellable?
 
     var playbackState: MusicPlayer.PlaybackStatus = .stopped
     var currentItem: MusicPlayer.Queue.Entry? = nil
@@ -25,6 +28,7 @@ class MusicPlayerManager {
         self.player = ApplicationMusicPlayer.shared
         self.playerState = ApplicationMusicPlayer.shared.state
         setupPlayerStateListener()
+        setupQueueChangeListener()
     }
 
     private var isPlaying: Bool {
@@ -34,11 +38,18 @@ class MusicPlayerManager {
     private func setupPlayerStateListener() {
 
         playbackStatePublisher = player.state.objectWillChange
-            .sink { [weak self] state in
-
+            .sink { [weak self] _ in
                 self?.updateCurrentEntry()
                 self?.updatePlaybackState()
                 self?.updateHasQueue()
+            }
+    }
+
+    private func setupQueueChangeListener() {
+
+        queueChangePublisher = player.queue.objectWillChange
+            .sink { [weak self] _ in
+                self?.updateCurrentEntry()
             }
     }
 
@@ -55,7 +66,7 @@ class MusicPlayerManager {
 
     private func updateHasQueue() {
 
-        self.hasQueue = self.player.queue.entries != nil
+        self.hasQueue = !self.player.queue.entries.isEmpty
     }
 }
 

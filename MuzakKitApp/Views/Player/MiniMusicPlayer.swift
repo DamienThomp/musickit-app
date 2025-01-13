@@ -42,30 +42,33 @@ struct MiniMusicPlayer: View {
 
                 Spacer()
 
-                Button {
-                    musicPlayerManager.togglePlayBack()
-                } label: {
-                    Image(systemName: musicPlayerManager.playbackState == .playing ? "pause.fill" : "play.fill")
-                        .imageScale(.large)
-                        .font(.system(size: 20))
-                        .foregroundStyle(.pink)
-                }
+                HStack(spacing: 20) {
+                    
+                    Button {
+                        musicPlayerManager.togglePlayBack()
+                    } label: {
+                        Image(systemName: musicPlayerManager.playbackState == .playing ? "pause.fill" : "play.fill")
+                            .imageScale(.large)
+                            .font(.system(size: 20))
+                            .foregroundStyle(.pink)
+                    }
 
-                Button {
-                    musicPlayerManager.skipToNext()
-                } label: {
-                    Image(systemName: "forward.end.fill")
-                        .imageScale(.large)
-                        .font(.system(size: 20))
-                        .foregroundStyle(.pink)
+                    Button {
+                        musicPlayerManager.skipToNext()
+                    } label: {
+                        Image(systemName: "forward.fill")
+                            .imageScale(.large)
+                            .font(.system(size: 20))
+                            .foregroundStyle(.pink)
+                    }
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(.vertical, 10)
-            .padding(.horizontal, 16)
+            .padding(10)
             .background(.thickMaterial)
             .clipShape(RoundedRectangle(cornerRadius: 8))
             .offset(y: -48)
+            .padding(8)
     }
 }
 
