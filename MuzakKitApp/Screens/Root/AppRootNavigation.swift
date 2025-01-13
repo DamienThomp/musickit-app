@@ -17,7 +17,9 @@ class NavPath {
 struct AppRootNavigation<Content: View>: View {
 
     @ViewBuilder let content: Content
+
     @Environment(NavPath.self) private var navigation
+    @Environment(MusicPlayerManager.self) private var musicPlayer
 
     var body: some View {
 
@@ -25,20 +27,25 @@ struct AppRootNavigation<Content: View>: View {
 
         NavigationStack(path: $navigation.path) {
             content
+                .safeAreaPadding(.bottom, musicPlayer.hasQueue ? 60 : 0)
                 .navigationDestination(for: Album.self) { item in
                     AlbumDetailScreen(album: item)
                         .navigationBarTitleDisplayMode(.inline)
+                        .safeAreaPadding(.bottom, musicPlayer.hasQueue ? 60 : 0)
                 }
                 .navigationDestination(for: Playlist.self) { item in
                     PlaylistDetailScreen(playlist: item)
                         .navigationBarTitleDisplayMode(.inline)
+                        .safeAreaPadding(.bottom, musicPlayer.hasQueue ? 60 : 0)
                 }
                 .navigationDestination(for: Artist.self) { item in
                     ArtistPageScreen(artist: item)
                         .navigationBarTitleDisplayMode(.inline)
+                        .safeAreaPadding(.bottom, musicPlayer.hasQueue ? 60 : 0)
                 }
                 .navigationDestination(for: Genre.self) { item in
                     GenreView(genre: item).navigationTitle("Genre: \(item.name)")
+                        .safeAreaPadding(.bottom, musicPlayer.hasQueue ? 60 : 0)
                 }
         }.tint(.pink)
     }
