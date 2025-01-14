@@ -159,12 +159,15 @@ struct AlbumDetailScreen: View {
                 .multilineTextAlignment(.center)
 
             HStack {
-                Text(album.genreNames.first ?? "N/A")
 
-                if let releaseDate = album.releaseDate {
+                if let genre = album.genreNames.first {
+                    Text(genre)
                     Image(systemName: "circle.fill")
                         .imageScale(.small)
-                        .font(.system(size: 8))
+                        .font(.system(size: 4))
+                }
+
+                if let releaseDate = album.releaseDate {
                     Text(releaseDate, format: .dateTime.year())
                 }
             }
