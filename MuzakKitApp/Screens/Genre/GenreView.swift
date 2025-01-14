@@ -252,7 +252,7 @@ extension GenreView {
     @MainActor
     private func updateView(_ charts: MusicCatalogChartsResponse, _ items: MusicCatalogSearchResponse) {
         Task {
-            withAnimation {
+            withAnimation(.easeInOut) {
                 self.charts = charts
                 self.catalogItems = items
             }
