@@ -25,6 +25,7 @@ struct LibraryView: View {
                 ForEach(LibraryList.allCases, id: \.id) { item in
 
                     NavigationLink {
+                        // TODO: - replace with destination view
                         Text(item.title)
                     } label: {
                         HStack {
@@ -41,7 +42,7 @@ struct LibraryView: View {
                 if let items = items {
 
                     Text("Recently Added")
-                        .textStyle(SectionHeaderStyle())
+                        .sectionHeader()
                         .padding(.top, 14)
 
                     LazyVGrid(
