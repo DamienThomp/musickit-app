@@ -163,7 +163,7 @@ struct GenreView: View {
 
             Spacer()
         }
-        .frame(width: 250)
+        .frame(width: 318)
     }
 
     @ViewBuilder

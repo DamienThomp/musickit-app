@@ -9,6 +9,28 @@ import SwiftUI
 
 public extension Color {
 
+    static var randomColor: Color {
+        
+        let colors: [Color] = [
+            .red,
+            .green,
+            .blue,
+            .teal,
+            .cyan,
+            .orange,
+            .pink,
+            .purple,
+            .indigo,
+            .mint
+        ]
+
+        if let color = colors.randomElement() {
+            return color
+        } else {
+            return Color.random()
+        }
+    }
+
     static func random(randomOpacity: Bool = false) -> Color {
         Color(
             red: .random(in: 0...1),
