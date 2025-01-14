@@ -228,7 +228,7 @@ extension GenreView {
 
     private func loadGenreSections() async throws {
 
-        let genreRequest = MusicCatalogChartsRequest(
+        let genreChartsRquest = MusicCatalogChartsRequest(
             genre: genre,
             kinds: [
                 .mostPlayed,
@@ -240,12 +240,12 @@ extension GenreView {
                 Song.self
             ]
         )
-        var genreOtherRequest = MusicCatalogSearchRequest(term: genre.name, types: [Album.self, Station.self, Playlist.self, Artist.self])
-        genreOtherRequest.includeTopResults = true
-        genreOtherRequest.limit = 25
+        var genreRequest = MusicCatalogSearchRequest(term: genre.name, types: [Album.self, Station.self, Playlist.self, Artist.self])
+        genreRequest.includeTopResults = true
+        genreRequest.limit = 25
 
-        let charts = try await genreRequest.response()
-        let items = try await genreOtherRequest.response()
+        let charts = try await genreChartsRquest.response()
+        let items = try await genreRequest.response()
         updateView(charts, items)
     }
 
