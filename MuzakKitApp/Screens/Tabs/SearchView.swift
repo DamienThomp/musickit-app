@@ -39,7 +39,7 @@ struct SearchView: View {
             }
         }
         .listStyle(.plain)
-        .searchable(text: $searchText, placement: .toolbar, prompt: Text("Artists, Songs, Lyrics and More"))
+        .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .always), prompt: Text("Artists, Songs, Lyrics and More"))
         .task {
             try? await loadData()
         }.navigationTitle("Search")
@@ -50,14 +50,14 @@ struct SearchView: View {
         ZStack(alignment: .bottomLeading) {
             Rectangle()
                 .fill(Color.random())
-                .clipShape(RoundedRectangle(cornerRadius: 12))
                 .frame(height: 124)
             Text(genre.name)
                 .fontWeight(.bold)
                 .padding()
                 .frame(maxWidth: .infinity, alignment: .leading)
+                .foregroundStyle(.white)
                 .background(LinearGradient(colors: [.black.opacity(0), .black.opacity(0.5)], startPoint: .top, endPoint: .bottom))
-        }
+        }.clipShape(RoundedRectangle(cornerRadius: 12))
     }
 }
 
@@ -85,6 +85,8 @@ extension SearchView {
     if let genres = genreMock {
         AppRootNavigation {
             SearchView(genres: genres)
-        }.environment(NavPath())
+        }
+        .environment(NavPath())
+        .environment(MusicPlayerManager())
     }
 }

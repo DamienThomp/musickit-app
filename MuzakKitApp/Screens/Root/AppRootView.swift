@@ -31,15 +31,6 @@ struct AppRootView: View {
         }
     }
 
-    @available(iOS 18.0, *)
-    private func buildTab(for screen: AppRootScreen) -> any TabContent {
-        Tab {
-            screen.destination
-        } label: {
-            screen.label
-        }
-    }
-
     @ViewBuilder
     private func buildTab(for screen: AppRootScreen) -> some View {
         screen.destination
