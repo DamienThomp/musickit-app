@@ -49,8 +49,8 @@ struct SearchView: View {
     private func genreCell(for genre: MusicItemCollection<Genre>.Element) -> some View {
         ZStack(alignment: .bottomLeading) {
             Rectangle()
-                .fill(Color.random())
-                .frame(height: 124)
+                .fill(Color.randomColor)
+                .frame(height: 120)
             Text(genre.name)
                 .fontWeight(.bold)
                 .padding()
