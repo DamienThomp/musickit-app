@@ -12,6 +12,10 @@ struct MiniMusicPlayer: View {
 
     @Environment(MusicPlayerManager.self) var musicPlayerManager
 
+    @Binding var toggleView: Bool
+
+    let nameSpace: Namespace.ID
+
     var body: some View {
         
             HStack(spacing: 12) {
@@ -19,10 +23,23 @@ struct MiniMusicPlayer: View {
                 if let artwork = musicPlayerManager.currentItem?.artwork {
                     ArtworkImage(artwork, width: 34, height: 34)
                         .clipShape(RoundedRectangle(cornerRadius: 6))
+                        .matchedGeometryEffect(id: PlayerMatchedGeometry.coverImage.name, in: nameSpace)
+                        .onTapGesture {
+                            withAnimation(PlayerMatchedGeometry.animation) {
+                                toggleView.toggle()
+                            }
+                        }
                 } else {
                     Rectangle()
+                        .fill(.secondary)
                         .frame(width: 34, height: 34)
                         .clipShape(RoundedRectangle(cornerRadius: 6))
+                        .matchedGeometryEffect(id: PlayerMatchedGeometry.coverImage.name, in: nameSpace)
+                        .onTapGesture {
+                            withAnimation(PlayerMatchedGeometry.animation) {
+                                toggleView.toggle()
+                            }
+                        }
                 }
 
                 VStack(alignment: .leading) {
@@ -30,6 +47,7 @@ struct MiniMusicPlayer: View {
                     if let title = musicPlayerManager.currentItem?.title {
                         Text(title)
                             .lineLimit(1)
+                            .matchedGeometryEffect(id: PlayerMatchedGeometry.title.name, in: nameSpace)
                     }
 
                     if let subtitle = musicPlayerManager.currentItem?.subtitle {
@@ -37,6 +55,7 @@ struct MiniMusicPlayer: View {
                             .font(.caption)
                             .foregroundStyle(.secondary)
                             .lineLimit(1)
+                            .matchedGeometryEffect(id: PlayerMatchedGeometry.subtitle.name, in: nameSpace)
                     }
                 }
 
@@ -51,7 +70,7 @@ struct MiniMusicPlayer: View {
                             .imageScale(.large)
                             .font(.system(size: 20))
                             .foregroundStyle(.pink)
-                    }
+                    }.matchedGeometryEffect(id: PlayerMatchedGeometry.primaryAction.name, in: nameSpace)
 
                     Button {
                         musicPlayerManager.skipToNext()
@@ -60,19 +79,28 @@ struct MiniMusicPlayer: View {
                             .imageScale(.large)
                             .font(.system(size: 20))
                             .foregroundStyle(.pink)
-                    }
+
+                    }.matchedGeometryEffect(id: PlayerMatchedGeometry.secondaryAction.name, in: nameSpace)
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(10)
             .padding(.trailing, 6)
-            .background(.thickMaterial)
+            .background(
+                Rectangle()
+                    .fill(Color(.systemGray4))
+                    .matchedGeometryEffect(id: PlayerMatchedGeometry.background.name, in: nameSpace)
+            )
             .clipShape(RoundedRectangle(cornerRadius: 8))
             .padding(8)
     }
 }
 
 #Preview(traits: .sizeThatFitsLayout) {
-    MiniMusicPlayer()
+
+    @Previewable @Namespace var nameSpace
+    @Previewable @State var toggle = false
+
+    MiniMusicPlayer(toggleView: $toggle ,nameSpace: nameSpace)
         .environment(MusicPlayerManager())
 }
