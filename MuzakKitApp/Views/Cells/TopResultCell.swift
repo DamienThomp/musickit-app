@@ -27,6 +27,8 @@ struct TopResultCell: View {
                 Text(subtitle)
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
+                    .lineLimit(1)
+                    .frame(maxWidth: size, alignment: .leading)
             }
 
             if let artwork = artwork {
