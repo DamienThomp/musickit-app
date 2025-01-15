@@ -42,7 +42,7 @@ struct AppRootView: View {
 
     @ViewBuilder
     private func showMiniPlayer(_ proxy: GeometryProxy) -> some View {
-        if musicPlayerManager.hasQueue {
+        if !musicPlayerManager.hasQueue {
             withAnimation {
                 PlayerContainer(proxy: proxy)
             }

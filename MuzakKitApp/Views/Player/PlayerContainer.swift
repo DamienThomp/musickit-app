@@ -18,7 +18,7 @@ struct PlayerContainer: View {
     var body: some View {
 
         if !showFullscreenView {
-            MiniMusicPlayer(toggleView: $showFullscreenView, nameSpace: playerNamespace).offset(y: -90)
+            MiniMusicPlayer(toggleView: $showFullscreenView, nameSpace: playerNamespace).offset(y: -80)
         } else {
             FullScreenPlayer(toggleView: $showFullscreenView, proxy: proxy, nameSpace: playerNamespace)
         }
