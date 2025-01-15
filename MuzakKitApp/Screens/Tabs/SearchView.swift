@@ -81,7 +81,78 @@ struct SearchContainer: View {
                     .scrollTargetLayout()
                 }.listRowSeparator(.hidden)
             }
+
+            Section {
+                Text("Songs")
+                    .sectionHeader()
+
+                ScrollView(.horizontal, showsIndicators: false) {
+
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        LazyHGrid(
+                            rows: [
+                                GridItem(),
+                                GridItem(),
+                                GridItem(),
+                                GridItem()
+                            ],
+                            spacing: 12
+                        ) {
+                            ForEach(searchResults.songs, id: \.self) { item in
+                                songCell(for: item)
+                            }
+                        }
+                    }
+                }.listRowSeparator(.hidden)
+            }
+
+            Section {
+                Text("Artists").sectionHeader()
+
+                ScrollView(.horizontal, showsIndicators: false) {
+
+                    LazyHGrid(
+                        rows: [GridItem(
+                            .adaptive(
+                                minimum: 250,
+                                maximum: 250
+                            )
+                        )],
+                        alignment: .top,
+                        spacing: 12
+                    ) {
+                        ForEach(searchResults.artists, id: \.self) { item in
+
+                            ArtistItemCell(item: item, size: 168)
+                        }
+                    }
+                    .scrollTargetLayout()
+                }.listRowSeparator(.hidden)
+            }
         }
+    }
+
+    @ViewBuilder
+    private func songCell(for item: Song) -> some View {
+
+        HStack {
+            if let artwork = item.artwork {
+                ArtworkImage(artwork, width: 50)
+                    .cornerRadius(12)
+            }
+            VStack(alignment: .leading) {
+                Text(item.title)
+                Text(item.artistName)
+                    .font(.caption)
+                    .foregroundStyle(Color.secondary)
+                Divider()
+            }
+            .lineLimit(1)
+            .multilineTextAlignment(.leading)
+
+            Spacer()
+        }
+        .frame(width: 318)
     }
 
     @ViewBuilder
@@ -112,7 +183,7 @@ struct SearchContainer: View {
 }
 
 struct SearchView: View {
-    
+
     @State private var searchText: String = ""
     @State private var searchResults: MusicCatalogSearchResponse?
 

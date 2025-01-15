@@ -16,18 +16,20 @@ struct AppRootView: View {
 
     var body: some View {
 
-        TabView(selection: $selection) {
+        GeometryReader { proxy in
+            TabView(selection: $selection) {
 
-            ForEach(AppRootScreen.allCases, id: \.self) { screen in
-                buildTab(for: screen)
+                ForEach(AppRootScreen.allCases, id: \.self) { screen in
+                    buildTab(for: screen)
+                }
             }
-        }
-        .onChange(of: selection) {
-            navigation.path = NavigationPath()
-        }
-        .tint(.pink)
-        .safeAreaInset(edge: .bottom) {
-            showMiniPlayer()
+            .onChange(of: selection) {
+                navigation.path = NavigationPath()
+            }
+            .tint(.pink)
+            .safeAreaInset(edge: .bottom) {
+                showMiniPlayer(proxy)
+            }.ignoresSafeArea()
         }
     }
 
@@ -39,11 +41,10 @@ struct AppRootView: View {
     }
 
     @ViewBuilder
-    private func showMiniPlayer() -> some View {
+    private func showMiniPlayer(_ proxy: GeometryProxy) -> some View {
         if musicPlayerManager.hasQueue {
             withAnimation {
-                MiniMusicPlayer()
-                    .offset(y: -48)
+                PlayerContainer(proxy: proxy)
             }
         }
     }
