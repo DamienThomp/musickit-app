@@ -191,18 +191,19 @@ struct FullScreenPlayer: View {
                 .padding()
                 .foregroundStyle(primarytextColor)
 
-                //TODO: - Replace with working volume slider
-                Slider(value: $volume, in: 0...1) {
-                    Text("Volume")
-                } minimumValueLabel: {
-                    Image(systemName: "speaker.fill")
-                } maximumValueLabel: {
-                    Image(systemName: "speaker.wave.3.fill")
-                }
-                .foregroundStyle(primarytextColor)
-                .tint(tertiaryTextColor)
-                .padding(.top)
+                VStack {
+                    HStack(alignment: .top) {
+                        Image(systemName: "speaker.fill")
+                        VolumeSliderView(tint: UIColor(tertiaryTextColor))
+                            .frame(maxWidth: .infinity)
+                        Image(systemName: "speaker.wave.3.fill")
+                    }
+                    .frame(height: 50)
+                    .frame(maxWidth: .infinity)
 
+                }
+                .foregroundStyle(tertiaryTextColor)
+                .padding(.top)
             }
             .padding(.horizontal, 40)
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
