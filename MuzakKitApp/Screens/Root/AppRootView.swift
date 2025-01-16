@@ -29,7 +29,7 @@ struct AppRootView: View {
             .tint(.pink)
             .safeAreaInset(edge: .bottom) {
                 showMiniPlayer(proxy)
-            }.ignoresSafeArea()
+            }.ignoresSafeArea(.container, edges: .top)
         }
     }
 

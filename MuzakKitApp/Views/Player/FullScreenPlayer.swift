@@ -20,7 +20,7 @@ struct FullScreenPlayer: View {
     let nameSpace: Namespace.ID
 
     private var artwork: Artwork? {
-        musicPlayerManager.currentItem?.artwork
+        musicPlayerManager.artwork
     }
 
     private var background: Color {
@@ -38,7 +38,7 @@ struct FullScreenPlayer: View {
             return Color(cgColor: primaryTextColor)
         }
 
-        return .white
+        return .primary
     }
 
     private var secondaryTextColor: Color {
@@ -47,7 +47,7 @@ struct FullScreenPlayer: View {
             return Color(cgColor: secondaryTextColor)
         }
 
-        return .white
+        return .secondary
     }
 
     private var tertiaryTextColor: Color {
@@ -56,16 +56,7 @@ struct FullScreenPlayer: View {
             return Color(cgColor: tertiaryTextColor)
         }
 
-        return .white
-    }
-
-    private var quataneryTextColor: Color {
-
-        if let quaternaryTextColor  = artwork?.quaternaryTextColor {
-            return Color(cgColor: quaternaryTextColor)
-        }
-
-        return .white
+        return .secondary
     }
 
     private var title: String {
@@ -74,15 +65,6 @@ struct FullScreenPlayer: View {
 
     private var subtitle: String {
         musicPlayerManager.currentItem?.subtitle ?? ""
-    }
-
-    private var progress: TimeInterval {
-
-        if let playbackTime = musicPlayerManager.currentPlayBackTime {
-            return playbackTime
-        }
-
-        return 0.0
     }
 
     private var duration: Double? {
@@ -101,16 +83,11 @@ struct FullScreenPlayer: View {
         }
     }
 
-    private var remaining: TimeInterval {
-
-        guard let duration else { return 0.0 }
-
-        return -(duration) + progress
-    }
-
     var body: some View {
 
-       let width = proxy.size.width / 1.4
+        @Bindable var manager = musicPlayerManager
+
+        let width = proxy.size.width / 1.4
 
         ZStack {
 
@@ -137,7 +114,6 @@ struct FullScreenPlayer: View {
                     ArtworkImage(artwork, width: width, height: width)
                         .clipShape(RoundedRectangle(cornerRadius: 12))
                         .matchedGeometryEffect(id: PlayerMatchedGeometry.coverImage.name, in: nameSpace)
-
                         .padding(.vertical, 40)
                         .shadow(color: .black.opacity(0.2), radius: 30, y: 15)
                         .onTapGesture {
@@ -145,7 +121,7 @@ struct FullScreenPlayer: View {
                                 toggleView.toggle()
                             }
                         }
-                    
+
                 } else {
 
                     Rectangle()
@@ -180,22 +156,12 @@ struct FullScreenPlayer: View {
                         .matchedGeometryEffect(id: PlayerMatchedGeometry.subtitle.name, in: nameSpace)
 
                     if let duration = duration {
-                        ProgressView(value: progress, total: duration)
+                        PlayerProgressView(duration: duration)
                             .tint(secondaryTextColor)
+                            .foregroundStyle(secondaryTextColor)
                     }
 
-                    HStack {
-                        Text(progress, format: .timerCountdown)
-                            .font(.caption)
-                            .foregroundStyle(tertiaryTextColor)
-                        Spacer()
-                        Text(remaining, format: .timerCountdown)
-                            .font(.caption)
-                            .foregroundStyle(tertiaryTextColor)
-                    }.opacity(0.7)
-
                 }.frame(maxWidth: .infinity)
-
 
                 HStack(spacing: 50) {
                     Button {
@@ -225,6 +191,7 @@ struct FullScreenPlayer: View {
                 .padding()
                 .foregroundStyle(primarytextColor)
 
+                //TODO: - Replace with working volume slider
                 Slider(value: $volume, in: 0...1) {
                     Text("Volume")
                 } minimumValueLabel: {
@@ -250,5 +217,42 @@ struct FullScreenPlayer: View {
     GeometryReader { proxy in
         FullScreenPlayer(toggleView: $toggle, proxy: proxy, nameSpace: nameSpace)
             .environment(MusicPlayerManager())
+    }
+}
+
+// TODO: - refactor player progress view
+struct PlayerProgressView: View {
+
+    @Environment(MusicPlayerManager.self) var musicPlayerManager
+
+    let duration: TimeInterval
+
+    private var progress: TimeInterval {
+
+        if let progress = musicPlayerManager.currentPlayBackTime {
+            return progress
+        }
+
+        return 0.0
+    }
+
+    private var remaining: TimeInterval {
+
+        return -(duration) + progress
+    }
+
+    var body: some View {
+
+        ProgressView(value: progress, total: duration)
+
+        HStack {
+            Text(progress, format: .timerCountdown)
+                .font(.caption)
+
+            Spacer()
+            Text(remaining, format: .timerCountdown)
+                .font(.caption)
+
+        }
     }
 }

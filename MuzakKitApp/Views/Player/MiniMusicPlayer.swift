@@ -47,6 +47,7 @@ struct MiniMusicPlayer: View {
                     if let title = musicPlayerManager.currentItem?.title {
                         Text(title)
                             .lineLimit(1)
+                            .frame(maxWidth: .infinity, alignment: .leading)
                             .matchedGeometryEffect(id: PlayerMatchedGeometry.title.name, in: nameSpace)
                     }
 
@@ -55,6 +56,7 @@ struct MiniMusicPlayer: View {
                             .font(.caption)
                             .foregroundStyle(.secondary)
                             .lineLimit(1)
+                            .frame(maxWidth: .infinity, alignment: .leading)
                             .matchedGeometryEffect(id: PlayerMatchedGeometry.subtitle.name, in: nameSpace)
                     }
                 }
@@ -88,7 +90,7 @@ struct MiniMusicPlayer: View {
             .padding(.trailing, 6)
             .background(
                 Rectangle()
-                    .fill(Color(.systemGray6))
+                    .fill(Color(.systemGray5))
                     .matchedGeometryEffect(id: PlayerMatchedGeometry.background.name, in: nameSpace)
             )
             .clipShape(RoundedRectangle(cornerRadius: 8))
