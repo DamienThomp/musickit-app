@@ -21,6 +21,7 @@ class MusicPlayerManager {
 
     var playbackState: MusicPlayer.PlaybackStatus = .stopped
     var currentItem: MusicPlayer.Queue.Entry? = nil
+    var artwork: Artwork? = nil
     var hasQueue: Bool = false
     var currentPlayBackTime: TimeInterval? = 0.0
 
@@ -42,7 +43,6 @@ class MusicPlayerManager {
 
         playbackStatePublisher = player.state.objectWillChange
             .sink { [weak self] _ in
-                self?.updateCurrentEntry()
                 self?.updatePlaybackState()
                 self?.updateHasQueue()
                 self?.startPlayBackTimer()
@@ -54,6 +54,7 @@ class MusicPlayerManager {
         queueChangePublisher = player.queue.objectWillChange
             .sink { [weak self] _ in
                 self?.updateCurrentEntry()
+                self?.updateCurrentArtwork()
             }
     }
 
@@ -64,19 +65,29 @@ class MusicPlayerManager {
                 self?.timer?.invalidate()
                 return
             }
-            Task {
-                await self?.updatePlaybackTime()
-            }
+            self?.updatePlaybackTime()
         }
     }
 
-    @MainActor
     private func updatePlaybackTime() {
-        self.currentPlayBackTime = player.playbackTime
+
+        Task { @MainActor in
+            self.currentPlayBackTime = player.playbackTime
+        }
     }
 
     private func updateCurrentEntry() {
-        self.currentItem = player.queue.currentEntry
+        
+        Task { @MainActor in
+            self.currentItem = player.queue.currentEntry
+        }
+    }
+
+    private func updateCurrentArtwork() {
+
+        Task { @MainActor in
+            self.artwork = player.queue.currentEntry?.artwork
+        }
     }
 
     private func updatePlaybackState() {
@@ -187,6 +198,9 @@ extension MusicPlayerManager {
 
         Task {
             do {
+                if !player.isPreparedToPlay {
+                    try await player.prepareToPlay()
+                }
                 try await player.play()
             } catch {
                 print("Failed to begin playback with error: \(error).")
