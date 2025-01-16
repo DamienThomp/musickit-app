@@ -18,10 +18,20 @@ struct PlayerContainer: View {
     var body: some View {
 
         if !showFullscreenView {
-            MiniMusicPlayer(toggleView: $showFullscreenView, nameSpace: playerNamespace)
-                .offset(y: -proxy.safeAreaInsets.top)
+
+            MiniMusicPlayer(
+                toggleView: $showFullscreenView,
+                nameSpace: playerNamespace
+            )
+            .offset(y: -proxy.safeAreaInsets.top)
         } else {
-            FullScreenPlayer(toggleView: $showFullscreenView, proxy: proxy, nameSpace: playerNamespace)
+
+            FullScreenPlayer(
+                toggleView: $showFullscreenView,
+                proxy: proxy,
+                nameSpace: playerNamespace
+            )
+            .preferredColorScheme(.dark)
         }
     }
 }
