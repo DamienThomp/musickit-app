@@ -19,8 +19,22 @@ struct FullScreenPlayer: View {
     let proxy: GeometryProxy
     let nameSpace: Namespace.ID
 
+    private let opacity: CGFloat = 0.85
+
+    private var isPlaying: Bool {
+        musicPlayerManager.playbackState == .playing
+    }
+
     private var artwork: Artwork? {
         musicPlayerManager.artwork
+    }
+
+    private var hasBackground: Bool {
+        artwork?.backgroundColor != nil
+    }
+
+    private var defaultBackground: Color {
+        Color(.systemGray6)
     }
 
     private var background: Color {
@@ -29,34 +43,15 @@ struct FullScreenPlayer: View {
             return Color(cgColor: artworkBackground)
         }
 
-        return Color(.systemBackground)
+        return Color(.systemGray6)
     }
 
     private var primarytextColor: Color {
-
-        if let primaryTextColor = artwork?.primaryTextColor {
-            return Color(cgColor: primaryTextColor)
-        }
-
-        return .primary
+        .primary
     }
 
     private var secondaryTextColor: Color {
-
-        if let secondaryTextColor = artwork?.secondaryTextColor {
-            return Color(cgColor: secondaryTextColor)
-        }
-
-        return .secondary
-    }
-
-    private var tertiaryTextColor: Color {
-
-        if let tertiaryTextColor = artwork?.tertiaryTextColor {
-            return Color(cgColor: tertiaryTextColor)
-        }
-
-        return .secondary
+        .secondary
     }
 
     private var title: String {
@@ -85,19 +80,20 @@ struct FullScreenPlayer: View {
 
     var body: some View {
 
-        let width = proxy.size.width / 1.4
+        let width = proxy.size.width - 48
 
         ZStack {
 
             Rectangle()
-                .fill(background.gradient)
+                .fill(hasBackground ? background.gradient : defaultBackground.gradient)
+                .animation(.easeIn, value: hasBackground)
                 .colorMultiply(Color(hue: 0.0, saturation: 0, brightness: 0.7))
                 .matchedGeometryEffect(id: PlayerMatchedGeometry.background.name, in: nameSpace)
                 .ignoresSafeArea()
 
             VStack {
                 Capsule()
-                    .fill(tertiaryTextColor)
+                    .fill(secondaryTextColor.opacity(opacity))
                     .frame(width: 50, height: 5)
                     .padding(.bottom)
                     .onTapGesture {
@@ -112,13 +108,16 @@ struct FullScreenPlayer: View {
                     ArtworkImage(artwork, width: width, height: width)
                         .clipShape(RoundedRectangle(cornerRadius: 12))
                         .matchedGeometryEffect(id: PlayerMatchedGeometry.coverImage.name, in: nameSpace)
-                        .padding(.vertical, 40)
+                        .padding(.top, 14)
+                        .padding(.bottom, 32)
                         .shadow(color: .black.opacity(0.2), radius: 30, y: 15)
                         .onTapGesture {
                             withAnimation(PlayerMatchedGeometry.animation) {
                                 toggleView.toggle()
                             }
                         }
+                        .scaleEffect(isPlaying ? 1 : 0.8)
+                        .animation(.interpolatingSpring(duration: 0.5, bounce: 0.5), value: isPlaying)
 
                 } else {
 
@@ -136,35 +135,40 @@ struct FullScreenPlayer: View {
                         }
                 }
 
-
                 VStack {
-                    Text(title)
-                        .font(.title3)
-                        .fontWeight(.bold)
-                        .foregroundStyle(primarytextColor)
-                        .lineLimit(1)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .matchedGeometryEffect(id: PlayerMatchedGeometry.title.name, in: nameSpace)
+                    VStack {
+                        Text(title)
+                            .font(.title3)
+                            .fontWeight(.bold)
+                            .foregroundStyle(primarytextColor)
+                            .lineLimit(1)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .matchedGeometryEffect(id: PlayerMatchedGeometry.title.name, in: nameSpace)
 
-                    Text(subtitle)
-                        .font(.title3)
-                        .lineLimit(1)
-                        .foregroundStyle(tertiaryTextColor)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .matchedGeometryEffect(id: PlayerMatchedGeometry.subtitle.name, in: nameSpace)
+                        Text(subtitle)
+                            .font(.title3)
+                            .foregroundStyle(secondaryTextColor.opacity(opacity))
+                            .lineLimit(1)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .matchedGeometryEffect(id: PlayerMatchedGeometry.subtitle.name, in: nameSpace)
+                            .padding(.bottom, 20)
 
-                    if let duration = duration {
-                        PlayerProgressView(duration: duration)
-                            .tint(secondaryTextColor)
-                            .foregroundStyle(secondaryTextColor)
-                    }
+                        if let duration = duration {
+                            PlayerProgressView(duration: duration)
+                                .tint(secondaryTextColor)
+                                .foregroundStyle(secondaryTextColor)
+                                .opacity(opacity)
+                        }
 
-                }.frame(maxWidth: .infinity)
+                    }.frame(maxWidth: .infinity)
 
-                playerControls
-                volumeSlider
+                   playerControls
+                    volumeSlider
+                        .opacity(opacity)
+
+                }.padding(.horizontal, 8)
             }
-            .padding(.horizontal, 40)
+            .padding(.horizontal, 24)
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
             .padding(.top, proxy.safeAreaInsets.top)
         }
@@ -183,7 +187,7 @@ struct FullScreenPlayer: View {
             Button {
                 musicPlayerManager.togglePlayBack()
             } label: {
-                Image(systemName: musicPlayerManager.playbackState == .playing ? "pause.fill" : "play.fill")
+                Image(systemName: isPlaying ? "pause.fill" : "play.fill")
                     .imageScale(.large)
                     .font(.system(size: 40))
 
@@ -206,14 +210,14 @@ struct FullScreenPlayer: View {
         VStack {
             HStack(alignment: .top) {
                 Image(systemName: "speaker.fill")
-                VolumeSliderView(tint: UIColor(tertiaryTextColor))
+                VolumeSliderView(tint: UIColor(secondaryTextColor))
                     .frame(maxWidth: .infinity)
                 Image(systemName: "speaker.wave.3.fill")
             }
             .frame(height: 50)
             .frame(maxWidth: .infinity)
         }
-        .foregroundStyle(tertiaryTextColor)
+        .foregroundStyle(secondaryTextColor)
         .padding(.top)
     }
 }
