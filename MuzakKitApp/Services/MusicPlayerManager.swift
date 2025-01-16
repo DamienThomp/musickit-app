@@ -22,6 +22,9 @@ class MusicPlayerManager {
     var playbackState: MusicPlayer.PlaybackStatus = .stopped
     var currentItem: MusicPlayer.Queue.Entry? = nil
     var hasQueue: Bool = false
+    var currentPlayBackTime: TimeInterval? = 0.0
+
+    private var timer: Timer?
 
     init() {
 
@@ -42,6 +45,7 @@ class MusicPlayerManager {
                 self?.updateCurrentEntry()
                 self?.updatePlaybackState()
                 self?.updateHasQueue()
+                self?.startPlayBackTimer()
             }
     }
 
@@ -53,19 +57,33 @@ class MusicPlayerManager {
             }
     }
 
+    private func startPlayBackTimer() {
+
+        timer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true) { [weak self] _ in
+            guard self?.playerState.playbackStatus == .playing else {
+                self?.timer?.invalidate()
+                return
+            }
+            Task {
+                await self?.updatePlaybackTime()
+            }
+        }
+    }
+
+    @MainActor
+    private func updatePlaybackTime() {
+        self.currentPlayBackTime = player.playbackTime
+    }
+
     private func updateCurrentEntry() {
-
         self.currentItem = player.queue.currentEntry
-
     }
 
     private func updatePlaybackState() {
-
         self.playbackState = playerState.playbackStatus
     }
 
     private func updateHasQueue() {
-
         self.hasQueue = !self.player.queue.entries.isEmpty
     }
 }

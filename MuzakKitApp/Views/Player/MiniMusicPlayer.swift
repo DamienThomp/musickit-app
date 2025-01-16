@@ -88,7 +88,7 @@ struct MiniMusicPlayer: View {
             .padding(.trailing, 6)
             .background(
                 Rectangle()
-                    .fill(Color(.systemGray4))
+                    .fill(Color(.systemGray6))
                     .matchedGeometryEffect(id: PlayerMatchedGeometry.background.name, in: nameSpace)
             )
             .clipShape(RoundedRectangle(cornerRadius: 8))
