@@ -85,8 +85,6 @@ struct FullScreenPlayer: View {
 
     var body: some View {
 
-        @Bindable var manager = musicPlayerManager
-
         let width = proxy.size.width / 1.4
 
         ZStack {
@@ -163,52 +161,60 @@ struct FullScreenPlayer: View {
 
                 }.frame(maxWidth: .infinity)
 
-                HStack(spacing: 50) {
-                    Button {
-                        musicPlayerManager.skipToPrevious()
-                    } label: {
-                        Image(systemName: "backward.fill")
-                            .imageScale(.large)
-                            .font(.system(size: 30))
-                    }
-                    Button {
-                        musicPlayerManager.togglePlayBack()
-                    } label: {
-                        Image(systemName: musicPlayerManager.playbackState == .playing ? "pause.fill" : "play.fill")
-                            .imageScale(.large)
-                            .font(.system(size: 40))
-
-                    }.matchedGeometryEffect(id: PlayerMatchedGeometry.primaryAction.name, in: nameSpace)
-                        .frame(minWidth: 50, minHeight: 60)
-                    Button {
-                        musicPlayerManager.skipToNext()
-                    } label: {
-                        Image(systemName: "forward.fill")
-                            .imageScale(.large)
-                            .font(.system(size: 30))
-                    }.matchedGeometryEffect(id: PlayerMatchedGeometry.secondaryAction.name, in: nameSpace)
-                }
-                .padding()
-                .foregroundStyle(primarytextColor)
-
-                VStack {
-                    HStack(alignment: .top) {
-                        Image(systemName: "speaker.fill")
-                        VolumeSliderView(tint: UIColor(tertiaryTextColor))
-                            .frame(maxWidth: .infinity)
-                        Image(systemName: "speaker.wave.3.fill")
-                    }
-                    .frame(height: 50)
-                    .frame(maxWidth: .infinity)
-
-                }
-                .foregroundStyle(tertiaryTextColor)
-                .padding(.top)
+                playerControls
+                volumeSlider
             }
             .padding(.horizontal, 40)
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
             .padding(.top, proxy.safeAreaInsets.top)
         }
+    }
+
+    var playerControls: some View {
+
+        HStack(spacing: 50) {
+            Button {
+                musicPlayerManager.skipToPrevious()
+            } label: {
+                Image(systemName: "backward.fill")
+                    .imageScale(.large)
+                    .font(.system(size: 30))
+            }
+            Button {
+                musicPlayerManager.togglePlayBack()
+            } label: {
+                Image(systemName: musicPlayerManager.playbackState == .playing ? "pause.fill" : "play.fill")
+                    .imageScale(.large)
+                    .font(.system(size: 40))
+
+            }.matchedGeometryEffect(id: PlayerMatchedGeometry.primaryAction.name, in: nameSpace)
+                .frame(minWidth: 50, minHeight: 60)
+            Button {
+                musicPlayerManager.skipToNext()
+            } label: {
+                Image(systemName: "forward.fill")
+                    .imageScale(.large)
+                    .font(.system(size: 30))
+            }.matchedGeometryEffect(id: PlayerMatchedGeometry.secondaryAction.name, in: nameSpace)
+        }
+        .padding()
+        .foregroundStyle(primarytextColor)
+
+    }
+
+    var volumeSlider: some View {
+        VStack {
+            HStack(alignment: .top) {
+                Image(systemName: "speaker.fill")
+                VolumeSliderView(tint: UIColor(tertiaryTextColor))
+                    .frame(maxWidth: .infinity)
+                Image(systemName: "speaker.wave.3.fill")
+            }
+            .frame(height: 50)
+            .frame(maxWidth: .infinity)
+        }
+        .foregroundStyle(tertiaryTextColor)
+        .padding(.top)
     }
 }
 
