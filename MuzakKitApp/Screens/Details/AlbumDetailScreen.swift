@@ -47,7 +47,7 @@ struct AlbumDetailScreen: View {
 
                     ForEach(tracks) { track in
                         AlbumTrackCell(track: track) {
-                            createContextMenu(for: track)
+                            MenuItems(item: track, tracks: tracks)
                         }
                         .onTapGesture {
                             musicPlayer
@@ -57,7 +57,7 @@ struct AlbumDetailScreen: View {
                                 )
                         }
                         .contextMenu {
-                            createContextMenu(for: track)
+                            MenuItems(item: track, tracks: tracks)
                         }
                     }
                 } footer: {
@@ -125,7 +125,7 @@ struct AlbumDetailScreen: View {
             }
             ToolbarItem(placement: .topBarTrailing) {
                 Menu {
-                    createContextMenu(for: album)
+                    MenuItems(item: album)
                 } label: {
                     Symbols.ellipsis.image
                 }
@@ -184,35 +184,6 @@ struct AlbumDetailScreen: View {
             musicPlayer.handlePlayback(for: album)
         } _: {
             musicPlayer.shufflePlayback(for: album)
-        }
-    }
-
-    @ViewBuilder
-    private func createContextMenu<T: MusicItem>(for item: T) -> some View {
-
-        Button {
-            print("add to playlist")
-        } label: {
-            Label("Add to Playlist", systemImage: Symbols.musicNoteList.name)
-        }
-
-        Divider()
-
-        Button {
-
-            if let track = item as? Track {
-                musicPlayer.playNext(track, tracks)
-            } else {
-                musicPlayer.playNext()
-            }
-        } label: {
-            Label("Play Next", systemImage: Symbols.playNext.name)
-        }
-
-        Button {
-            musicPlayer.playLast()
-        } label: {
-            Label("Play Last", systemImage: Symbols.playLast.name)
         }
     }
 }

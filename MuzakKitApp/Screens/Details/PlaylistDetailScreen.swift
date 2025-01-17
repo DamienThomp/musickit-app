@@ -17,6 +17,8 @@ struct PlaylistDetailScreen: View {
     @State private var tracks: MusicItemCollection<Track>?
     @State private var featuredArtists: MusicItemCollection<Artist>?
 
+    @State private var isInLibrary: Bool = false
+
     private var artwork: Artwork? {
         playlist.artwork
     }
@@ -33,10 +35,20 @@ struct PlaylistDetailScreen: View {
         tracks?.count
     }
 
+    private var duration: TimeInterval {
+
+        let total = tracks?.reduce(0.0, { partialResult, track in
+            guard let duration = track.duration else { return 0.0 }
+            return partialResult + duration
+        })
+
+        return total ?? 0.0
+    }
+
     var body: some View {
 
         List {
-            
+
             header
                 .plainHeaderStyle()
                 .frame(maxWidth: .infinity)
@@ -48,22 +60,29 @@ struct PlaylistDetailScreen: View {
             if let tracks = tracks, !tracks.isEmpty {
                 Section {
                     ForEach(tracks) { track in
-                        PlaylistTrackCell(track: track)
-                            .onTapGesture {
-                                musicPlayer
-                                    .handleTrackSelected(
-                                        for: track,
-                                        from: tracks
-                                    )
-                            }
+                        PlaylistTrackCell(track: track) {
+                            MenuItems(item: track, tracks: tracks)
+                        }
+                        .onTapGesture {
+                            musicPlayer
+                                .handleTrackSelected(
+                                    for: track,
+                                    from: tracks
+                                )
+                        }.contextMenu {
+                            MenuItems(item: track, tracks: tracks)
+                        }
                     }
                 } footer: {
                     HStack {
                         if let count = count {
-                            Text("\(count) songs")
+                            Text("\(count) songs,")
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
 
+                            Text(duration, format: .duration(style: .full))
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
                         }
                     }.padding(.vertical)
                 }
@@ -85,6 +104,23 @@ struct PlaylistDetailScreen: View {
         .listStyle(.plain)
         .task {
             try? await loadTracks()
+        }.toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button {
+                    let impactLight = UIImpactFeedbackGenerator(style: .light)
+                    impactLight.impactOccurred()
+
+                } label: {
+                    Image(systemName: isInLibrary ? Symbols.checkmarkCircle.name : Symbols.plusCircle.name)
+                }
+            }
+            ToolbarItem(placement: .topBarTrailing) {
+                Menu {
+                    MenuItems(item: playlist)
+                } label: {
+                    Symbols.ellipsis.image
+                }
+            }
         }
     }
 

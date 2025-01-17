@@ -35,7 +35,7 @@ struct AlbumTrackCell<Content: View>: View {
                     .lineLimit(1)
                     .frame(maxWidth: .infinity, alignment: .leading)
 
-            }
+            }.contentShape(Rectangle())
 
             Menu {
                 menuContent
@@ -48,7 +48,6 @@ struct AlbumTrackCell<Content: View>: View {
             }
             .highPriorityGesture(TapGesture())
         }
-        .contentShape(Rectangle())
     }
 }
 

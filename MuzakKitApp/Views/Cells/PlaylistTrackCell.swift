@@ -8,28 +8,42 @@
 import SwiftUI
 import MusicKit
 
-struct PlaylistTrackCell: View {
+struct PlaylistTrackCell<Content: View>: View {
 
     let track: Track
+
+    @ViewBuilder let menuContent: Content
 
     var body: some View {
 
         HStack(spacing: 4) {
+            HStack {
 
-            if let artwork = track.artwork {
-                ArtworkImage(artwork, width: 40)
-                    .clipShape(RoundedRectangle(cornerRadius: 8))
-            }
+                if let artwork = track.artwork {
+                    ArtworkImage(artwork, width: 40)
+                        .clipShape(RoundedRectangle(cornerRadius: 8))
+                }
 
-            Text(track.title)
-                .lineLimit(1)
-                .padding(.vertical, 8)
-                .padding(.horizontal, 8)
-                .frame(maxWidth: .infinity, alignment: .leading)
+                Text(track.title)
+                    .lineLimit(1)
+                    .padding(.vertical, 8)
+                    .padding(.horizontal, 8)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                
+            }.contentShape(Rectangle())
 
             Spacer()
 
-            Symbols.ellipsis.image.foregroundStyle(.pink)
+            Menu {
+                menuContent
+            } label: {
+
+                Symbols.ellipsis.image
+                    .frame(maxHeight: .infinity)
+                    .padding(.horizontal)
+                    .foregroundStyle(.pink)
+            }
+            .highPriorityGesture(TapGesture())
         }
     }
 }

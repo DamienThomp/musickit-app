@@ -24,6 +24,7 @@ enum Symbols: String {
     case playNext = "text.line.first.and.arrowtriangle.forward"
     case playLast = "text.line.last.and.arrowtriangle.forward"
     case musicNoteList = "music.note.list"
+    case plus = "plus"
 
     // Misc
     case ellipsis = "ellipsis"
