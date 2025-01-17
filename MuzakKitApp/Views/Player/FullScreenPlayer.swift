@@ -284,11 +284,11 @@ struct PlayerProgressView: View {
         ProgressView(value: progress, total: duration)
 
         HStack {
-            Text(progress, format: .timerCountdown)
+            Text(progress, format: .duration(style: .positional))
                 .font(.caption)
 
             Spacer()
-            Text(remaining, format: .timerCountdown)
+            Text(remaining, format: .duration(style: .positional))
                 .font(.caption)
 
         }
