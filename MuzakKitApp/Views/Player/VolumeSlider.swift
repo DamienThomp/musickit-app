@@ -9,13 +9,17 @@ import SwiftUI
 import MediaPlayer
 
 struct VolumeSliderView: UIViewRepresentable {
+
     let tint: UIColor
 
     func makeUIView(context: Context) -> MPVolumeView {
+
         let volumeView = MPVolumeView(frame:.zero)
         volumeView.showsVolumeSlider = true
-        let image = UIImage(systemName: "circle.fill")
+
+        let image = UIImage(systemName: Symbols.circle.name)
         image?.withTintColor(tint)
+
         volumeView.setVolumeThumbImage(image, for: .normal)
         return volumeView
     }

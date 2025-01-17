@@ -58,7 +58,7 @@ struct AlbumTrackCell<Content: View>: View {
         List {
             AlbumTrackCell(track: track) {
                 Button {} label: {
-                    Label("Add to Playlist", systemImage: Symbols.musicNoteList.name)
+                    Label("Add to Playlist", systemImage: "music.note.list")
                 }
             }
             .onTapGesture {
