@@ -40,12 +40,15 @@ struct AlbumTrackCell<Content: View>: View {
             Menu {
                 menuContent
             } label: {
+
                 Image(systemName: "ellipsis")
                     .frame(maxHeight: .infinity)
                     .padding(.horizontal)
                     .foregroundStyle(.pink)
-            }.highPriorityGesture(TapGesture())
-        }.contentShape(Rectangle())
+            }
+            .highPriorityGesture(TapGesture())
+        }
+        .contentShape(Rectangle())
     }
 }
 

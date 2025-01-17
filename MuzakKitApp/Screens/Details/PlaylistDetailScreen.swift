@@ -80,6 +80,7 @@ struct PlaylistDetailScreen: View {
                 }
             }
         }
+        .background(Color(.systemGray6), ignoresSafeAreaEdges: .bottom)
         .tint(.pink)
         .listStyle(.plain)
         .task {
