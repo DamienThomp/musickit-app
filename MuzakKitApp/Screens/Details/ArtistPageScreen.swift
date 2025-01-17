@@ -97,6 +97,7 @@ struct ArtistPageScreen: View {
                 }
             }
         }
+        .background(Color(.systemGray6), ignoresSafeAreaEdges: .bottom)
         .listStyle(.plain)
         .onAppear {
             loadSections()

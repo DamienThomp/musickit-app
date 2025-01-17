@@ -1,0 +1,24 @@
+{
+  "originHash" : "acc0d2e587ef3975a2334b310681ee7fd6ebbf3225a40749ce52513b4cca3474",
+  "pins" : [
+    {
+      "identity" : "sfsymbolsmacro",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/lukepistrol/SFSymbolsMacro.git",
+      "state" : {
+        "revision" : "01d7874a6855a145b5e2584e9beb3ee9a63ce70b",
+        "version" : "0.5.3"
+      }
+    },
+    {
+      "identity" : "swift-syntax",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-syntax.git",
+      "state" : {
+        "revision" : "0687f71944021d616d34d922343dcef086855920",
+        "version" : "600.0.1"
+      }
+    }
+  ],
+  "version" : 3
+}

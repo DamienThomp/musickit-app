@@ -29,7 +29,7 @@ struct PlaylistTrackCell: View {
 
             Spacer()
 
-            Image(systemName: "ellipsis").foregroundStyle(.pink)
+            Symbols.ellipsis.image.foregroundStyle(.pink)
         }
     }
 }

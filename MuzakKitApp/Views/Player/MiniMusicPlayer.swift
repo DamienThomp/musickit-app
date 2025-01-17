@@ -69,7 +69,7 @@ struct MiniMusicPlayer: View {
                     Button {
                         musicPlayerManager.togglePlayBack()
                     } label: {
-                        Image(systemName: musicPlayerManager.playbackState == .playing ? "pause.fill" : "play.fill")
+                        Image(systemName: musicPlayerManager.playbackState == .playing ? Symbols.pause.name : Symbols.play.fill)
                             .imageScale(.large)
                             .font(.system(size: 20))
                             .foregroundStyle(.pink)
@@ -78,7 +78,7 @@ struct MiniMusicPlayer: View {
                     Button {
                         musicPlayerManager.skipToNext()
                     } label: {
-                        Image(systemName: "forward.fill")
+                        Symbols.skipForward.image
                             .imageScale(.large)
                             .font(.system(size: 20))
                             .foregroundStyle(.pink)

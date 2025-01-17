@@ -20,7 +20,7 @@ struct FullScreenPlayer: View {
     let proxy: GeometryProxy
     let nameSpace: Namespace.ID
 
-    private let opacity: CGFloat = 0.85
+    private let opacity: CGFloat = 0.9
 
     private var isPlaying: Bool {
         musicPlayerManager.playbackState == .playing
@@ -35,7 +35,7 @@ struct FullScreenPlayer: View {
     }
 
     private var defaultBackground: Color {
-        Color(.systemGray6)
+        Color(.systemGray4)
     }
 
     private var background: Color {
@@ -44,7 +44,7 @@ struct FullScreenPlayer: View {
             return Color(cgColor: artworkBackground)
         }
 
-        return Color(.systemGray5)
+        return Color(.systemGray4)
     }
 
     private var primarytextColor: Color {
@@ -124,7 +124,8 @@ struct FullScreenPlayer: View {
                         .matchedGeometryEffect(id: PlayerMatchedGeometry.coverImage.name, in: nameSpace)
                         .frame(width: width, height: width)
                         .clipShape(RoundedRectangle(cornerRadius: 12))
-                        .padding(.vertical, 40)
+                        .padding(.top, 14)
+                        .padding(.bottom, 32)
                         .shadow(color: .black.opacity(0.2), radius: 30, y: 15)
                 }
 
@@ -168,36 +169,36 @@ struct FullScreenPlayer: View {
 
         }
         .offset(y: toggleView ? playerOffset : .zero)
-            .gesture(
-                DragGesture()
-                    .onChanged { gesture in
-                        let translationY = gesture.translation.height
-                        withAnimation {
-                            playerOffset = (translationY > 0 ? translationY : 0)
-                        }
-                    }.onEnded { value in
-                        let velocity = CGSize(
-                            width:  value.predictedEndLocation.x - value.location.x,
-                            height: value.predictedEndLocation.y - value.location.y
-                        )
-
-                        withAnimation {
-                            if velocity.height > 500.0 {
-                                toggleView.toggle()
-                                playerOffset = .zero
-                                return
-                            }
-
-                            if playerOffset > proxy.size.height /  3 {
-                                toggleView.toggle()
-                                playerOffset = .zero
-                                return
-                            }
-
-                            playerOffset = .zero
-                        }
+        .gesture(
+            DragGesture()
+                .onChanged { gesture in
+                    let translationY = gesture.translation.height
+                    withAnimation {
+                        playerOffset = (translationY > 0 ? translationY : 0)
                     }
-                )
+                }.onEnded { value in
+                    let velocity = CGSize(
+                        width:  value.predictedEndLocation.x - value.location.x,
+                        height: value.predictedEndLocation.y - value.location.y
+                    )
+
+                    withAnimation {
+                        if velocity.height > 500.0 {
+                            toggleView.toggle()
+                            playerOffset = .zero
+                            return
+                        }
+
+                        if playerOffset > proxy.size.height /  3 {
+                            toggleView.toggle()
+                            playerOffset = .zero
+                            return
+                        }
+
+                        playerOffset = .zero
+                    }
+                }
+        )
     }
 
     var playerControls: some View {
@@ -206,14 +207,14 @@ struct FullScreenPlayer: View {
             Button {
                 musicPlayerManager.skipToPrevious()
             } label: {
-                Image(systemName: "backward.fill")
+                Symbols.skipBack.image
                     .imageScale(.large)
                     .font(.system(size: 30))
             }
             Button {
                 musicPlayerManager.togglePlayBack()
             } label: {
-                Image(systemName: isPlaying ? "pause.fill" : "play.fill")
+                Image(systemName: isPlaying ? Symbols.pause.name : Symbols.play.name)
                     .imageScale(.large)
                     .font(.system(size: 40))
 
@@ -222,7 +223,7 @@ struct FullScreenPlayer: View {
             Button {
                 musicPlayerManager.skipToNext()
             } label: {
-                Image(systemName: "forward.fill")
+                Symbols.skipForward.image
                     .imageScale(.large)
                     .font(.system(size: 30))
             }.matchedGeometryEffect(id: PlayerMatchedGeometry.secondaryAction.name, in: nameSpace)
@@ -235,10 +236,10 @@ struct FullScreenPlayer: View {
     var volumeSlider: some View {
         VStack {
             HStack(alignment: .top) {
-                Image(systemName: "speaker.fill")
+                Symbols.volumeDown.image
                 VolumeSliderView(tint: UIColor(secondaryTextColor))
                     .frame(maxWidth: .infinity)
-                Image(systemName: "speaker.wave.3.fill")
+                Symbols.volumeUp.image
             }
             .frame(height: 50)
             .frame(maxWidth: .infinity)

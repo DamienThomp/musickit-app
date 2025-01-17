@@ -25,7 +25,7 @@ struct AlbumTrackCell<Content: View>: View {
                         .foregroundStyle(.secondary)
                         .frame(minWidth: 20)
                 } else {
-                    Image(systemName: "minus")
+                    Symbols.minus.image
                 }
 
                 Text(track.title)
@@ -40,12 +40,15 @@ struct AlbumTrackCell<Content: View>: View {
             Menu {
                 menuContent
             } label: {
-                Image(systemName: "ellipsis")
+
+                Symbols.ellipsis.image
                     .frame(maxHeight: .infinity)
                     .padding(.horizontal)
                     .foregroundStyle(.pink)
-            }.highPriorityGesture(TapGesture())
-        }.contentShape(Rectangle())
+            }
+            .highPriorityGesture(TapGesture())
+        }
+        .contentShape(Rectangle())
     }
 }
 
@@ -55,7 +58,7 @@ struct AlbumTrackCell<Content: View>: View {
         List {
             AlbumTrackCell(track: track) {
                 Button {} label: {
-                    Label("Add to Playlist", systemImage: "music.note.list")
+                    Label("Add to Playlist", systemImage: Symbols.musicNoteList.name)
                 }
             }
             .onTapGesture {
