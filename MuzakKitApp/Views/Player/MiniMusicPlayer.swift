@@ -22,8 +22,9 @@ struct MiniMusicPlayer: View {
 
                 if let artwork = musicPlayerManager.currentItem?.artwork {
                     ArtworkImage(artwork, width: 34, height: 34)
-                        .clipShape(RoundedRectangle(cornerRadius: 6))
                         .matchedGeometryEffect(id: PlayerMatchedGeometry.coverImage.name, in: nameSpace)
+                        .frame(width: 34, height: 34)
+                        .clipShape(RoundedRectangle(cornerRadius: 6))
                         .onTapGesture {
                             withAnimation(PlayerMatchedGeometry.animation) {
                                 toggleView.toggle()
@@ -32,9 +33,9 @@ struct MiniMusicPlayer: View {
                 } else {
                     Rectangle()
                         .fill(.secondary)
+                        .matchedGeometryEffect(id: PlayerMatchedGeometry.coverImage.name, in: nameSpace)
                         .frame(width: 34, height: 34)
                         .clipShape(RoundedRectangle(cornerRadius: 6))
-                        .matchedGeometryEffect(id: PlayerMatchedGeometry.coverImage.name, in: nameSpace)
                         .onTapGesture {
                             withAnimation(PlayerMatchedGeometry.animation) {
                                 toggleView.toggle()
@@ -85,7 +86,6 @@ struct MiniMusicPlayer: View {
                     }.matchedGeometryEffect(id: PlayerMatchedGeometry.secondaryAction.name, in: nameSpace)
                 }
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
             .padding(10)
             .padding(.trailing, 6)
             .background(
@@ -94,6 +94,7 @@ struct MiniMusicPlayer: View {
                     .matchedGeometryEffect(id: PlayerMatchedGeometry.background.name, in: nameSpace)
             )
             .clipShape(RoundedRectangle(cornerRadius: 8))
+            .frame(maxWidth: .infinity, alignment: .leading)
             .padding(8)
     }
 }

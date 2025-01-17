@@ -15,6 +15,7 @@ struct FullScreenPlayer: View {
     @Binding var toggleView: Bool
 
     @State private var volume = 0.5
+    @State private var playerOffset = 0.0
 
     let proxy: GeometryProxy
     let nameSpace: Namespace.ID
@@ -43,7 +44,7 @@ struct FullScreenPlayer: View {
             return Color(cgColor: artworkBackground)
         }
 
-        return Color(.systemGray6)
+        return Color(.systemGray5)
     }
 
     private var primarytextColor: Color {
@@ -86,9 +87,11 @@ struct FullScreenPlayer: View {
 
             Rectangle()
                 .fill(hasBackground ? background.gradient : defaultBackground.gradient)
+                .clipShape(RoundedRectangle(cornerRadius: proxy.safeAreaInsets.top))
                 .animation(.easeIn, value: hasBackground)
                 .colorMultiply(Color(hue: 0.0, saturation: 0, brightness: 0.7))
                 .matchedGeometryEffect(id: PlayerMatchedGeometry.background.name, in: nameSpace)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .ignoresSafeArea()
 
             VStack {
@@ -102,20 +105,15 @@ struct FullScreenPlayer: View {
                         }
                     }
 
-
                 if let artwork = artwork {
 
                     ArtworkImage(artwork, width: width, height: width)
-                        .clipShape(RoundedRectangle(cornerRadius: 12))
                         .matchedGeometryEffect(id: PlayerMatchedGeometry.coverImage.name, in: nameSpace)
+                        .frame(width: width, height: width)
+                        .clipShape(RoundedRectangle(cornerRadius: 12))
                         .padding(.top, 14)
                         .padding(.bottom, 32)
                         .shadow(color: .black.opacity(0.2), radius: 30, y: 15)
-                        .onTapGesture {
-                            withAnimation(PlayerMatchedGeometry.animation) {
-                                toggleView.toggle()
-                            }
-                        }
                         .scaleEffect(isPlaying ? 1 : 0.8)
                         .animation(.interpolatingSpring(duration: 0.5, bounce: 0.5), value: isPlaying)
 
@@ -123,16 +121,11 @@ struct FullScreenPlayer: View {
 
                     Rectangle()
                         .fill(.secondary)
+                        .matchedGeometryEffect(id: PlayerMatchedGeometry.coverImage.name, in: nameSpace)
                         .frame(width: width, height: width)
                         .clipShape(RoundedRectangle(cornerRadius: 12))
-                        .matchedGeometryEffect(id: PlayerMatchedGeometry.coverImage.name, in: nameSpace)
                         .padding(.vertical, 40)
                         .shadow(color: .black.opacity(0.2), radius: 30, y: 15)
-                        .onTapGesture {
-                            withAnimation(PlayerMatchedGeometry.animation) {
-                                toggleView.toggle()
-                            }
-                        }
                 }
 
                 VStack {
@@ -142,15 +135,15 @@ struct FullScreenPlayer: View {
                             .fontWeight(.bold)
                             .foregroundStyle(primarytextColor)
                             .lineLimit(1)
-                            .frame(maxWidth: .infinity, alignment: .leading)
                             .matchedGeometryEffect(id: PlayerMatchedGeometry.title.name, in: nameSpace)
+                            .frame(maxWidth: .infinity, alignment: .leading)
 
                         Text(subtitle)
                             .font(.title3)
                             .foregroundStyle(secondaryTextColor.opacity(opacity))
                             .lineLimit(1)
-                            .frame(maxWidth: .infinity, alignment: .leading)
                             .matchedGeometryEffect(id: PlayerMatchedGeometry.subtitle.name, in: nameSpace)
+                            .frame(maxWidth: .infinity, alignment: .leading)
                             .padding(.bottom, 20)
 
                         if let duration = duration {
@@ -162,8 +155,9 @@ struct FullScreenPlayer: View {
 
                     }.frame(maxWidth: .infinity)
 
-                   playerControls
+                    playerControls
                     volumeSlider
+                        .highPriorityGesture(DragGesture())
                         .opacity(opacity)
 
                 }.padding(.horizontal, 8)
@@ -171,7 +165,39 @@ struct FullScreenPlayer: View {
             .padding(.horizontal, 24)
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
             .padding(.top, proxy.safeAreaInsets.top)
+
         }
+        .offset(y: toggleView ? playerOffset : .zero)
+            .gesture(
+                DragGesture()
+                    .onChanged { gesture in
+                        let translationY = gesture.translation.height
+                        withAnimation {
+                            playerOffset = (translationY > 0 ? translationY : 0)
+                        }
+                    }.onEnded { value in
+                        let velocity = CGSize(
+                            width:  value.predictedEndLocation.x - value.location.x,
+                            height: value.predictedEndLocation.y - value.location.y
+                        )
+
+                        withAnimation {
+                            if velocity.height > 500.0 {
+                                toggleView.toggle()
+                                playerOffset = .zero
+                                return
+                            }
+
+                            if playerOffset > proxy.size.height /  3 {
+                                toggleView.toggle()
+                                playerOffset = .zero
+                                return
+                            }
+
+                            playerOffset = .zero
+                        }
+                    }
+                )
     }
 
     var playerControls: some View {
