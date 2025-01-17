@@ -16,7 +16,6 @@ class MusicPlayerManager {
     private var player: ApplicationMusicPlayer
     private var playerState: MusicPlayer.State
     private var playbackStatePublisher: AnyCancellable?
-
     private var queueChangePublisher: AnyCancellable?
 
     var playbackState: MusicPlayer.PlaybackStatus = .stopped
@@ -31,6 +30,7 @@ class MusicPlayerManager {
 
         self.player = ApplicationMusicPlayer.shared
         self.playerState = ApplicationMusicPlayer.shared.state
+        
         setupPlayerStateListener()
         setupQueueChangeListener()
     }
@@ -61,10 +61,12 @@ class MusicPlayerManager {
     private func startPlayBackTimer() {
 
         timer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true) { [weak self] _ in
+
             guard self?.playerState.playbackStatus == .playing else {
                 self?.timer?.invalidate()
                 return
             }
+
             self?.updatePlaybackTime()
         }
     }
