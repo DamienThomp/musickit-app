@@ -20,7 +20,7 @@ struct FullScreenPlayer: View {
     let proxy: GeometryProxy
     let nameSpace: Namespace.ID
 
-    private let opacity: CGFloat = 0.85
+    private let opacity: CGFloat = 0.9
 
     private var isPlaying: Bool {
         musicPlayerManager.playbackState == .playing
@@ -207,14 +207,14 @@ struct FullScreenPlayer: View {
             Button {
                 musicPlayerManager.skipToPrevious()
             } label: {
-                Image(systemName: "backward.fill")
+                Symbols.skipBack.image
                     .imageScale(.large)
                     .font(.system(size: 30))
             }
             Button {
                 musicPlayerManager.togglePlayBack()
             } label: {
-                Image(systemName: isPlaying ? "pause.fill" : "play.fill")
+                Image(systemName: isPlaying ? Symbols.pause.name : Symbols.play.name)
                     .imageScale(.large)
                     .font(.system(size: 40))
 
@@ -223,7 +223,7 @@ struct FullScreenPlayer: View {
             Button {
                 musicPlayerManager.skipToNext()
             } label: {
-                Image(systemName: "forward.fill")
+                Symbols.skipForward.image
                     .imageScale(.large)
                     .font(.system(size: 30))
             }.matchedGeometryEffect(id: PlayerMatchedGeometry.secondaryAction.name, in: nameSpace)
@@ -236,10 +236,10 @@ struct FullScreenPlayer: View {
     var volumeSlider: some View {
         VStack {
             HStack(alignment: .top) {
-                Image(systemName: "speaker.fill")
+                Symbols.volumeDown.image
                 VolumeSliderView(tint: UIColor(secondaryTextColor))
                     .frame(maxWidth: .infinity)
-                Image(systemName: "speaker.wave.3.fill")
+                Symbols.volumeUp.image
             }
             .frame(height: 50)
             .frame(maxWidth: .infinity)

@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		38D98F712D3A40520026A189 /* SFSymbolsMacro in Frameworks */ = {isa = PBXBuildFile; productRef = 38D98F702D3A40520026A189 /* SFSymbolsMacro */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		38A699D52D18FE6000650D6B /* MuzakKitApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MuzakKitApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		38A699E72D18FE9000650D6B /* MusicKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MusicKit.framework; path = System/Library/Frameworks/MusicKit.framework; sourceTree = SDKROOT; };
@@ -37,6 +41,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				38D98F712D3A40520026A189 /* SFSymbolsMacro in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -88,6 +93,7 @@
 			);
 			name = MuzakKitApp;
 			packageProductDependencies = (
+				38D98F702D3A40520026A189 /* SFSymbolsMacro */,
 			);
 			productName = MuzakKitApp;
 			productReference = 38A699D52D18FE6000650D6B /* MuzakKitApp.app */;
@@ -117,6 +123,9 @@
 			);
 			mainGroup = 38A699CC2D18FE6000650D6B;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				38D98F6F2D3A40520026A189 /* XCRemoteSwiftPackageReference "SFSymbolsMacro" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 38A699D62D18FE6000650D6B /* Products */;
 			projectDirPath = "";
@@ -351,6 +360,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		38D98F6F2D3A40520026A189 /* XCRemoteSwiftPackageReference "SFSymbolsMacro" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/lukepistrol/SFSymbolsMacro.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.5.3;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		38D98F702D3A40520026A189 /* SFSymbolsMacro */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 38D98F6F2D3A40520026A189 /* XCRemoteSwiftPackageReference "SFSymbolsMacro" */;
+			productName = SFSymbolsMacro;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 38A699CD2D18FE6000650D6B /* Project object */;
 }

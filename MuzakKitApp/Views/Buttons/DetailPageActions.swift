@@ -23,7 +23,7 @@ struct DetailPageActions: View {
                 handlePlayback()
             } label: {
                 HStack {
-                    Image(systemName: "play.fill")
+                    Symbols.play.image
                     Text("Play")
                 }.frame(maxWidth: .infinity)
             }.buttonStyle(.bordered)
@@ -32,7 +32,7 @@ struct DetailPageActions: View {
                 handleShuffle()
             } label: {
                 HStack {
-                    Image(systemName: "shuffle")
+                    Symbols.shuffle.image
                     Text("Shuffle")
                 }.frame(maxWidth: .infinity)
             }.buttonStyle(.bordered)

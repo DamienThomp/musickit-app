@@ -120,14 +120,14 @@ struct AlbumDetailScreen: View {
                     impactLight.impactOccurred()
                     addToLibrary(album)
                 } label: {
-                    Image(systemName: isInLibrary ? "checkmark.circle.fill" : "plus.circle")
+                    Image(systemName: isInLibrary ? Symbols.checkmarkCircle.name : Symbols.plusCircle.name)
                 }
             }
             ToolbarItem(placement: .topBarTrailing) {
                 Menu {
                     createContextMenu(for: album)
                 } label: {
-                    Image(systemName: "ellipsis")
+                    Symbols.ellipsis.image
                 }
             }
         }
@@ -162,7 +162,7 @@ struct AlbumDetailScreen: View {
 
                 if let genre = album.genreNames.first {
                     Text(genre)
-                    Image(systemName: "circle.fill")
+                    Symbols.circle.image
                         .imageScale(.small)
                         .font(.system(size: 4))
                 }
@@ -193,7 +193,7 @@ struct AlbumDetailScreen: View {
         Button {
             print("add to playlist")
         } label: {
-            Label("Add to Playlist", systemImage: "music.note.list")
+            Label("Add to Playlist", systemImage: Symbols.musicNoteList.name)
         }
 
         Divider()
@@ -206,13 +206,13 @@ struct AlbumDetailScreen: View {
                 musicPlayer.playNext()
             }
         } label: {
-            Label("Play Next", systemImage: "text.line.first.and.arrowtriangle.forward")
+            Label("Play Next", systemImage: Symbols.playNext.name)
         }
 
         Button {
             musicPlayer.playLast()
         } label: {
-            Label("Play Last", systemImage: "text.line.last.and.arrowtriangle.forward")
+            Label("Play Last", systemImage: Symbols.playLast.name)
         }
     }
 }
