@@ -19,25 +19,30 @@ struct GenreView: View {
 
     var body: some View {
 
-        ScrollView {
+        GeometryReader {
 
-            VStack(alignment: .leading, spacing: 30) {
+            let width = $0.size.width
+
+            List {
 
                 if let topItems = catalogItems?.topResults {
 
-                    ScrollView(.horizontal) {
-                        LazyHGrid(rows: [GridItem()], alignment: .bottom, spacing: 12) {
+                    Section {
+                        HorizontalGrid(
+                            grid: 1.15,
+                            rows: 1,
+                            gutterSize: 12,
+                            viewAligned: false,
+                            width: width
+                        ) { width in
                             ForEach(topItems, id: \.self) { item in
-                                renderCard(for: item, with: 324)
+                                renderCard(for: item, with: width)
                                     .onTapGesture {
                                         handleTopItemTap(for: item)
-                                }
+                                    }
                             }
-                       }.scrollTargetLayout()
-                    }
-                    .scrollTargetBehavior(.viewAligned)
-                    .safeAreaPadding(.horizontal)
-                    .scrollIndicators(.hidden)
+                        }.listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 20, trailing: 0))
+                    }.listRowSeparator(.hidden)
                 }
 
                 if let songs = charts?.songCharts {
@@ -47,24 +52,18 @@ struct GenreView: View {
                         Section {
                             Text(section.title)
                                 .sectionHeader()
-                                .padding(.leading)
 
-                            ScrollView(.horizontal, showsIndicators: false) {
-                                LazyHGrid(
-                                    rows: [
-                                        GridItem(),
-                                        GridItem(),
-                                        GridItem(),
-                                        GridItem()
-                                    ],
-                                    spacing: 12
-                                ) {
-                                    ForEach(section.items, id: \.self) { item in
-                                        songCell(for: item)
-                                    }
+                            HorizontalGrid(
+                                grid: 1.15,
+                                rows: 4,
+                                gutterSize: 12,
+                                width: width
+                            ) { width in
+                                ForEach(section.items, id: \.self) { item in
+                                    songCell(for: item, width: width)
                                 }
-                            }.safeAreaPadding(.horizontal)
-                        }
+                            }.listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 20, trailing: 0))
+                        }.listRowSeparator(.hidden)
                     }
                 }
 
@@ -75,30 +74,22 @@ struct GenreView: View {
                         Section {
                             Text(section.title)
                                 .sectionHeader()
-                                .padding(.leading)
 
-                            ScrollView(.horizontal, showsIndicators: false) {
+                            HorizontalGrid(
+                                grid: 2.4,
+                                rows: 2,
+                                gutterSize: 12,
+                                width: width
+                            ) { width in
+                                ForEach(section.items, id: \.self) { item in
 
-                                LazyHGrid(
-                                    rows: [GridItem(
-                                        .adaptive(
-                                            minimum: 250,
-                                            maximum: 250
-                                        )
-                                    )],
-                                    alignment: .top,
-                                    spacing: 12
-                                ) {
-                                    ForEach(section.items, id: \.self) { item in
-
-                                        AlbumItemCell(item: item, size: 168)
-                                            .onTapGesture {
-                                                navigation.path.append(item)
-                                            }
-                                    }
+                                    AlbumItemCell(item: item, size: width)
+                                        .onTapGesture {
+                                            navigation.path.append(item)
+                                        }
                                 }
-                            }.safeAreaPadding(.horizontal)
-                        }
+                            }.listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 20, trailing: 0))
+                        }.listRowSeparator(.hidden)
                     }
                 }
 
@@ -109,33 +100,70 @@ struct GenreView: View {
                         Section {
                             Text(section.title)
                                 .sectionHeader()
-                                .padding(.leading)
 
-                            ScrollView(.horizontal, showsIndicators: false) {
+                            HorizontalGrid(
+                                grid: 2.4,
+                                rows: 1,
+                                gutterSize: 12,
+                                viewAligned: false,
+                                width: width
+                            ) { width in
+                                ForEach(section.items, id: \.self) { item in
+                                    PlaylistItemCell(item: item, size: 168)
+                                        .onTapGesture {
+                                            navigation.path.append(item)
+                                        }
 
-                                LazyHGrid(
-                                    rows: [GridItem(
-                                        .adaptive(
-                                            minimum: 250,
-                                            maximum: 250
-                                        )
-                                    )],
-                                    alignment: .top,
-                                    spacing: 12
-                                ) {
-                                    ForEach(section.items, id: \.self) { item in
-
-                                        PlaylistItemCell(item: item, size: 168)
-                                            .onTapGesture {
-                                                navigation.path.append(item)
-                                            }
-                                    }
                                 }
-                            }.safeAreaPadding(.horizontal)
-                        }
+                            }.listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 20, trailing: 0))
+                        }.listRowSeparator(.hidden)
                     }
                 }
-            }
+
+                if let artists = catalogItems?.artists {
+                    Section {
+                        Text("\(genre.name) Atists")
+                            .sectionHeader()
+
+                        HorizontalGrid(
+                            grid: 2.4,
+                            rows: 1,
+                            gutterSize: 12,
+                            viewAligned: false,
+                            width: width
+                        ) { width in
+                            ForEach(artists, id: \.self) { item in
+                                ArtistItemCell(item: item, size: width).onTapGesture {
+                                    navigation.path.append(item)
+                                }
+                            }
+                        }.listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 20, trailing: 0))
+                    }.listRowSeparator(.hidden)
+                }
+
+                if let catalogAlbums = catalogItems?.albums {
+
+                    Section {
+
+                        Text("\(genre.name) Albums")
+                            .sectionHeader()
+
+                        HorizontalGrid(
+                            grid: 2.4,
+                            rows: 1,
+                            gutterSize: 12,
+                            viewAligned: false,
+                            width: width
+                        ) { width in
+                            ForEach(catalogAlbums, id: \.self) { item in
+                                AlbumItemCell(item: item, size: width).onTapGesture {
+                                    navigation.path.append(item)
+                                }
+                            }
+                        }.listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 20, trailing: 0))
+                    }.listRowSeparator(.hidden)
+                }
+            }.listStyle(.plain)
         }
         .task {
             try? await loadGenreSections()
@@ -144,7 +172,7 @@ struct GenreView: View {
     }
 
     @ViewBuilder
-    private func songCell(for item: Song) -> some View {
+    private func songCell(for item: Song, width: CGFloat) -> some View {
 
         HStack {
             if let artwork = item.artwork {
@@ -163,7 +191,7 @@ struct GenreView: View {
 
             Spacer()
         }
-        .frame(width: 318)
+        .frame(width: width)
     }
 
     @ViewBuilder
@@ -266,6 +294,8 @@ extension GenreView {
        let genre = mockGenre.items.first {
         AppRootNavigation {
             GenreView(genre: genre, charts: mockData)
-        }.environment(NavPath())
+        }
+        .environment(MusicPlayerManager())
+        .environment(NavPath())
     }
 }
