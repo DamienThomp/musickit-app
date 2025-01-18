@@ -16,61 +16,53 @@ struct BrowseView: View {
 
     var body: some View {
 
-        ScrollView {
+        GeometryReader {
 
-            VStack(alignment: .leading, spacing: 30) {
+            let width = $0.size.width
 
-                if let recommendations = recommendations {
+            List {
 
-                    ForEach(recommendations, id: \.self) { recommendation in
+                if let recommendations {
 
-                        VStack(alignment: .leading) {
+                    ForEach(recommendations, id: \.self) { section in
 
-                            if let title = recommendation.title {
+                        Section {
+
+                            if let title = section.title {
                                 Text(title)
                                     .sectionHeader()
-                                    .padding(.leading)
                             }
 
-                            if let reason = recommendation.reason {
+                            if let reason = section.reason {
                                 Text(reason)
                                     .sectionSubtitle()
-                                    .padding(.leading)
                             }
 
-                            if !recommendation.items.isEmpty {
-                                let items = recommendation.items
-                                
-                                ScrollView(.horizontal, showsIndicators: false) {
+                            if !section.items.isEmpty {
 
-                                    LazyHGrid(
-                                        rows: [GridItem(
-                                            .adaptive(
-                                                minimum: 250,
-                                                maximum: 250
-                                            )
-                                        )],
-                                        alignment: .top,
-                                        spacing: 12
-                                    ) {
-                                        ForEach(items, id: \.self) { item in
-                                            
-                                            renderCard(for: item)
-                                                .tint(.primary)
-                                        }
+                                HorizontalGrid(
+                                    grid: 2.4,
+                                    rows: 1,
+                                    gutterSize: 12,
+                                    viewAligned: false,
+                                    width: width
+                                ) { width in
+                                    ForEach(section.items, id: \.self) { item in
+                                        renderCard(for: item)
+                                            .tint(.primary)
                                     }
-                                    .padding(.leading)
-                                    .scrollTargetLayout()
                                 }
                             }
-                        }
+                        }.listRowSeparator(.hidden)
                     }
                 }
             }
+            .listStyle(.plain)
+            .navigationTitle("Browse")
             .task {
-                await fetchLibrary()
+               await fetchLibrary()
             }
-        }.navigationTitle("Browse")
+        }
     }
 
     @ViewBuilder
@@ -111,7 +103,9 @@ extension BrowseView {
             do {
                 let recommendationsRequest = MusicPersonalRecommendationsRequest()
                 let recommendations = try await recommendationsRequest.response()
-                self.recommendations = recommendations.recommendations
+                withAnimation {
+                    self.recommendations = recommendations.recommendations
+                }
             } catch {
                 print(error)
             }

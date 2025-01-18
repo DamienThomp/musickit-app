@@ -41,7 +41,7 @@ struct GenreView: View {
                                         handleTopItemTap(for: item)
                                     }
                             }
-                        }.listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 20, trailing: 0))
+                        }
                     }.listRowSeparator(.hidden)
                 }
 
@@ -62,7 +62,7 @@ struct GenreView: View {
                                 ForEach(section.items, id: \.self) { item in
                                     songCell(for: item, width: width)
                                 }
-                            }.listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 20, trailing: 0))
+                            }
                         }.listRowSeparator(.hidden)
                     }
                 }
@@ -88,7 +88,7 @@ struct GenreView: View {
                                             navigation.path.append(item)
                                         }
                                 }
-                            }.listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 20, trailing: 0))
+                            }
                         }.listRowSeparator(.hidden)
                     }
                 }
@@ -115,7 +115,7 @@ struct GenreView: View {
                                         }
 
                                 }
-                            }.listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 20, trailing: 0))
+                            }
                         }.listRowSeparator(.hidden)
                     }
                 }
@@ -137,7 +137,7 @@ struct GenreView: View {
                                     navigation.path.append(item)
                                 }
                             }
-                        }.listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 20, trailing: 0))
+                        }
                     }.listRowSeparator(.hidden)
                 }
 
@@ -160,7 +160,7 @@ struct GenreView: View {
                                     navigation.path.append(item)
                                 }
                             }
-                        }.listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 20, trailing: 0))
+                        }
                     }.listRowSeparator(.hidden)
                 }
             }.listStyle(.plain)

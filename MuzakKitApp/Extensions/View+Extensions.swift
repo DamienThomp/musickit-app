@@ -12,4 +12,8 @@ extension View {
     func plainHeaderStyle() -> some View {
         modifier(DetailPlainSection())
     }
+
+    func horizontalDefaultInsets() -> some View {
+        modifier(HorizontalItems())
+    }
 }
