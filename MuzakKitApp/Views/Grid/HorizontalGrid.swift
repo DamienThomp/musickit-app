@@ -30,7 +30,7 @@ struct HorizontalGrid<Content: View>: View {
             ScrollView(.horizontal) {
                 LazyHGrid(
                     rows: gridRows,
-                    alignment: .bottom,
+                    alignment: .top,
                     spacing: gutterSize
                 ) {
                     content(contentWidth)
@@ -44,7 +44,7 @@ struct HorizontalGrid<Content: View>: View {
                     limitBehavior: .never
                 )
             )
-        }
+        }.horizontalDefaultInsets()
     }
 }
 
