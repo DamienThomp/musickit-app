@@ -75,7 +75,9 @@ struct SearchContainer: View {
                     ) {
                         ForEach(searchResults.albums, id: \.self) { item in
 
-                            AlbumItemCell(item: item, size: 168)
+                            AlbumItemCell(item: item, size: 168).onTapGesture {
+                                navigation.path.append(item)
+                            }
                         }
                     }
                     .scrollTargetLayout()
@@ -99,7 +101,9 @@ struct SearchContainer: View {
                             spacing: 12
                         ) {
                             ForEach(searchResults.songs, id: \.self) { item in
-                                songCell(for: item)
+                                songCell(for: item).onTapGesture {
+                                    navigation.path.append(item)
+                                }
                             }
                         }
                     }
@@ -123,7 +127,9 @@ struct SearchContainer: View {
                     ) {
                         ForEach(searchResults.artists, id: \.self) { item in
 
-                            ArtistItemCell(item: item, size: 168)
+                            ArtistItemCell(item: item, size: 168).onTapGesture {
+                                navigation.path.append(item)
+                            }
                         }
                     }
                     .scrollTargetLayout()
@@ -208,6 +214,7 @@ struct SearchView: View {
     }
 
     private func conductSearch(for searchTerm: String)  {
+        // TODO: - debounce calls to search + add suggestions
         Task {
             let searchRequest = MusicCatalogSearchRequest(term: searchTerm, types: [Album.self, Song.self, Playlist.self, Station.self, Artist.self])
 
