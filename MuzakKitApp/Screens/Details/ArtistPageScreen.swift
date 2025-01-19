@@ -210,9 +210,8 @@ struct ArtistPageScreen: View {
             loadSections()
         }
         .preferredColorScheme(.dark)
-
-
     }
+
     @ViewBuilder
     private func header() -> some View {
 
