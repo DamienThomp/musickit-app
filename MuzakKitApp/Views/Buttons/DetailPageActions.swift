@@ -26,7 +26,7 @@ struct DetailPageActions: View {
                     Symbols.play.image
                     Text("Play")
                 }.frame(maxWidth: .infinity)
-            }.buttonStyle(.bordered)
+            }.buttonStyle(.borderedProminent)
 
             Button {
                 handleShuffle()
@@ -35,12 +35,12 @@ struct DetailPageActions: View {
                     Symbols.shuffle.image
                     Text("Shuffle")
                 }.frame(maxWidth: .infinity)
-            }.buttonStyle(.bordered)
+            }.buttonStyle(.borderedProminent)
         }
         .frame(maxWidth: .infinity)
         .controlSize(.large)
         .padding(.horizontal, 16)
-        .tint(.secondary)
+        .tint(Color(.systemGray6))
         .foregroundStyle(.pink)
     }
 }

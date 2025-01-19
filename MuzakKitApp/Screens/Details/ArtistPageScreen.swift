@@ -10,9 +10,16 @@ import MusicKit
 
 struct ArtistPageScreen: View {
 
+    private enum CoordinateSpace {
+        case scrollView
+    }
+
+    let initialHeight = UIScreen.main.bounds.width
+    let screenHeight = UIScreen.main.bounds.height
+
     let artist: Artist
 
-    @State private var artistDetails: Artist?
+    @State var artistDetails: Artist? = nil
     @State private var isLoading: Bool = true
 
     private var artwork: Artwork? {
@@ -25,108 +32,226 @@ struct ArtistPageScreen: View {
 
     var body: some View {
 
-        List {
-            header
-                .plainHeaderStyle()
-                .frame(maxWidth: .infinity)
+        GeometryReader { proxy in
 
-            if let albums = artistDetails?.albums, !albums.isEmpty {
+            let size = proxy.size
 
-                ItemsSectionView("Albums by \(artist.name)") {
-                    ForEach(albums, id: \.self) { album in
-                        NavigationLink(value: album) {
-                            AlbumItemCell(item: album, size: 160)
-                        }.tint(.primary)
+            ScrollView {
+
+                header()
+                    .padding(.bottom, -10)
+
+                if let artistDetails {
+
+                    VStack(alignment: .leading, spacing: 20) {
+
+                        if let latest = artistDetails.latestRelease {
+                            Section {
+
+                                NavigationLink(value: latest) {
+                                    TopResultCell(
+                                        title: latest.title,
+                                        subtitle: latest.artistName,
+                                        artwork: latest.artwork,
+                                        size: size.width / 1.09
+                                    ).padding(.horizontal)
+                                }.tint(.primary)
+                            }
+                        }
+
+                        if let albums = artistDetails.albums, !albums.isEmpty {
+
+                            Section {
+                                
+                                Text(albums.title ?? "Albums by \(artist.name)")
+                                    .sectionHeader()
+                                    .padding(.leading)
+
+
+                                HorizontalGrid(grid: 2.4, rows: 1, gutterSize: 12, viewAligned: false, width: size.width) { width in
+                                    ForEach(albums, id: \.self) { album in
+                                        NavigationLink(value: album) {
+                                            AlbumItemCell(item: album, size: width)
+                                        }.tint(.primary)
+                                    }
+                                }
+                            }
+                        }
+
+                        if let compilations = artistDetails.compilationAlbums, !compilations.isEmpty {
+
+                            Section {
+
+                                Text(compilations.title ?? "Compilations by \(artist.name)")
+                                    .sectionHeader()
+                                    .padding(.leading)
+
+
+                                HorizontalGrid(grid: 2.4, rows: 1, gutterSize: 12, viewAligned: false, width: size.width) { width in
+                                    ForEach(compilations, id: \.self) { album in
+                                        NavigationLink(value: album) {
+                                            AlbumItemCell(item: album, size: width)
+                                        }.tint(.primary)
+                                    }
+                                }
+                            }
+                        }
+
+                        if let singles = artistDetails.singles, !singles.isEmpty {
+
+                            Section {
+
+                                Text(singles.title ?? "Singles by \(artist.name)")
+                                    .sectionHeader()
+                                    .padding(.leading)
+
+
+                                HorizontalGrid(grid: 2.4, rows: 1, gutterSize: 12, viewAligned: false, width: size.width) { width in
+                                    ForEach(singles, id: \.self) { album in
+                                        NavigationLink(value: album) {
+                                            AlbumItemCell(item: album, size: width)
+                                        }.tint(.primary)
+                                    }
+                                }
+                            }
+                        }
+
+                        if let appearsOn = artistDetails.appearsOnAlbums, !appearsOn.isEmpty {
+
+                            Section {
+
+                                Text(appearsOn.title ?? "Appears on")
+                                    .sectionHeader()
+                                    .padding(.leading)
+
+                                HorizontalGrid(grid: 2.4, rows: 1, gutterSize: 12, viewAligned: false, width: size.width) { width in
+                                    ForEach(appearsOn, id: \.self) { album in
+                                        NavigationLink(value: album) {
+                                            AlbumItemCell(item: album, size: width)
+                                        }.tint(.primary)
+                                    }
+                                }
+                            }
+                        }
+
+                        if let featured = artistDetails.featuredAlbums, !featured.isEmpty {
+
+                            Section {
+
+                                Text(featured.title ?? "Featured on")
+                                    .sectionHeader()
+                                    .padding(.leading)
+
+                                HorizontalGrid(grid: 2.4, rows: 1, gutterSize: 12, viewAligned: false, width: size.width) { width in
+                                    ForEach(featured, id: \.self) { album in
+                                        NavigationLink(value: album) {
+                                            AlbumItemCell(item: album, size: width)
+                                        }.tint(.primary)
+                                    }
+                                }
+                            }
+                        }
+
+                        if let playlists = artistDetails.playlists, !playlists.isEmpty {
+
+                            Section {
+
+                                Text(playlists.title ?? "Playlists")
+                                    .sectionHeader()
+                                    .padding(.leading)
+
+                                HorizontalGrid(grid: 2.4, rows: 1, gutterSize: 12, viewAligned: false, width: size.width) { width in
+                                    ForEach(playlists, id: \.self) { item in
+                                        NavigationLink(value: item) {
+                                            PlaylistItemCell(item: item, size: width)
+                                        }.tint(.primary)
+                                    }
+                                }
+                            }
+                        }
+
+                        if let similarArtists = artistDetails.similarArtists, !similarArtists.isEmpty {
+
+                            Section {
+
+                                Text(similarArtists.title ?? "Similar Artists")
+                                    .sectionHeader()
+                                    .padding(.leading)
+
+                                HorizontalGrid(grid: 2.4, rows: 1, gutterSize: 12, viewAligned: false, width: size.width) { width in
+                                    ForEach(similarArtists, id: \.self) { item in
+                                        NavigationLink(value: item) {
+                                            ArtistItemCell(item: item, size: width)
+                                        }.tint(.primary)
+                                    }
+                                }
+                            }
+                        }
+
+                        Section {
+                            if let notes = artistDetails.editorialNotes?.standard {
+                                Text(notes)
+                            }
+                        }
                     }
+                    .padding(.top, 20)
+                    .padding(.bottom, proxy.safeAreaInsets.bottom + 20)
+                    .frame(maxWidth: .infinity, alignment: .top)
+                    .background(Color(.systemGray6))
+                    .transition(.asymmetric(insertion: .opacity, removal: .identity))
                 }
+
             }
-
-            if let singles = artistDetails?.singles, !singles.isEmpty {
-
-                ItemsSectionView(singles.title) {
-                    ForEach(singles, id: \.self) { album in
-                        NavigationLink(value: album) {
-                            AlbumItemCell(item: album, size: 160)
-                        }.tint(.primary)
-                    }
-                }
-            }
-
-
-            if let appearsOn = artistDetails?.appearsOnAlbums, !appearsOn.isEmpty {
-
-                ItemsSectionView(appearsOn.title) {
-                    ForEach(appearsOn, id: \.self) { album in
-                        NavigationLink(value: album) {
-                            AlbumItemCell(item: album, size: 160)
-                        }.tint(.primary)
-                    }
-                }
-            }
-
-            if let featured = artistDetails?.featuredAlbums, !featured.isEmpty {
-
-                ItemsSectionView(featured.title) {
-                    ForEach(featured, id: \.self) { album in
-                        NavigationLink(value: album) {
-                            AlbumItemCell(item: album, size: 160)
-                        }.tint(.primary)
-                    }
-                }
-            }
-
-            if let playlists = artistDetails?.playlists, !playlists.isEmpty {
-
-                ItemsSectionView("Playlists") {
-                    ForEach(playlists, id: \.self) { item in
-                        NavigationLink(value: item) {
-                            PlaylistItemCell(item: item, size: 160)
-                        }.tint(.primary)
-                    }
-                }
-            }
-
-            if let similarArtists = artistDetails?.similarArtists, !similarArtists.isEmpty {
-
-                ItemsSectionView(similarArtists.title) {
-                    ForEach(similarArtists, id: \.self) { item in
-                        NavigationLink(value: item) {
-                            ArtistItemCell(item: item, size: 160)
-                        }.tint(.primary)
-                    }
-                }
-            }
+            .coordinateSpace(.named(CoordinateSpace.scrollView))
+            .ignoresSafeArea()
         }
-        .background(Color(.systemGray6), ignoresSafeAreaEdges: .bottom)
-        .listStyle(.plain)
+        .background(Color(.systemBackground), ignoresSafeAreaEdges: .all)
         .onAppear {
             loadSections()
         }
+        .preferredColorScheme(.dark)
+
+
     }
+    @ViewBuilder
+    private func header() -> some View {
 
-    private var header: some View {
+        ZStack(alignment: .bottom) {
 
-        VStack(alignment: .center, spacing: 2) {
+            StretchyHeader(
+                coordinateSpace: CoordinateSpace.scrollView,
+                defaultHeight: initialHeight
+            ) {
 
-            if let artwork {
-                ArtworkImage(
-                    artwork,
-                    width: 240,
-                    height: 240
-                )
-                .clipShape(RoundedRectangle(cornerRadius: 12))
-                .padding(.bottom, 14)
+                if let artworkUrk = artist.artwork?.url(width: Int(initialHeight), height: Int(initialHeight)) {
+
+                    AsyncImage(url: artworkUrk) { phase in
+                        phase.image?
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                            .background(Color(.black))
+                            .mask {
+                                LinearGradient(colors: [.black.opacity(0), .black, .black], startPoint: .top, endPoint: .bottom)
+                            }
+                    }
+                }
             }
 
-            Text(title)
-                .font(.system(.largeTitle))
-                .foregroundStyle(.pink)
-                .multilineTextAlignment(.center)
+            Rectangle()
+                .fill(LinearGradient(colors: [.black.opacity(0.0), .black.opacity(0.5)], startPoint: .top, endPoint: .bottom))
+                .ignoresSafeArea(.container, edges: .all)
+
+            HStack {
+                Text(title)
+                    .padding()
+                    .font(.system(.largeTitle))
+                    .foregroundStyle(.primary)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
         }
-        .lineLimit(2)
     }
-
-
 }
 
 extension ArtistPageScreen {
@@ -143,7 +268,9 @@ extension ArtistPageScreen {
                         .appearsOnAlbums,
                         .similarArtists,
                         .featuredAlbums,
-                        .playlists
+                        .playlists,
+                        .latestRelease,
+                        .compilationAlbums
                     ]
                 )
                 updateSections(with: artistDetails)
@@ -160,5 +287,11 @@ extension ArtistPageScreen {
             self.isLoading = false
             self.artistDetails = artist
         }
+    }
+}
+
+#Preview {
+    if let artist = artistMock {
+        ArtistPageScreen(artist: artist, artistDetails: artist)
     }
 }
