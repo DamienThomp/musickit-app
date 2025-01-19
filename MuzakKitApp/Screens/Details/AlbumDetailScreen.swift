@@ -17,12 +17,12 @@ struct AlbumDetailScreen: View {
     let album: Album
 
     @State var tracks: MusicItemCollection<Track>? = nil
+    @State private var isInLibrary: Bool = false
 
     //TODO: - Condense state variables into one object
     @State private var related: MusicItemCollection<Album>?
     @State private var similarArtists: MusicItemCollection<Artist>?
     @State private var artistAlbums: MusicItemCollection<Album>?
-    @State private var isInLibrary: Bool = false
     @State private var artist: Artist?
 
     private var artwork: Artwork? {
@@ -120,16 +120,21 @@ struct AlbumDetailScreen: View {
                 print(error.localizedDescription)
             }
         }.toolbar {
+
             ToolbarItem(placement: .topBarTrailing) {
                 Button {
+
                     let impactLight = UIImpactFeedbackGenerator(style: .light)
                     impactLight.impactOccurred()
+
                     addToLibrary(album)
                 } label: {
                     Image(systemName: isInLibrary ? Symbols.checkmarkCircle.name : Symbols.plusCircle.name)
                 }
             }
+
             ToolbarItem(placement: .topBarTrailing) {
+
                 Menu {
                     MenuItems(item: album, isInLibrary: $isInLibrary)
                 } label: {
@@ -208,8 +213,7 @@ extension AlbumDetailScreen {
 
         Task { @MainActor in
             do {
-                let library = MusicLibrary.shared
-                try await library.add(album)
+                try await musicService.addToLibrary(album)
                 self.isInLibrary = true
             } catch {
                 print("can't add to library: \(error.localizedDescription)")
@@ -226,18 +230,20 @@ extension AlbumDetailScreen {
 
     private func loadTracks() async throws {
 
-        let album = try await album.with([.tracks, .relatedAlbums, .artists])
+        let response = try await musicService.getData(for: album, with: [.tracks, .relatedAlbums, .artists])
 
-        try await loadSimilarArtists(album.artists)
+        if let artists = response.artists {
+            try await loadSimilarArtists(artists)
+        }
 
-        update(tracks: album.tracks, related: album.relatedAlbums)
+        update(tracks: response.tracks, related: response.relatedAlbums)
     }
 
-    private func loadSimilarArtists(_ artists: MusicItemCollection<Artist>?) async throws {
+    private func loadSimilarArtists(_ artists: MusicItemCollection<Artist>) async throws {
 
-        guard let artist = artists?.first else { return }
+        guard let artist = artists.first else { return }
 
-        let response = try await artist.with([.similarArtists, .albums])
+        let response = try await musicService.getData(for: artist, with: [.similarArtists, .albums])
 
         Task { @MainActor in
 
@@ -252,6 +258,7 @@ extension AlbumDetailScreen {
 
     @MainActor
     private func updateLibraryState(for response: Bool) {
+
         withAnimation {
             self.isInLibrary = response
         }
@@ -259,8 +266,8 @@ extension AlbumDetailScreen {
 
     @MainActor
     private func update(tracks: MusicItemCollection<Track>?, related: MusicItemCollection<Album>?) {
-        withAnimation {
 
+        withAnimation {
             self.tracks = tracks
             self.related = related
         }

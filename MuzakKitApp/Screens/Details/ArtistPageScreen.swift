@@ -10,6 +10,9 @@ import MusicKit
 
 struct ArtistPageScreen: View {
 
+    @Environment(MusicKitService.self) private var musicService
+    @Environment(MusicPlayerService.self) private var musicPlayer
+
     private enum CoordinateSpace {
         case scrollView
     }
@@ -43,10 +46,10 @@ struct ArtistPageScreen: View {
                     header()
                         .padding(.bottom, -10)
 
-                    VStack(alignment: .leading, spacing: 20) {
+                    VStack(alignment: .leading, spacing: 36) {
 
                         if let latest = artistDetails.latestRelease {
-                            Section {
+                            VStack(alignment: .leading) {
 
                                 NavigationLink(value: latest) {
                                     TopResultCell(
@@ -59,9 +62,30 @@ struct ArtistPageScreen: View {
                             }
                         }
 
+                        if let songs = artistDetails.topSongs {
+
+                            VStack(alignment: .leading) {
+                                Text(songs.title ?? "Top Songs")
+                                    .sectionHeader()
+                                    .padding(.leading)
+
+                                HorizontalGrid(
+                                    grid: 1.15,
+                                    rows: 4,
+                                    gutterSize: 12,
+                                    width: size.width
+                                ) { width in
+                                    ForEach(songs, id: \.self) { item in
+                                        SongItemCell(item: item, width: width)
+                                    }
+                                }
+                            }
+
+                        }
+
                         if let albums = artistDetails.albums, !albums.isEmpty {
 
-                            Section {
+                            VStack(alignment: .leading) {
 
                                 Text(albums.title ?? "Albums by \(artist.name)")
                                     .sectionHeader()
@@ -80,7 +104,7 @@ struct ArtistPageScreen: View {
 
                         if let compilations = artistDetails.compilationAlbums, !compilations.isEmpty {
 
-                            Section {
+                            VStack(alignment: .leading) {
 
                                 Text(compilations.title ?? "Compilations by \(artist.name)")
                                     .sectionHeader()
@@ -99,7 +123,7 @@ struct ArtistPageScreen: View {
 
                         if let singles = artistDetails.singles, !singles.isEmpty {
 
-                            Section {
+                            VStack(alignment: .leading) {
 
                                 Text(singles.title ?? "Singles by \(artist.name)")
                                     .sectionHeader()
@@ -118,7 +142,7 @@ struct ArtistPageScreen: View {
 
                         if let appearsOn = artistDetails.appearsOnAlbums, !appearsOn.isEmpty {
 
-                            Section {
+                            VStack(alignment: .leading) {
 
                                 Text(appearsOn.title ?? "Appears on")
                                     .sectionHeader()
@@ -136,7 +160,7 @@ struct ArtistPageScreen: View {
 
                         if let featured = artistDetails.featuredAlbums, !featured.isEmpty {
 
-                            Section {
+                            VStack(alignment: .leading) {
 
                                 Text(featured.title ?? "Featured on")
                                     .sectionHeader()
@@ -154,7 +178,7 @@ struct ArtistPageScreen: View {
 
                         if let playlists = artistDetails.playlists, !playlists.isEmpty {
 
-                            Section {
+                            VStack(alignment: .leading) {
 
                                 Text(playlists.title ?? "Playlists")
                                     .sectionHeader()
@@ -172,7 +196,7 @@ struct ArtistPageScreen: View {
 
                         if let similarArtists = artistDetails.similarArtists, !similarArtists.isEmpty {
 
-                            Section {
+                            VStack(alignment: .leading) {
 
                                 Text(similarArtists.title ?? "Similar Artists")
                                     .sectionHeader()
@@ -188,7 +212,7 @@ struct ArtistPageScreen: View {
                             }
                         }
 
-                        Section {
+                        VStack(alignment: .leading) {
                             if let notes = artistDetails.editorialNotes?.standard {
                                 Text(notes)
                             }
@@ -246,7 +270,6 @@ struct ArtistPageScreen: View {
                     .font(.system(.largeTitle))
                     .foregroundStyle(.primary)
                     .frame(maxWidth: .infinity, alignment: .leading)
-
             }
             .frame(maxWidth: .infinity, alignment: .leading)
         }
@@ -269,7 +292,8 @@ extension ArtistPageScreen {
                         .featuredAlbums,
                         .playlists,
                         .latestRelease,
-                        .compilationAlbums
+                        .compilationAlbums,
+                        .topSongs
                     ]
                 )
                 updateSections(with: artistDetails)
@@ -288,7 +312,11 @@ extension ArtistPageScreen {
 }
 
 #Preview {
+
     if let artist = artistMock {
+
         ArtistPageScreen(artist: artist, artistDetails: artist)
+            .environment(MusicKitService())
+            .environment(MusicPlayerService())
     }
 }
