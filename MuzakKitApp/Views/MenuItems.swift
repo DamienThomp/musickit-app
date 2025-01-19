@@ -10,24 +10,75 @@ import MusicKit
 
 struct MenuItems: View {
 
-    @Environment(MusicPlayerManager.self) private var musicPlayerManager
+    @Environment(MusicPlayerService.self) private var musicPlayer
+    @Environment(MusicKitService.self) private var musicService
 
     let item: MusicItem?
     var tracks: MusicItemCollection<Track>? = nil
 
+    @Binding var isInLibrary: Bool
+    @State private var errorMessage: String = ""
+    @State private var showAlert: Bool = false
+
     var body: some View {
         creatMenu()
+            .task {
+                checkLibrary(for: item)
+            }.alert(errorMessage, isPresented: $showAlert) {
+                Button("OK", role: .cancel) {
+                    errorMessage = ""
+                }
+            }
+    }
+
+    private func addToLibrary() {
+
+        guard let item = item as? MusicLibraryAddable else { return }
+
+        Task {
+            do {
+                try await musicService.addToLibrary(item)
+                updateLibraryStatus(true)
+            } catch {
+                errorMessage = "Failed to add to Lirbary"
+            }
+        }
+    }
+
+    private func checkLibrary(for item: MusicItem?) {
+
+        guard let item else { return }
+
+        Task {
+            do {
+                let response = try await musicService.isInLirabry(item)
+                updateLibraryStatus(response)
+            } catch {
+                print("failed to check library for item \(item.id) with error: \(error.localizedDescription)")
+            }
+        }
+    }
+
+    @MainActor
+    private func updateLibraryStatus(_ status: Bool) {
+        withAnimation {
+            self.isInLibrary = status
+        }
     }
 
     @ViewBuilder
     private func creatMenu() -> some View {
 
-        addToLibrary()
+        if !isInLibrary {
+            addToLibrary()
+        }
+
         addToPlaylist()
         Divider()
 
         playNext()
         playLast()
+
     }
 
     @ViewBuilder
@@ -44,7 +95,7 @@ struct MenuItems: View {
     private func addToLibrary() -> some View {
 
         Button {
-
+            addToLibrary()
         } label: {
             Label("Add to Library", systemImage: Symbols.plus.name)
         }
@@ -55,9 +106,9 @@ struct MenuItems: View {
 
         Button {
             if let track = item as? Track {
-                musicPlayerManager.playNext(track, tracks)
+                musicPlayer.playNext(track, tracks)
             } else {
-                musicPlayerManager.playNext()
+                musicPlayer.playNext()
             }
         } label: {
             Label("Play Next", systemImage: Symbols.playNext.name)
@@ -68,18 +119,18 @@ struct MenuItems: View {
     private func playLast() -> some View {
 
         Button {
-            musicPlayerManager.playLast()
+            musicPlayer.playLast()
         } label: {
             Label("Play Last", systemImage: Symbols.playLast.name)
         }
     }
-
-
 }
 
 #Preview {
+    @Previewable @State var isInLibrary = false
     if let album = albumMock {
-        MenuItems(item: album)
-            .environment(MusicPlayerManager())
+        MenuItems(item: album, isInLibrary: $isInLibrary)
+            .environment(MusicPlayerService())
+            .environment(MusicKitService())
     }
 }

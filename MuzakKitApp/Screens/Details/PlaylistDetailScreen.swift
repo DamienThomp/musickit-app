@@ -10,7 +10,7 @@ import MusicKit
 
 struct PlaylistDetailScreen: View {
 
-    @Environment(MusicPlayerManager.self) private var musicPlayer
+    @Environment(MusicPlayerService.self) private var musicPlayer
 
     let playlist: Playlist
 
@@ -61,7 +61,7 @@ struct PlaylistDetailScreen: View {
                 Section {
                     ForEach(tracks) { track in
                         PlaylistTrackCell(track: track) {
-                            MenuItems(item: track, tracks: tracks)
+                            MenuItems(item: track, tracks: tracks, isInLibrary: $isInLibrary)
                         }
                         .onTapGesture {
                             musicPlayer
@@ -70,7 +70,7 @@ struct PlaylistDetailScreen: View {
                                     from: tracks
                                 )
                         }.contextMenu {
-                            MenuItems(item: track, tracks: tracks)
+                            MenuItems(item: track, tracks: tracks, isInLibrary: $isInLibrary)
                         }
                     }
                 } footer: {
@@ -116,7 +116,7 @@ struct PlaylistDetailScreen: View {
             }
             ToolbarItem(placement: .topBarTrailing) {
                 Menu {
-                    MenuItems(item: playlist)
+                    MenuItems(item: playlist, isInLibrary: $isInLibrary)
                 } label: {
                     Symbols.ellipsis.image
                 }

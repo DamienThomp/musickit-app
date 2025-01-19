@@ -10,7 +10,7 @@ import MusicKit
 
 struct BrowseView: View {
 
-    @Environment(MusicPlayerManager.self) private var musicPlayer
+    @Environment(MusicPlayerService.self) private var musicPlayer
 
     @State var recommendations: MusicItemCollection<MusicPersonalRecommendation>?
 
@@ -141,5 +141,5 @@ extension BrowseView {
         BrowseView()
     }
     .environment(NavPath())
-    .environment(MusicPlayerManager())
+    .environment(MusicPlayerService())
 }
