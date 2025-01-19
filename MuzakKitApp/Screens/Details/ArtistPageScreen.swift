@@ -38,10 +38,10 @@ struct ArtistPageScreen: View {
 
             ScrollView {
 
-                header()
-                    .padding(.bottom, -10)
-
                 if let artistDetails {
+
+                    header()
+                        .padding(.bottom, -10)
 
                     VStack(alignment: .leading, spacing: 20) {
 
@@ -62,7 +62,7 @@ struct ArtistPageScreen: View {
                         if let albums = artistDetails.albums, !albums.isEmpty {
 
                             Section {
-                                
+
                                 Text(albums.title ?? "Albums by \(artist.name)")
                                     .sectionHeader()
                                     .padding(.leading)
@@ -222,7 +222,7 @@ struct ArtistPageScreen: View {
                 defaultHeight: initialHeight
             ) {
 
-                if let artworkUrk = artist.artwork?.url(width: Int(initialHeight), height: Int(initialHeight)) {
+                if let artworkUrk = artist.artwork?.url(width: Int(initialHeight * 1.5), height: Int(initialHeight * 1.5)) {
 
                     AsyncImage(url: artworkUrk) { phase in
                         phase.image?
@@ -281,11 +281,9 @@ extension ArtistPageScreen {
 
     @MainActor
     private func updateSections(with artist: Artist) {
-        withAnimation {
-            
-            self.isLoading = false
-            self.artistDetails = artist
-        }
+
+        self.isLoading = false
+        self.artistDetails = artist
     }
 }
 
