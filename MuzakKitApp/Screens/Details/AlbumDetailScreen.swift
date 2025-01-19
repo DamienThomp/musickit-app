@@ -10,16 +10,20 @@ import MusicKit
 
 struct AlbumDetailScreen: View {
 
+    @Environment(NavPath.self) private var navigation
     @Environment(MusicPlayerService.self) private var musicPlayer
     @Environment(MusicKitService.self) private var musicService
 
     let album: Album
 
     @State var tracks: MusicItemCollection<Track>? = nil
+
+    //TODO: - Condense state variables into one object
     @State private var related: MusicItemCollection<Album>?
     @State private var similarArtists: MusicItemCollection<Artist>?
     @State private var artistAlbums: MusicItemCollection<Album>?
     @State private var isInLibrary: Bool = false
+    @State private var artist: Artist?
 
     private var artwork: Artwork? {
         album.artwork
@@ -44,6 +48,7 @@ struct AlbumDetailScreen: View {
                 .padding(.bottom)
 
             if let tracks = tracks, !tracks.isEmpty {
+
                 Section {
 
                     ForEach(tracks) { track in
@@ -154,10 +159,16 @@ struct AlbumDetailScreen: View {
                 .fontWeight(.semibold)
                 .multilineTextAlignment(.center)
 
+
             Text(artistName)
                 .font(.system(.title2))
                 .foregroundStyle(.pink)
                 .multilineTextAlignment(.center)
+                .frame(maxWidth: .infinity, alignment: .center).onTapGesture {
+                    if let artist {
+                        navigation.path.append(artist)
+                    }
+                }
 
             HStack {
 
@@ -234,6 +245,7 @@ extension AlbumDetailScreen {
 
                 self.similarArtists = response.similarArtists
                 self.artistAlbums = response.albums
+                self.artist = artist
             }
         }
     }
@@ -261,6 +273,7 @@ extension AlbumDetailScreen {
        let tracks = albumTracksMock {
         NavigationStack {
             AlbumDetailScreen(album: album, tracks: tracks)
+                .environment(NavPath())
                 .environment(MusicPlayerService())
                 .environment(MusicKitService())
         }.tint(.pink)
