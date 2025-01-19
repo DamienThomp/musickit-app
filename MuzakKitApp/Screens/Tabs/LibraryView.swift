@@ -125,6 +125,6 @@ extension LibraryView {
     AppRootNavigation {
         LibraryView(items: albumitems)
     }
-    .environment(MusicPlayerManager())
+    .environment(MusicPlayerService())
     .environment(NavPath())
 }

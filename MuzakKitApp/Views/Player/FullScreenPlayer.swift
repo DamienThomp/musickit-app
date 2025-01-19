@@ -10,7 +10,7 @@ import MusicKit
 
 struct FullScreenPlayer: View {
 
-    @Environment(MusicPlayerManager.self) private var musicPlayerManager
+    @Environment(MusicPlayerService.self) private var musicPlayer
 
     @Binding var toggleView: Bool
 
@@ -23,11 +23,11 @@ struct FullScreenPlayer: View {
     private let opacity: CGFloat = 0.9
 
     private var isPlaying: Bool {
-        musicPlayerManager.playbackState == .playing
+        musicPlayer.playbackState == .playing
     }
 
     private var artwork: Artwork? {
-        musicPlayerManager.artwork
+        musicPlayer.artwork
     }
 
     private var hasBackground: Bool {
@@ -56,16 +56,16 @@ struct FullScreenPlayer: View {
     }
 
     private var title: String {
-        musicPlayerManager.currentItem?.title ?? ""
+        musicPlayer.currentItem?.title ?? ""
     }
 
     private var subtitle: String {
-        musicPlayerManager.currentItem?.subtitle ?? ""
+        musicPlayer.currentItem?.subtitle ?? ""
     }
 
     private var duration: Double? {
 
-        guard let item = musicPlayerManager.currentItem?.item else {
+        guard let item = musicPlayer.currentItem?.item else {
             return nil
         }
 
@@ -205,14 +205,14 @@ struct FullScreenPlayer: View {
 
         HStack(spacing: 50) {
             Button {
-                musicPlayerManager.skipToPrevious()
+                musicPlayer.skipToPrevious()
             } label: {
                 Symbols.skipBack.image
                     .imageScale(.large)
                     .font(.system(size: 30))
             }
             Button {
-                musicPlayerManager.togglePlayBack()
+                musicPlayer.togglePlayBack()
             } label: {
                 Image(systemName: isPlaying ? Symbols.pause.name : Symbols.play.name)
                     .imageScale(.large)
@@ -221,7 +221,7 @@ struct FullScreenPlayer: View {
             }.matchedGeometryEffect(id: PlayerMatchedGeometry.primaryAction.name, in: nameSpace)
                 .frame(minWidth: 50, minHeight: 60)
             Button {
-                musicPlayerManager.skipToNext()
+                musicPlayer.skipToNext()
             } label: {
                 Symbols.skipForward.image
                     .imageScale(.large)
@@ -254,14 +254,14 @@ struct FullScreenPlayer: View {
     @Previewable @Namespace var nameSpace
     GeometryReader { proxy in
         FullScreenPlayer(toggleView: $toggle, proxy: proxy, nameSpace: nameSpace)
-            .environment(MusicPlayerManager())
+            .environment(MusicPlayerService())
     }
 }
 
 // TODO: - refactor player progress view
 struct PlayerProgressView: View {
 
-    @Environment(MusicPlayerManager.self) var musicPlayerManager
+    @Environment(MusicPlayerService.self) var musicPlayerManager
 
     let duration: TimeInterval
 

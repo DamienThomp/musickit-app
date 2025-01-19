@@ -19,7 +19,7 @@ struct AppRootNavigation<Content: View>: View {
     @ViewBuilder let content: Content
 
     @Environment(NavPath.self) private var navigation
-    @Environment(MusicPlayerManager.self) private var musicPlayer
+    @Environment(MusicPlayerService.self) private var musicPlayer
 
     var body: some View {
 

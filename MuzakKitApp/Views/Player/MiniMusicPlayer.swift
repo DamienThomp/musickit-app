@@ -10,7 +10,7 @@ import MusicKit
 
 struct MiniMusicPlayer: View {
 
-    @Environment(MusicPlayerManager.self) var musicPlayerManager
+    @Environment(MusicPlayerService.self) var musicPlayer
 
     @Binding var toggleView: Bool
 
@@ -20,7 +20,7 @@ struct MiniMusicPlayer: View {
         
             HStack(spacing: 12) {
 
-                if let artwork = musicPlayerManager.currentItem?.artwork {
+                if let artwork = musicPlayer.currentItem?.artwork {
                     ArtworkImage(artwork, width: 34, height: 34)
                         .matchedGeometryEffect(id: PlayerMatchedGeometry.coverImage.name, in: nameSpace)
                         .frame(width: 34, height: 34)
@@ -45,14 +45,14 @@ struct MiniMusicPlayer: View {
 
                 VStack(alignment: .leading) {
                     
-                    if let title = musicPlayerManager.currentItem?.title {
+                    if let title = musicPlayer.currentItem?.title {
                         Text(title)
                             .lineLimit(1)
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .matchedGeometryEffect(id: PlayerMatchedGeometry.title.name, in: nameSpace)
                     }
 
-                    if let subtitle = musicPlayerManager.currentItem?.subtitle {
+                    if let subtitle = musicPlayer.currentItem?.subtitle {
                         Text(subtitle)
                             .font(.caption)
                             .foregroundStyle(.secondary)
@@ -67,16 +67,16 @@ struct MiniMusicPlayer: View {
                 HStack(spacing: 20) {
                     
                     Button {
-                        musicPlayerManager.togglePlayBack()
+                        musicPlayer.togglePlayBack()
                     } label: {
-                        Image(systemName: musicPlayerManager.playbackState == .playing ? Symbols.pause.name : Symbols.play.name)
+                        Image(systemName: musicPlayer.playbackState == .playing ? Symbols.pause.name : Symbols.play.name)
                             .imageScale(.large)
                             .font(.system(size: 20))
                             .foregroundStyle(.pink)
                     }.matchedGeometryEffect(id: PlayerMatchedGeometry.primaryAction.name, in: nameSpace)
 
                     Button {
-                        musicPlayerManager.skipToNext()
+                        musicPlayer.skipToNext()
                     } label: {
                         Symbols.skipForward.image
                             .imageScale(.large)
@@ -105,5 +105,5 @@ struct MiniMusicPlayer: View {
     @Previewable @State var toggle = false
 
     MiniMusicPlayer(toggleView: $toggle ,nameSpace: nameSpace)
-        .environment(MusicPlayerManager())
+        .environment(MusicPlayerService())
 }

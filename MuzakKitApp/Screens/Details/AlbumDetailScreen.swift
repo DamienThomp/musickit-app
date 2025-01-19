@@ -10,7 +10,8 @@ import MusicKit
 
 struct AlbumDetailScreen: View {
 
-    @Environment(MusicPlayerManager.self) private var musicPlayer
+    @Environment(MusicPlayerService.self) private var musicPlayer
+    @Environment(MusicKitService.self) private var musicService
 
     let album: Album
 
@@ -47,7 +48,7 @@ struct AlbumDetailScreen: View {
 
                     ForEach(tracks) { track in
                         AlbumTrackCell(track: track) {
-                            MenuItems(item: track, tracks: tracks)
+                            MenuItems(item: track, tracks: tracks, isInLibrary: $isInLibrary)
                         }
                         .onTapGesture {
                             musicPlayer
@@ -57,7 +58,7 @@ struct AlbumDetailScreen: View {
                                 )
                         }
                         .contextMenu {
-                            MenuItems(item: track, tracks: tracks)
+                            MenuItems(item: track, tracks: tracks, isInLibrary: $isInLibrary)
                         }
                     }
                 } footer: {
@@ -125,7 +126,7 @@ struct AlbumDetailScreen: View {
             }
             ToolbarItem(placement: .topBarTrailing) {
                 Menu {
-                    MenuItems(item: album)
+                    MenuItems(item: album, isInLibrary: $isInLibrary)
                 } label: {
                     Symbols.ellipsis.image
                 }
@@ -207,10 +208,7 @@ extension AlbumDetailScreen {
 
     private func checkLibraryState(for album: Album) async throws {
 
-        var request: MusicLibraryRequest<Album> = MusicLibraryRequest()
-        request.filter(matching: \.id, equalTo: album.id)
-
-        let response = try await request.response()
+        let response = try await musicService.checkLibraryStatus(for: album)
 
         updateLibraryState(for: response)
     }
@@ -231,7 +229,9 @@ extension AlbumDetailScreen {
         let response = try await artist.with([.similarArtists, .albums])
 
         Task { @MainActor in
+
             withAnimation {
+
                 self.similarArtists = response.similarArtists
                 self.artistAlbums = response.albums
             }
@@ -239,9 +239,9 @@ extension AlbumDetailScreen {
     }
 
     @MainActor
-    private func updateLibraryState(for response: MusicLibraryResponse<Album>) {
+    private func updateLibraryState(for response: Bool) {
         withAnimation {
-            self.isInLibrary = !response.items.isEmpty
+            self.isInLibrary = response
         }
     }
 
@@ -261,7 +261,8 @@ extension AlbumDetailScreen {
        let tracks = albumTracksMock {
         NavigationStack {
             AlbumDetailScreen(album: album, tracks: tracks)
-                .environment(MusicPlayerManager())
+                .environment(MusicPlayerService())
+                .environment(MusicKitService())
         }.tint(.pink)
     }
 }

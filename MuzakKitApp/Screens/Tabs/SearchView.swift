@@ -253,6 +253,6 @@ extension SearchContainer {
             SearchView()
         }
         .environment(NavPath())
-        .environment(MusicPlayerManager())
+        .environment(MusicPlayerService())
     }
 }

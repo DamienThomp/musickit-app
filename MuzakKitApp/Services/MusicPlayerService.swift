@@ -1,5 +1,5 @@
 //
-//  MusicPlayerManager.swift
+//  MusicPlayerService.swift
 //  MuzakKitApp
 //
 //  Created by Damien L Thompson on 2024-12-28.
@@ -11,7 +11,7 @@ import Combine
 import Foundation
 
 @Observable
-class MusicPlayerManager {
+class MusicPlayerService {
 
     private var player: ApplicationMusicPlayer
     private var playerState: MusicPlayer.State
@@ -102,7 +102,7 @@ class MusicPlayerManager {
 }
 
 //MARK: - Player controls
-extension MusicPlayerManager {
+extension MusicPlayerService {
 
     func handleTrackSelected(for track: Track, from loadedTracks: MusicItemCollection<Track>) {
 
@@ -151,7 +151,7 @@ extension MusicPlayerManager {
     }
 
     func playLast() {
-        //TODO: - add condition for first play where queue is empty
+       
         guard player.isPreparedToPlay, !player.queue.entries.isEmpty else { return }
 
         let lastTrack = player.queue.entries.last
@@ -196,7 +196,7 @@ extension MusicPlayerManager {
         }
     }
 
-    private func beginPlaying() {
+    func beginPlaying() {
 
         Task {
             do {

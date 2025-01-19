@@ -295,7 +295,7 @@ extension GenreView {
         AppRootNavigation {
             GenreView(genre: genre, charts: mockData)
         }
-        .environment(MusicPlayerManager())
+        .environment(MusicPlayerService())
         .environment(NavPath())
     }
 }

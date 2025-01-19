@@ -11,13 +11,15 @@ import MusicKit
 @main
 struct MuzakKitApp: App {
 
-    let musicPlayerManager: MusicPlayerManager
+    let musicKitSercice: MusicKitService
+    let musicPlayerManager: MusicPlayerService
     let navigation: NavPath
 
     @State private var selection: AppRootScreen = .browse
 
     init() {
-        self.musicPlayerManager = MusicPlayerManager()
+        self.musicKitSercice = MusicKitService()
+        self.musicPlayerManager = MusicPlayerService()
         self.navigation = NavPath()
     }
 
@@ -25,6 +27,7 @@ struct MuzakKitApp: App {
 
         WindowGroup {
             AppRootView(selection: $selection)
+                .environment(musicKitSercice)
                 .environment(musicPlayerManager)
                 .environment(navigation)
         }
