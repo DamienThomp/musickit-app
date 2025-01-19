@@ -3,7 +3,10 @@
 <plist version="1.0">
 <dict>
 	<key>UILaunchScreen</key>
-	<dict/>
+	<dict>
+		<key>UIImageName</key>
+		<string></string>
+	</dict>
 	<key>kTCCServiceMediaLibrary</key>
 	<string>Needs permission to view music library</string>
 </dict>

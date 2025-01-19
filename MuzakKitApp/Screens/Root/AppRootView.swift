@@ -23,6 +23,11 @@ struct AppRootView: View {
         return authStatus != .authorized 
     }
 
+    private var hasSeenAuthMessage: Bool {
+        let authStatus = musicKitService.authStatus
+        return authStatus != .notDetermined
+    }
+
     var body: some View {
 
         if showDefaultScreen {
@@ -66,17 +71,22 @@ struct AppRootView: View {
     private var unAuthorizedView: some View {
         ContentUnavailableView {
             VStack {
-                Symbols.warning.image
-                    .foregroundStyle(.orange)
-                Text("Unauthorized").font(.title3)
-            }.foregroundStyle(.primary)
+                Image(.launchIcon)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+
+            }.frame(width: 250, height: 250)
         } description: {
-            Text("Users must accept Authorization to use this App.")
-        } actions: {
-            HStack {
-                handleAuthButton
+            if hasSeenAuthMessage {
+                Text("This app needs permission to view your Apple Music Library. Authorize to continue.")
             }
-        }
+        } actions: {
+            if hasSeenAuthMessage {
+                HStack {
+                    handleAuthButton
+                }
+            }
+        }.preferredColorScheme(.dark)
     }
 
     @ViewBuilder
