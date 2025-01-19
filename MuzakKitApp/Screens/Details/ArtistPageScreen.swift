@@ -10,6 +10,7 @@ import MusicKit
 
 struct ArtistPageScreen: View {
 
+    @Environment(\.dismiss) var dismiss
     @Environment(MusicKitService.self) private var musicService
     @Environment(MusicPlayerService.self) private var musicPlayer
 
@@ -234,6 +235,20 @@ struct ArtistPageScreen: View {
             loadSections()
         }
         .preferredColorScheme(.dark)
+        .navigationBarBackButtonHidden(true)
+        .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                Button {
+                    dismiss()
+                } label: {
+                    Image(systemName: "chevron.backward")
+                }
+                .buttonBorderShape(.circle)
+                .buttonStyle(.borderedProminent)
+                .tint(Color(.systemGray2).opacity(0.6))
+                .foregroundStyle(.primary)
+            }
+        }
     }
 
     @ViewBuilder
@@ -315,8 +330,11 @@ extension ArtistPageScreen {
 
     if let artist = artistMock {
 
-        ArtistPageScreen(artist: artist, artistDetails: artist)
-            .environment(MusicKitService())
-            .environment(MusicPlayerService())
+        NavigationStack {
+
+            ArtistPageScreen(artist: artist, artistDetails: artist)
+                .environment(MusicKitService())
+                .environment(MusicPlayerService())
+        }
     }
 }
