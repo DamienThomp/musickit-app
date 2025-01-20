@@ -66,9 +66,8 @@ struct ArtistPageScreen: View {
                         if let songs = artistDetails.topSongs {
 
                             VStack(alignment: .leading) {
-                                Text(songs.title ?? "Top Songs")
-                                    .sectionHeader()
-                                    .padding(.leading)
+
+                                SectionTitle(title: songs.title ?? "Top Songs")
 
                                 HorizontalGrid(
                                     grid: 1.15,
@@ -81,17 +80,13 @@ struct ArtistPageScreen: View {
                                     }
                                 }
                             }
-
                         }
 
                         if let albums = artistDetails.albums, !albums.isEmpty {
 
                             VStack(alignment: .leading) {
 
-                                Text(albums.title ?? "Albums by \(artist.name)")
-                                    .sectionHeader()
-                                    .padding(.leading)
-
+                                SectionTitle(title: albums.title ?? "Albums by \(artist.name)")
 
                                 HorizontalGrid(grid: 2.4, rows: 1, gutterSize: 12, viewAligned: false, width: size.width) { width in
                                     ForEach(albums, id: \.self) { album in
@@ -107,10 +102,7 @@ struct ArtistPageScreen: View {
 
                             VStack(alignment: .leading) {
 
-                                Text(compilations.title ?? "Compilations by \(artist.name)")
-                                    .sectionHeader()
-                                    .padding(.leading)
-
+                                SectionTitle(title: compilations.title ?? "Compilations by \(artist.name)")
 
                                 HorizontalGrid(grid: 2.4, rows: 1, gutterSize: 12, viewAligned: false, width: size.width) { width in
                                     ForEach(compilations, id: \.self) { album in
@@ -126,10 +118,7 @@ struct ArtistPageScreen: View {
 
                             VStack(alignment: .leading) {
 
-                                Text(singles.title ?? "Singles by \(artist.name)")
-                                    .sectionHeader()
-                                    .padding(.leading)
-
+                                SectionTitle(title: singles.title ?? "Singles by \(artist.name)")
 
                                 HorizontalGrid(grid: 2.4, rows: 1, gutterSize: 12, viewAligned: false, width: size.width) { width in
                                     ForEach(singles, id: \.self) { album in
@@ -145,9 +134,7 @@ struct ArtistPageScreen: View {
 
                             VStack(alignment: .leading) {
 
-                                Text(appearsOn.title ?? "Appears on")
-                                    .sectionHeader()
-                                    .padding(.leading)
+                                SectionTitle(title: appearsOn.title ?? "Appears on")
 
                                 HorizontalGrid(grid: 2.4, rows: 1, gutterSize: 12, viewAligned: false, width: size.width) { width in
                                     ForEach(appearsOn, id: \.self) { album in
@@ -163,9 +150,7 @@ struct ArtistPageScreen: View {
 
                             VStack(alignment: .leading) {
 
-                                Text(featured.title ?? "Featured on")
-                                    .sectionHeader()
-                                    .padding(.leading)
+                                SectionTitle(title: featured.title ?? "Featured on")
 
                                 HorizontalGrid(grid: 2.4, rows: 1, gutterSize: 12, viewAligned: false, width: size.width) { width in
                                     ForEach(featured, id: \.self) { album in
@@ -181,9 +166,7 @@ struct ArtistPageScreen: View {
 
                             VStack(alignment: .leading) {
 
-                                Text(playlists.title ?? "Playlists")
-                                    .sectionHeader()
-                                    .padding(.leading)
+                                SectionTitle(title: playlists.title ?? "Playlists")
 
                                 HorizontalGrid(grid: 2.4, rows: 1, gutterSize: 12, viewAligned: false, width: size.width) { width in
                                     ForEach(playlists, id: \.self) { item in
@@ -199,9 +182,7 @@ struct ArtistPageScreen: View {
 
                             VStack(alignment: .leading) {
 
-                                Text(similarArtists.title ?? "Similar Artists")
-                                    .sectionHeader()
-                                    .padding(.leading)
+                                SectionTitle(title: similarArtists.title ?? "Similar Artists")
 
                                 HorizontalGrid(grid: 2.4, rows: 1, gutterSize: 12, viewAligned: false, width: size.width) { width in
                                     ForEach(similarArtists, id: \.self) { item in
@@ -285,8 +266,34 @@ struct ArtistPageScreen: View {
                     .font(.system(.largeTitle))
                     .foregroundStyle(.primary)
                     .frame(maxWidth: .infinity, alignment: .leading)
+
+                Spacer()
+
+                headerAction()
+                    .padding(.trailing)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
+        }
+    }
+
+    @ViewBuilder
+    private func headerAction() -> some View {
+
+        if let topSongs = artistDetails?.topSongs,
+           let firstSong = topSongs.first {
+
+            Button {
+                musicPlayer.handleSongSelected(for: firstSong, from: topSongs)
+            } label: {
+                Image(systemName: "play.fill")
+            }
+            .buttonBorderShape(.circle)
+            .buttonStyle(.borderedProminent)
+            .tint(.pink)
+            .foregroundStyle(.primary)
+
+        } else {
+            EmptyView()
         }
     }
 }
