@@ -14,58 +14,51 @@ struct BrowseView: View {
 
     @State var recommendations: MusicItemCollection<MusicPersonalRecommendation>?
 
-    @State private var showLoading: Bool = false
-
     var body: some View {
 
         GeometryReader {
 
             let width = $0.size.width
 
-            if showLoading {
+            List {
 
-                PageLoading()
-            } else {
+                if let recommendations {
 
-                List {
+                    ForEach(recommendations, id: \.self) { section in
 
-                    if let recommendations {
+                        Section {
 
-                        ForEach(recommendations, id: \.self) { section in
+                            if let title = section.title {
+                                Text(title)
+                                    .sectionHeader()
+                            }
 
-                            Section {
+                            if let reason = section.reason {
+                                Text(reason)
+                                    .sectionSubtitle()
+                            }
 
-                                if let title = section.title {
-                                    Text(title)
-                                        .sectionHeader()
-                                }
+                            if !section.items.isEmpty {
 
-                                if let reason = section.reason {
-                                    Text(reason)
-                                        .sectionSubtitle()
-                                }
-
-                                if !section.items.isEmpty {
-
-                                    HorizontalGrid(
-                                        grid: 2.4,
-                                        rows: 1,
-                                        gutterSize: 12,
-                                        viewAligned: false,
-                                        width: width
-                                    ) { width in
-                                        ForEach(section.items, id: \.self) { item in
-                                            renderCard(for: item)
-                                                .tint(.primary)
-                                        }
+                                HorizontalGrid(
+                                    grid: 2.4,
+                                    rows: 1,
+                                    gutterSize: 12,
+                                    viewAligned: false,
+                                    width: width
+                                ) { width in
+                                    ForEach(section.items, id: \.self) { item in
+                                        renderCard(for: item, with: width)
+                                            .tint(.primary)
                                     }
-                                }
-                            }.listRowSeparator(.hidden)
-                        }
+                                }.horizontalDefaultInsets()
+                            }
+                        }.listRowSeparator(.hidden)
                     }
                 }
-                .listStyle(.plain)
             }
+            .listStyle(.plain)
+
         }
         .navigationTitle("Browse")
         .onAppear {
@@ -74,22 +67,22 @@ struct BrowseView: View {
     }
 
     @ViewBuilder
-    private func renderCard(for item: MusicPersonalRecommendation.Item) -> some View {
+    private func renderCard(for item: MusicPersonalRecommendation.Item, with width: CGFloat) -> some View {
 
         switch item.self {
         case .album(let album):
 
             NavigationLink(value: album) {
-                AlbumItemCell(item: album, size: 168)
+                AlbumItemCell(item: album, size: width)
             }
         case .playlist(let playlist):
 
             NavigationLink(value: playlist) {
-                PlaylistItemCell(item: playlist, size: 168)
+                PlaylistItemCell(item: playlist, size: width)
             }
         case .station(let station):
 
-            StationItemCell(item: station, size: 168)
+            StationItemCell(item: station, size: width)
                 .onTapGesture {
                     playStation(station)
                 }
@@ -106,9 +99,9 @@ extension BrowseView {
     }
 
     private func getMusic() {
+
         Task {
             do {
-                self.showLoading = true
                 let recommendationsRequest = MusicPersonalRecommendationsRequest()
                 let recommendations = try await recommendationsRequest.response()
                 update(with: recommendations)
@@ -121,7 +114,6 @@ extension BrowseView {
     @MainActor
     private func update(with items: MusicPersonalRecommendationsResponse) {
         withAnimation {
-            self.showLoading = false
             self.recommendations = items.recommendations
         }
     }
