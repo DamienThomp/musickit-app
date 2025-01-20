@@ -267,7 +267,8 @@ struct PlayerProgressView: View {
 
     private var progress: TimeInterval {
 
-        if let progress = musicPlayerManager.currentPlayBackTime {
+        if let progress = musicPlayerManager.currentPlayBackTime,
+            progress < duration {
             return progress
         }
 

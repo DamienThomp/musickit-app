@@ -215,6 +215,7 @@ struct SearchView: View {
 
     private func conductSearch(for searchTerm: String)  {
         // TODO: - debounce calls to search + add suggestions
+        // handle empty search term case
         Task {
             let searchRequest = MusicCatalogSearchRequest(term: searchTerm, types: [Album.self, Song.self, Playlist.self, Station.self, Artist.self])
 
@@ -251,15 +252,5 @@ extension SearchContainer {
                 self.genres = items
             }
         }
-    }
-}
-
-#Preview {
-    if let genres = genreMock {
-        AppRootNavigation {
-            SearchView()
-        }
-        .environment(NavPath())
-        .environment(MusicPlayerService())
     }
 }

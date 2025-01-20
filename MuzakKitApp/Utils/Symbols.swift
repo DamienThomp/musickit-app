@@ -34,4 +34,5 @@ enum Symbols: String {
     case plusCircle = "plus.circle"
     case circle = "circle.fill"
     case warning = "exclamationmark.triangle.fill"
+    case chevronBack = "chevron.backward"
 }

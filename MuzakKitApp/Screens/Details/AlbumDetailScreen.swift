@@ -10,6 +10,8 @@ import MusicKit
 
 struct AlbumDetailScreen: View {
 
+    @Environment(\.dismiss) private var dismiss
+
     @Environment(NavPath.self) private var navigation
     @Environment(MusicPlayerService.self) private var musicPlayer
     @Environment(MusicKitService.self) private var musicService
@@ -119,7 +121,18 @@ struct AlbumDetailScreen: View {
             } catch {
                 print(error.localizedDescription)
             }
-        }.toolbar {
+
+        }
+        .navigationBarBackButtonHidden(true)
+        .toolbar {
+
+            ToolbarItem(placement: .topBarLeading) {
+                Button {
+                    dismiss()
+                } label: {
+                    Symbols.chevronBack.image
+                }
+            }
 
             ToolbarItem(placement: .topBarTrailing) {
                 Button {
