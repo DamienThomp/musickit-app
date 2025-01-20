@@ -33,6 +33,7 @@ struct GenreView: View {
                             rows: 1,
                             gutterSize: 12,
                             viewAligned: false,
+                            alignment: .bottom,
                             width: width
                         ) { width in
                             ForEach(topItems, id: \.self) { item in
@@ -42,6 +43,7 @@ struct GenreView: View {
                                     }
                             }
                         }
+                        .listRowInsets(EdgeInsets(top: -14, leading: 0, bottom: 40, trailing: 0))
                     }.listRowSeparator(.hidden)
                 }
 
@@ -52,6 +54,7 @@ struct GenreView: View {
                         Section {
                             Text(section.title)
                                 .sectionHeader()
+                                .listRowInsets(EdgeInsets(top: 0, leading: 16, bottom: 0, trailing: 0))
 
                             HorizontalGrid(
                                 grid: 1.15,
@@ -62,8 +65,11 @@ struct GenreView: View {
                                 ForEach(section.items, id: \.self) { item in
                                     songCell(for: item, width: width)
                                 }
-                            }
-                        }.listRowSeparator(.hidden)
+                            }.horizontalDefaultInsets()
+                        }
+                        .listRowSeparator(.hidden)
+                        .padding(.bottom)
+
                     }
                 }
 
@@ -74,6 +80,7 @@ struct GenreView: View {
                         Section {
                             Text(section.title)
                                 .sectionHeader()
+                                .listRowInsets(EdgeInsets(top: 0, leading: 16, bottom: 0, trailing: 0))
 
                             HorizontalGrid(
                                 grid: 2.4,
@@ -88,9 +95,9 @@ struct GenreView: View {
                                             navigation.path.append(item)
                                         }
                                 }
-                            }
+                            }.horizontalDefaultInsets()
                         }.listRowSeparator(.hidden)
-                    }
+                    }.padding(.bottom)
                 }
 
                 if let playlists = charts?.playlistCharts {
@@ -100,6 +107,7 @@ struct GenreView: View {
                         Section {
                             Text(section.title)
                                 .sectionHeader()
+                                .listRowInsets(EdgeInsets(top: 0, leading: 16, bottom: 0, trailing: 0))
 
                             HorizontalGrid(
                                 grid: 2.4,
@@ -115,15 +123,16 @@ struct GenreView: View {
                                         }
 
                                 }
-                            }
+                            }.horizontalDefaultInsets()
                         }.listRowSeparator(.hidden)
-                    }
+                    }.padding(.bottom)
                 }
 
                 if let artists = catalogItems?.artists {
                     Section {
                         Text("\(genre.name) Atists")
                             .sectionHeader()
+                            .listRowInsets(EdgeInsets(top: 0, leading: 16, bottom: 0, trailing: 0))
 
                         HorizontalGrid(
                             grid: 2.4,
@@ -137,7 +146,7 @@ struct GenreView: View {
                                     navigation.path.append(item)
                                 }
                             }
-                        }
+                        }.horizontalDefaultInsets()
                     }.listRowSeparator(.hidden)
                 }
 
@@ -147,6 +156,7 @@ struct GenreView: View {
 
                         Text("\(genre.name) Albums")
                             .sectionHeader()
+                            .listRowInsets(EdgeInsets(top: 0, leading: 16, bottom: 0, trailing: 0))
 
                         HorizontalGrid(
                             grid: 2.4,
@@ -160,7 +170,7 @@ struct GenreView: View {
                                     navigation.path.append(item)
                                 }
                             }
-                        }
+                        }.horizontalDefaultInsets()
                     }.listRowSeparator(.hidden)
                 }
             }.listStyle(.plain)
