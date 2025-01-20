@@ -110,6 +110,12 @@ extension MusicPlayerService {
         beginPlaying()
     }
 
+    func handleSongSelected(for song: Song, from songs: MusicItemCollection<Song>) {
+
+        player.queue = .init(for: songs, startingAt: song)
+        beginPlaying()
+    }
+
     func handlePlayback(for items: PlayableMusicItem) {
 
         player.queue = [items]

@@ -23,10 +23,7 @@ struct ItemsSectionView<Content: View>: View {
         VStack(alignment: .leading, spacing: 12) {
 
             if let title {
-                Text(title)
-                    .sectionHeader()
-                    .lineLimit(1)
-                    .padding(.leading)
+                SectionTitle(title: title)
             }
 
             ScrollView(.horizontal) {
