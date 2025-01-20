@@ -11,8 +11,9 @@ import MusicKit
 struct PlaylistDetailScreen: View {
 
     @Environment(\.dismiss) private var dismiss
-    
+
     @Environment(MusicPlayerService.self) private var musicPlayer
+    @Environment(MusicKitService.self) private var musicService
 
     let playlist: Playlist
 
@@ -104,8 +105,8 @@ struct PlaylistDetailScreen: View {
         .background(Color(.systemGray6), ignoresSafeAreaEdges: .bottom)
         .tint(.pink)
         .listStyle(.plain)
-        .task {
-            try? await loadTracks()
+        .onAppear {
+            loadTracks()
         }
         .navigationBarBackButtonHidden(true)
         .toolbar {
@@ -118,6 +119,7 @@ struct PlaylistDetailScreen: View {
                 }
             }
 
+            //TODO: - Add to playlist action
             ToolbarItem(placement: .topBarTrailing) {
                 Button {
                     let impactLight = UIImpactFeedbackGenerator(style: .light)
@@ -127,6 +129,7 @@ struct PlaylistDetailScreen: View {
                     Image(systemName: isInLibrary ? Symbols.checkmarkCircle.name : Symbols.plusCircle.name)
                 }
             }
+
             ToolbarItem(placement: .topBarTrailing) {
                 Menu {
                     MenuItems(item: playlist, isInLibrary: $isInLibrary)
@@ -147,7 +150,7 @@ struct PlaylistDetailScreen: View {
                     width: 240,
                     height: 240
                 )
-                .cornerRadius(12)
+                .artworkCornerRadius(.large)
                 .padding(.bottom)
             }
 
@@ -156,6 +159,7 @@ struct PlaylistDetailScreen: View {
                 .fontWeight(.semibold)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 12)
+
             if let curatorName {
                 Text(curatorName)
                     .font(.system(.title2))
@@ -176,9 +180,21 @@ struct PlaylistDetailScreen: View {
 
 extension PlaylistDetailScreen {
 
-    private func loadTracks() async throws {
-        let playlist = try await playlist.with([.tracks, .featuredArtists])
-        update(tracks: playlist.tracks, artists: playlist.featuredArtists)
+    private func loadTracks() {
+        Task {
+            do {
+                let playlist = try await musicService.getData(
+                    for: playlist,
+                    with: [
+                        .tracks,
+                        .featuredArtists
+                    ]
+                )
+                update(tracks: playlist.tracks, artists: playlist.featuredArtists)
+            } catch {
+                print("failed to load tracks for playlist with: \(error.localizedDescription)")
+            }
+        }
     }
 
     @MainActor

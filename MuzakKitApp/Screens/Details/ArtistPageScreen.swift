@@ -302,7 +302,7 @@ extension ArtistPageScreen {
         Task {
             do {
 
-                let artistDetails = try await artist.with(
+                let artistDetails = try await musicService.getData(for: artist, with:
                     [
                         .albums,
                         .singles,
