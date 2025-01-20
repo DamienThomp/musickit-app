@@ -87,7 +87,7 @@ struct FullScreenPlayer: View {
 
             Rectangle()
                 .fill(hasBackground ? background.gradient : defaultBackground.gradient)
-                .clipShape(RoundedRectangle(cornerRadius: proxy.safeAreaInsets.top))
+                .clipShape(RoundedRectangle(cornerRadius: proxy.safeAreaInsets.top - 10))
                 .animation(.easeIn, value: hasBackground)
                 .colorMultiply(Color(hue: 0.0, saturation: 0, brightness: 0.7))
                 .matchedGeometryEffect(id: PlayerMatchedGeometry.background.name, in: nameSpace)
@@ -105,28 +105,31 @@ struct FullScreenPlayer: View {
                         }
                     }
 
-                if let artwork = artwork {
+                Group {
 
-                    ArtworkImage(artwork, width: width, height: width)
-                        .matchedGeometryEffect(id: PlayerMatchedGeometry.coverImage.name, in: nameSpace)
-                        .frame(width: width, height: width)
-                        .clipShape(RoundedRectangle(cornerRadius: 12))
-                        .padding(.top, 14)
-                        .padding(.bottom, 32)
-                        .shadow(color: .black.opacity(0.2), radius: 30, y: 15)
-                        .scaleEffect(isPlaying ? 1 : 0.8)
-                        .animation(.interpolatingSpring(duration: 0.5, bounce: 0.5), value: isPlaying)
+                    if let artwork = artwork {
 
-                } else {
+                        ArtworkImage(artwork, width: width, height: width)
+                            .matchedGeometryEffect(id: PlayerMatchedGeometry.coverImage.name, in: nameSpace)
+                            .frame(width: width, height: width)
+                            .artworkCornerRadius(.large)
+                            .padding(.top, 14)
+                            .padding(.bottom, 32)
+                            .shadow(color: .black.opacity(0.2), radius: 30, y: 15)
+                            .scaleEffect(isPlaying ? 1 : 0.8)
+                            .animation(.interpolatingSpring(duration: 0.5, bounce: 0.5), value: isPlaying)
 
-                    Rectangle()
-                        .fill(.secondary)
-                        .matchedGeometryEffect(id: PlayerMatchedGeometry.coverImage.name, in: nameSpace)
-                        .frame(width: width, height: width)
-                        .clipShape(RoundedRectangle(cornerRadius: 12))
-                        .padding(.top, 14)
-                        .padding(.bottom, 32)
-                        .shadow(color: .black.opacity(0.2), radius: 30, y: 15)
+                    } else {
+
+                        Rectangle()
+                            .fill(.secondary)
+                            .matchedGeometryEffect(id: PlayerMatchedGeometry.coverImage.name, in: nameSpace)
+                            .frame(width: width, height: width)
+                            .artworkCornerRadius(.large)
+                            .padding(.top, 14)
+                            .padding(.bottom, 32)
+                            .shadow(color: .black.opacity(0.2), radius: 30, y: 15)
+                    }
                 }
 
                 VStack {
@@ -282,16 +285,19 @@ struct PlayerProgressView: View {
 
     var body: some View {
 
-        ProgressView(value: progress, total: duration)
-
-        HStack {
-            Text(progress, format: .duration(style: .positional))
-                .font(.caption)
-
-            Spacer()
-            Text(remaining, format: .duration(style: .positional))
-                .font(.caption)
-
+        Group {
+            
+            ProgressView(value: progress, total: duration)
+            
+            HStack {
+                Text(progress, format: .duration(style: .positional))
+                    .font(.caption)
+                
+                Spacer()
+                Text(remaining, format: .duration(style: .positional))
+                    .font(.caption)
+                
+            }
         }
     }
 }

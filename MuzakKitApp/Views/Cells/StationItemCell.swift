@@ -19,9 +19,10 @@ struct StationItemCell: View {
 
             if let artwork = item.artwork {
                 ArtworkImage(artwork, width: size, height: size)
-                    .clipShape(RoundedRectangle(cornerRadius: 8))
+                    .artworkCornerRadius(.medium)
             } else {
-                RoundedRectangle(cornerRadius: 8)
+                Rectangle()
+                    .artworkCornerRadius(.medium)
                     .frame(width: size, height: size)
             }
 

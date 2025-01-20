@@ -16,7 +16,7 @@ enum Symbols: String {
     case pause = "pause.fill"
     case skipForward = "forward.fill"
     case skipBack = "backward.fill"
-    case shuffle = "shuffle"
+    case shuffle
     case volumeUp = "speaker.wave.3.fill"
     case volumeDown = "speaker.fill"
     case menu = "ellipsis.circle"
@@ -25,11 +25,12 @@ enum Symbols: String {
     case playNext = "text.line.first.and.arrowtriangle.forward"
     case playLast = "text.line.last.and.arrowtriangle.forward"
     case musicNoteList = "music.note.list"
-    case plus = "plus"
+    case plus
 
     // Misc
-    case ellipsis = "ellipsis"
-    case minus = "minus"
+    case ellipsis
+    case minus
+    case waveform
     case checkmarkCircle = "checkmark.circle.fill"
     case plusCircle = "plus.circle"
     case circle = "circle.fill"

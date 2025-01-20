@@ -21,7 +21,7 @@ struct PlaylistTrackCell<Content: View>: View {
 
                 if let artwork = track.artwork {
                     ArtworkImage(artwork, width: 40)
-                        .clipShape(RoundedRectangle(cornerRadius: 8))
+                        .artworkCornerRadius(.medium)
                 }
 
                 Text(track.title)

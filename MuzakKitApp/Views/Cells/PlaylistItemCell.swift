@@ -18,7 +18,7 @@ struct PlaylistItemCell: View {
         VStack(alignment: .leading) {
             if let artwork = item.artwork {
                 ArtworkImage(artwork, width: size, height: size)
-                    .clipShape(RoundedRectangle(cornerRadius: 8))
+                    .artworkCornerRadius(.medium)
             }
 
             Text(item.name)
