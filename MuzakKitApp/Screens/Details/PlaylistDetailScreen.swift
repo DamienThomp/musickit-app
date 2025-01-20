@@ -10,6 +10,8 @@ import MusicKit
 
 struct PlaylistDetailScreen: View {
 
+    @Environment(\.dismiss) private var dismiss
+    
     @Environment(MusicPlayerService.self) private var musicPlayer
 
     let playlist: Playlist
@@ -104,7 +106,18 @@ struct PlaylistDetailScreen: View {
         .listStyle(.plain)
         .task {
             try? await loadTracks()
-        }.toolbar {
+        }
+        .navigationBarBackButtonHidden(true)
+        .toolbar {
+
+            ToolbarItem(placement: .topBarLeading) {
+                Button {
+                    dismiss()
+                } label: {
+                    Symbols.chevronBack.image
+                }
+            }
+
             ToolbarItem(placement: .topBarTrailing) {
                 Button {
                     let impactLight = UIImpactFeedbackGenerator(style: .light)

@@ -58,7 +58,6 @@ struct BrowseView: View {
                 }
             }
             .listStyle(.plain)
-
         }
         .navigationTitle("Browse")
         .onAppear {

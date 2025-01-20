@@ -193,12 +193,6 @@ struct ArtistPageScreen: View {
                                 }
                             }
                         }
-
-                        VStack(alignment: .leading) {
-                            if let notes = artistDetails.editorialNotes?.standard {
-                                Text(notes)
-                            }
-                        }
                     }
                     .padding(.top, 20)
                     .padding(.bottom, proxy.safeAreaInsets.bottom + 20)
@@ -222,7 +216,7 @@ struct ArtistPageScreen: View {
                 Button {
                     dismiss()
                 } label: {
-                    Image(systemName: "chevron.backward")
+                    Symbols.chevronBack.image
                 }
                 .buttonBorderShape(.circle)
                 .buttonStyle(.borderedProminent)
