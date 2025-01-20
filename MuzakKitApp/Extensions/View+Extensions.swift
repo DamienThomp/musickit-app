@@ -16,4 +16,8 @@ extension View {
     func horizontalDefaultInsets() -> some View {
         modifier(HorizontalItems())
     }
+
+    func artworkCornerRadius(_ radius: ArtworkClipShapeStyle.CornerRadius) -> some View {
+        modifier(ArtworkClipShapeStyle(radius: radius))
+    }
 }

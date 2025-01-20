@@ -72,8 +72,7 @@ struct AppRootView: View {
         ContentUnavailableView {
             VStack {
                 Image(.launchIcon)
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
+                    .resizableImage()
 
             }.frame(width: 250, height: 250)
         } description: {

@@ -168,7 +168,7 @@ struct AlbumDetailScreen: View {
                     width: 240,
                     height: 240
                 )
-                .clipShape(RoundedRectangle(cornerRadius: 12))
+                .artworkCornerRadius(.large)
                 .padding(.bottom, 14)
             }
 

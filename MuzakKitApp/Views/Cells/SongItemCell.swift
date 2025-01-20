@@ -30,45 +30,25 @@ struct SongItemCell: View {
         return musicPlayer.playbackState == .playing
     }
 
+    private var imageWidth: CGFloat {
+        width / 8
+    }
+
     var body: some View {
 
         HStack {
 
-            if let artwork = item?.artwork {
-
-                ArtworkImage(artwork, width: 50)
-                    .clipShape(RoundedRectangle(cornerRadius: 12))
-                    .overlay {
-                        if isActiveTrack && isPlaying {
-                            VStack {
-                                Image(systemName: "waveform")
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fit)
-                                    .symbolEffect(.variableColor.iterative, options: .repeating, value: animateIcon)
-                                    .foregroundStyle(.primary)
-                                    .onAppear {
-                                        animateIcon.toggle()
-                                    }
-                            }
-                            .padding()
-                            .frame(width: 50, height: 50)
-                            .background(.black.opacity(0.5))
-                            .clipShape(RoundedRectangle(cornerRadius: 12))
-                        }
-                    }
-            }
+            songArtwork()
+                .overlay {
+                    artworkOverlay()
+                }
 
             VStack(alignment: .leading) {
 
-                Text(item?.title ?? "Song Title")
-                    .foregroundStyle(isActiveTrack ? .pink : .primary)
-                Text(item?.artistName ?? "Artist Name")
-                    .font(.caption)
-                    .foregroundStyle(Color.secondary)
+                songInfo
+
                 Divider()
             }
-            .lineLimit(1)
-            .multilineTextAlignment(.leading)
             .contentShape(Rectangle())
             .onTapGesture {
                 withAnimation(.easeIn(duration: 0.2)) {
@@ -86,6 +66,64 @@ struct SongItemCell: View {
         .frame(width: width)
         .background(animateBackground ? Color(.systemGray4) : .clear)
     }
+
+    @ViewBuilder
+    private var songInfo: some View {
+
+        Group {
+
+            Text(item?.title ?? "Song Title")
+                .foregroundStyle(isActiveTrack ? .pink : .primary)
+
+            Text(item?.artistName ?? "Artist Name")
+                .font(.caption)
+                .foregroundStyle(Color.secondary)
+        }
+        .lineLimit(1)
+        .multilineTextAlignment(.leading)
+    }
+
+    @ViewBuilder
+    private func songArtwork() -> some View {
+
+        if let artwork = item?.artwork {
+
+            ArtworkImage(artwork, width: imageWidth)
+                .artworkCornerRadius(.medium)
+
+
+        } else {
+
+            RoundedRectangle(cornerRadius: 12)
+                .fill(Color(.systemGray3))
+                .frame(width: imageWidth, height: imageWidth)
+                .artworkCornerRadius(.medium)
+        }
+    }
+
+    @ViewBuilder
+    private func artworkOverlay() -> some View {
+
+        if isActiveTrack && isPlaying {
+            VStack {
+                Symbols.waveform.image
+                    .resizableImage()
+                    .symbolEffect(
+                        .variableColor.iterative,
+                        options: .repeating,
+                        value: animateIcon
+                    )
+                    .foregroundStyle(.primary)
+                    .onAppear {
+                        animateIcon = true
+                    }
+            }
+            .padding()
+            .frame(width: imageWidth, height: imageWidth)
+            .background(.black.opacity(0.5))
+            .artworkCornerRadius(.medium)
+        }
+    }
 }
 
 #Preview {
@@ -97,6 +135,5 @@ struct SongItemCell: View {
         }
     }
     .frame(maxWidth: .infinity)
-    .frame(height: 50)
     .preferredColorScheme(.dark)
 }

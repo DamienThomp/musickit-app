@@ -33,11 +33,11 @@ struct TopResultCell: View {
 
             if let artwork = artwork {
                 ArtworkImage(artwork, width: size, height: size)
-                    .cornerRadius(12)
+                    .artworkCornerRadius(.large)
             } else {
                 Rectangle()
                     .frame(width: size, height: size)
-                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                    .artworkCornerRadius(.large)
             }
         }
     }

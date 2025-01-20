@@ -24,7 +24,7 @@ struct MiniMusicPlayer: View {
                     ArtworkImage(artwork, width: 34, height: 34)
                         .matchedGeometryEffect(id: PlayerMatchedGeometry.coverImage.name, in: nameSpace)
                         .frame(width: 34, height: 34)
-                        .clipShape(RoundedRectangle(cornerRadius: 6))
+                        .artworkCornerRadius(.small)
                         .onTapGesture {
                             withAnimation(PlayerMatchedGeometry.animation) {
                                 toggleView.toggle()
@@ -35,7 +35,7 @@ struct MiniMusicPlayer: View {
                         .fill(.secondary)
                         .matchedGeometryEffect(id: PlayerMatchedGeometry.coverImage.name, in: nameSpace)
                         .frame(width: 34, height: 34)
-                        .clipShape(RoundedRectangle(cornerRadius: 6))
+                        .artworkCornerRadius(.small)
                         .onTapGesture {
                             withAnimation(PlayerMatchedGeometry.animation) {
                                 toggleView.toggle()
@@ -93,7 +93,7 @@ struct MiniMusicPlayer: View {
                     .fill(Color(.systemGray5))
                     .matchedGeometryEffect(id: PlayerMatchedGeometry.background.name, in: nameSpace)
             )
-            .clipShape(RoundedRectangle(cornerRadius: 8))
+            .artworkCornerRadius(.medium)
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(8)
     }

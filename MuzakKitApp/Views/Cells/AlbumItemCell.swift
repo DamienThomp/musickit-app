@@ -19,14 +19,14 @@ struct AlbumItemCell: View {
             if let artwork = item.artwork {
 
                 ArtworkImage(artwork, width: size, height: size)
-                    .cornerRadius(8)
+                    .artworkCornerRadius(.medium)
             } else {
 
                 Image(systemName: "music.mic")
-                    .resizable()
+                    .resizableImage()
                     .foregroundStyle(.pink, .black)
                     .background(.secondary)
-                    .clipShape(RoundedRectangle(cornerRadius: 8))
+                    .artworkCornerRadius(.medium)
                     .frame(width: size, height: size)
             }
 

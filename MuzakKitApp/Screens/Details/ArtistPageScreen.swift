@@ -206,9 +206,6 @@ struct ArtistPageScreen: View {
             .ignoresSafeArea()
         }
         .background(Color(.systemBackground), ignoresSafeAreaEdges: .all)
-        .onAppear {
-            loadSections()
-        }
         .preferredColorScheme(.dark)
         .navigationBarBackButtonHidden(true)
         .toolbar {
@@ -223,6 +220,9 @@ struct ArtistPageScreen: View {
                 .tint(Color(.systemGray2).opacity(0.6))
                 .foregroundStyle(.primary)
             }
+        }
+        .onAppear {
+            loadSections()
         }
     }
 
@@ -240,8 +240,7 @@ struct ArtistPageScreen: View {
 
                     AsyncImage(url: artworkUrk) { phase in
                         phase.image?
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
+                            .resizableImage(.fill)
                             .background(Color(.black))
                             .mask {
                                 LinearGradient(colors: [.black.opacity(0), .black, .black], startPoint: .top, endPoint: .bottom)
@@ -267,6 +266,10 @@ struct ArtistPageScreen: View {
                     .padding(.trailing)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
+        }
+        .scrollTransition(axis: .vertical) { content, phase in
+            content
+                .opacity(phase.isIdentity ? 1.0 : 0.1)
         }
     }
 

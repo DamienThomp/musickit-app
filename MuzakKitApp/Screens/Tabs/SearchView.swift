@@ -45,7 +45,7 @@ struct SearchContainer: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .foregroundStyle(.white)
                 .background(LinearGradient(colors: [.black.opacity(0), .black.opacity(0.5)], startPoint: .top, endPoint: .bottom))
-        }.clipShape(RoundedRectangle(cornerRadius: 12))
+        }.artworkCornerRadius(.large)
     }
 
     @ViewBuilder
@@ -144,7 +144,7 @@ struct SearchContainer: View {
         HStack {
             if let artwork = item.artwork {
                 ArtworkImage(artwork, width: 50)
-                    .cornerRadius(12)
+                    .artworkCornerRadius(.large)
             }
             VStack(alignment: .leading) {
                 Text(item.title)
