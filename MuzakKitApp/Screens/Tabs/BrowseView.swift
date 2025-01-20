@@ -14,54 +14,62 @@ struct BrowseView: View {
 
     @State var recommendations: MusicItemCollection<MusicPersonalRecommendation>?
 
+    @State private var showLoading: Bool = false
+
     var body: some View {
 
         GeometryReader {
 
             let width = $0.size.width
 
-            List {
+            if showLoading {
 
-                if let recommendations {
+                PageLoading()
+            } else {
 
-                    ForEach(recommendations, id: \.self) { section in
+                List {
 
-                        Section {
+                    if let recommendations {
 
-                            if let title = section.title {
-                                Text(title)
-                                    .sectionHeader()
-                            }
+                        ForEach(recommendations, id: \.self) { section in
 
-                            if let reason = section.reason {
-                                Text(reason)
-                                    .sectionSubtitle()
-                            }
+                            Section {
 
-                            if !section.items.isEmpty {
+                                if let title = section.title {
+                                    Text(title)
+                                        .sectionHeader()
+                                }
 
-                                HorizontalGrid(
-                                    grid: 2.4,
-                                    rows: 1,
-                                    gutterSize: 12,
-                                    viewAligned: false,
-                                    width: width
-                                ) { width in
-                                    ForEach(section.items, id: \.self) { item in
-                                        renderCard(for: item)
-                                            .tint(.primary)
+                                if let reason = section.reason {
+                                    Text(reason)
+                                        .sectionSubtitle()
+                                }
+
+                                if !section.items.isEmpty {
+
+                                    HorizontalGrid(
+                                        grid: 2.4,
+                                        rows: 1,
+                                        gutterSize: 12,
+                                        viewAligned: false,
+                                        width: width
+                                    ) { width in
+                                        ForEach(section.items, id: \.self) { item in
+                                            renderCard(for: item)
+                                                .tint(.primary)
+                                        }
                                     }
                                 }
-                            }
-                        }.listRowSeparator(.hidden)
+                            }.listRowSeparator(.hidden)
+                        }
                     }
                 }
+                .listStyle(.plain)
             }
-            .listStyle(.plain)
-            .navigationTitle("Browse")
-            .task {
-               await fetchLibrary()
-            }
+        }
+        .navigationTitle("Browse")
+        .onAppear {
+            getMusic()
         }
     }
 
@@ -98,40 +106,23 @@ extension BrowseView {
     }
 
     private func getMusic() {
-
-        Task { @MainActor in
+        Task {
             do {
+                self.showLoading = true
                 let recommendationsRequest = MusicPersonalRecommendationsRequest()
                 let recommendations = try await recommendationsRequest.response()
-                withAnimation {
-                    self.recommendations = recommendations.recommendations
-                }
+                update(with: recommendations)
             } catch {
                 print(error)
             }
         }
     }
 
-    private func fetchLibrary() async {
-
-        let status = await MusicAuthorization.request()
-        switch status {
-
-        case .notDetermined:
-            // do nothing for now
-            print(status.rawValue)
-        case .denied:
-            // do nothing for now
-            print(status.rawValue)
-        case .restricted:
-            // do nothing for now
-            print(status.rawValue)
-        case .authorized:
-            getMusic()
-        @unknown default:
-            // do nothing
-            print(status.rawValue)
-            return
+    @MainActor
+    private func update(with items: MusicPersonalRecommendationsResponse) {
+        withAnimation {
+            self.showLoading = false
+            self.recommendations = items.recommendations
         }
     }
 }
