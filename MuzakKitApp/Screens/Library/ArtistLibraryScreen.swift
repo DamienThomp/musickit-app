@@ -15,13 +15,27 @@ struct ArtistLibraryScreen: View {
     @State private var artistSections: [MusicLibrarySection<Artist, Album>]?
     @State private var searchText: String = ""
 
+    private var filteredItems: [MusicLibrarySection<Artist, Album>]? {
+
+        if searchText.isEmpty {
+            return artistSections
+        } else {
+            return artistSections?.filter {
+                $0.name.lowercased().contains(
+                    searchText.lowercased()
+                )
+            }
+        }
+    }
+
     var body: some View {
 
         List {
-
-            if let artistSections {
-                ForEach(artistSections, id: \.self) { item in
-                    NavigationLink(value: AppRootScreen.DetailsView.artistLibrary(item)) {
+            if let filteredItems {
+                ForEach(filteredItems, id: \.self) { item in
+                    NavigationLink(
+                        value: AppRootScreen.DetailsView.artistLibrary(item)
+                    ) {
                         artistCell(item)
                     }
                 }
@@ -30,7 +44,12 @@ struct ArtistLibraryScreen: View {
         .listStyle(.plain)
         .navigationTitle("Artists")
         .navigationBarTitleDisplayMode(.large)
-        .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .always))
+        .searchable(
+            text: $searchText,
+            placement: .navigationBarDrawer(
+                displayMode: .always
+            )
+        )
         .task { loadArtists() }
 
     }
