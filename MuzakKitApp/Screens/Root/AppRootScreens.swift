@@ -35,16 +35,16 @@ extension AppRootScreen {
         switch self {
         case .browse:
             AppRootNavigation {
-                BrowseView()
+                BrowseScreen()
             }
         case .library:
             AppRootNavigation {
-                LibraryView()
+                LibraryScreen()
             }
 
         case .search:
             AppRootNavigation {
-                SearchView()
+                SearchScreen()
             }
         }
     }

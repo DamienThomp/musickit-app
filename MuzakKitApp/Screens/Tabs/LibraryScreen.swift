@@ -1,5 +1,5 @@
 //
-//  LibraryView.swift
+//  LibraryScreen.swift
 //  MuzakKitApp
 //
 //  Created by Damien L Thompson on 2025-01-06.
@@ -9,7 +9,7 @@ import SwiftUI
 import MusicKit
 
 
-struct LibraryView: View {
+struct LibraryScreen: View {
 
     @State var items: MusicItemCollection<Album>? = nil
     @Environment(NavPath.self) private var navigation
@@ -68,7 +68,7 @@ struct LibraryView: View {
     }
 }
 
-extension LibraryView {
+extension LibraryScreen {
 
     enum LibraryList: String, CaseIterable, Identifiable {
 
@@ -123,7 +123,7 @@ extension LibraryView {
 
 #Preview {
     AppRootNavigation {
-        LibraryView(items: albumitems)
+        LibraryScreen(items: albumitems)
     }
     .environment(MusicPlayerService())
     .environment(NavPath())

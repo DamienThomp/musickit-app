@@ -95,6 +95,7 @@ struct FullScreenPlayer: View {
                 .ignoresSafeArea()
 
             VStack {
+                
                 Capsule()
                     .fill(secondaryTextColor.opacity(opacity))
                     .frame(width: 50, height: 5)
@@ -172,6 +173,12 @@ struct FullScreenPlayer: View {
 
         }
         .offset(y: toggleView ? playerOffset : .zero)
+        .onAppear {
+            handleProgressTimer()
+        }
+        .onDisappear {
+            musicPlayer.stopPlayBackTimer()
+        }
         .gesture(
             DragGesture()
                 .onChanged { gesture in
@@ -207,6 +214,7 @@ struct FullScreenPlayer: View {
     var playerControls: some View {
 
         HStack(spacing: 50) {
+
             Button {
                 musicPlayer.skipToPrevious()
             } label: {
@@ -214,8 +222,10 @@ struct FullScreenPlayer: View {
                     .imageScale(.large)
                     .font(.system(size: 30))
             }
+
             Button {
                 musicPlayer.togglePlayBack()
+                handleProgressTimer()
             } label: {
                 Image(systemName: isPlaying ? Symbols.pause.name : Symbols.play.name)
                     .imageScale(.large)
@@ -223,6 +233,7 @@ struct FullScreenPlayer: View {
 
             }.matchedGeometryEffect(id: PlayerMatchedGeometry.primaryAction.name, in: nameSpace)
                 .frame(minWidth: 50, minHeight: 60)
+
             Button {
                 musicPlayer.skipToNext()
             } label: {
@@ -237,6 +248,7 @@ struct FullScreenPlayer: View {
     }
 
     var volumeSlider: some View {
+
         VStack {
             HStack(alignment: .top) {
                 Symbols.volumeDown.image
@@ -249,6 +261,17 @@ struct FullScreenPlayer: View {
         }
         .foregroundStyle(secondaryTextColor)
         .padding(.top)
+    }
+
+
+    private func handleProgressTimer() {
+
+        switch musicPlayer.playbackState {
+        case .playing:
+            musicPlayer.startPlayBackTimer()
+        default:
+            musicPlayer.stopPlayBackTimer()
+        }
     }
 }
 

@@ -1,5 +1,5 @@
 //
-//  BrowseView.swift
+//  BrowseScreen.swift
 //  MuzakKitApp
 //
 //  Created by Damien L Thompson on 2024-12-22.
@@ -8,7 +8,7 @@
 import SwiftUI
 import MusicKit
 
-struct BrowseView: View {
+struct BrowseScreen: View {
 
     @Environment(MusicPlayerService.self) private var musicPlayer
 
@@ -91,7 +91,7 @@ struct BrowseView: View {
     }
 }
 
-extension BrowseView {
+extension BrowseScreen {
 
     private func playStation(_ station: Station) {
         musicPlayer.handlePlayback(for: station)
@@ -120,7 +120,7 @@ extension BrowseView {
 
 #Preview {
     AppRootNavigation {
-        BrowseView()
+        BrowseScreen()
     }
     .environment(NavPath())
     .environment(MusicPlayerService())
