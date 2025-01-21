@@ -26,6 +26,10 @@ class MusicPlayerService {
 
     private var timer: Timer?
 
+    private var isPlaying: Bool {
+        return (playerState.playbackStatus == .playing)
+    }
+
     init() {
 
         self.player = ApplicationMusicPlayer.shared
@@ -33,10 +37,6 @@ class MusicPlayerService {
         
         setupPlayerStateListener()
         setupQueueChangeListener()
-    }
-
-    private var isPlaying: Bool {
-        return (playerState.playbackStatus == .playing)
     }
 
     private func setupPlayerStateListener() {
@@ -97,11 +97,17 @@ class MusicPlayerService {
     }
 
     private func updatePlaybackState() {
-        self.playbackState = playerState.playbackStatus
+
+        Task { @MainActor in
+            self.playbackState = playerState.playbackStatus
+        }
     }
 
     private func updateHasQueue() {
-        self.hasQueue = !self.player.queue.entries.isEmpty
+
+        Task { @MainActor in
+            self.hasQueue = !self.player.queue.entries.isEmpty
+        }
     }
 }
 

@@ -11,6 +11,7 @@ import MusicKit
 struct BrowseScreen: View {
 
     @Environment(MusicPlayerService.self) private var musicPlayer
+    @Environment(NavPath.self) private var navigation
 
     @State var recommendations: MusicItemCollection<MusicPersonalRecommendation>?
 
@@ -71,14 +72,22 @@ struct BrowseScreen: View {
         switch item.self {
         case .album(let album):
 
-            NavigationLink(value: album) {
-                AlbumItemCell(item: album, size: width)
-            }
+            AlbumItemCell(item: album, size: width)
+                .onTapGesture {
+                    navigation.path
+                        .append(
+                            AppRootScreen.DetailsView.album(album)
+                        )
+                }
         case .playlist(let playlist):
 
-            NavigationLink(value: playlist) {
-                PlaylistItemCell(item: playlist, size: width)
-            }
+            PlaylistItemCell(item: playlist, size: width)
+                .onTapGesture {
+                    navigation.path
+                        .append(
+                            AppRootScreen.DetailsView.playlist(playlist)
+                        )
+                }
         case .station(let station):
 
             StationItemCell(item: station, size: width)
