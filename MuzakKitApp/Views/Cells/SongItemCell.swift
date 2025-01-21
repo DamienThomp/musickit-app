@@ -89,14 +89,16 @@ struct SongItemCell: View {
         if let artwork = item?.artwork {
 
             ArtworkImage(artwork, width: imageWidth)
+                .frame(width: imageWidth)
+                .aspectRatio(1/1, contentMode: .fit)
                 .artworkCornerRadius(.medium)
-
 
         } else {
 
             RoundedRectangle(cornerRadius: 12)
                 .fill(Color(.systemGray3))
-                .frame(width: imageWidth, height: imageWidth)
+                .frame(width: imageWidth)
+                .aspectRatio(1/1, contentMode: .fit)
                 .artworkCornerRadius(.medium)
         }
     }
@@ -118,7 +120,7 @@ struct SongItemCell: View {
                         animateIcon = true
                     }
             }
-            .padding()
+            .padding(4)
             .frame(width: imageWidth, height: imageWidth)
             .background(.black.opacity(0.5))
             .artworkCornerRadius(.medium)

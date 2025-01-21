@@ -98,7 +98,7 @@ extension AppRootScreen.LibraryList {
         switch self {
         case .playlists: PlaylistLibraryScreen()
         case .artists: Text(self.title)
-        case .albums: Text(self.title)
+        case .albums: AlbumLibraryScreen()
         case .songs: Text(self.title)
         case .genres: Text(self.title)
         }

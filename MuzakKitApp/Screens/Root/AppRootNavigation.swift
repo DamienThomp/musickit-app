@@ -51,6 +51,11 @@ struct AppRootNavigation<Content: View>: View {
                         .navigationBarTitleDisplayMode(.inline)
                         .safeAreaPadding(.bottom, musicPlayer.hasQueue ? 60 : 0)
                 }
+                .navigationDestination(for: AppRootScreen.LibraryList.self) { item in
+                    item.destination
+                        .navigationBarTitleDisplayMode(.inline)
+                        .safeAreaPadding(.bottom, musicPlayer.hasQueue ? 60 : 0)
+                }
         }.tint(.pink)
     }
 }
