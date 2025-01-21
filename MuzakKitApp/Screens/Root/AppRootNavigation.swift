@@ -44,7 +44,7 @@ struct AppRootNavigation<Content: View>: View {
                         .safeAreaPadding(.bottom, musicPlayer.hasQueue ? 60 : 0)
                 }
                 .navigationDestination(for: Genre.self) { item in
-                    GenreView(genre: item)
+                    GenreScreen(genre: item)
                         .safeAreaPadding(.bottom, musicPlayer.hasQueue ? 60 : 0)
                 }
         }.tint(.pink)

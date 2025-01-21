@@ -45,7 +45,6 @@ class MusicPlayerService {
             .sink { [weak self] _ in
                 self?.updatePlaybackState()
                 self?.updateHasQueue()
-                self?.startPlayBackTimer()
             }
     }
 
@@ -58,17 +57,22 @@ class MusicPlayerService {
             }
     }
 
-    private func startPlayBackTimer() {
+    func startPlayBackTimer() {
 
         timer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true) { [weak self] _ in
 
             guard self?.playerState.playbackStatus == .playing else {
-                self?.timer?.invalidate()
+                self?.stopPlayBackTimer()
                 return
             }
 
             self?.updatePlaybackTime()
         }
+    }
+
+    func stopPlayBackTimer() {
+
+        timer?.invalidate()
     }
 
     private func updatePlaybackTime() {

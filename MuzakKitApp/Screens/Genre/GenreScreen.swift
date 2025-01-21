@@ -1,5 +1,5 @@
 //
-//  GenreView.swift
+//  GenreScreen.swift
 //  MuzakKitApp
 //
 //  Created by Damien L Thompson on 2025-01-11.
@@ -8,7 +8,7 @@
 import SwiftUI
 import MusicKit
 
-struct GenreView: View {
+struct GenreScreen: View {
 
     @Environment(NavPath.self) private var navigation
 
@@ -262,7 +262,7 @@ struct GenreView: View {
 
 }
 
-extension GenreView {
+extension GenreScreen {
 
     private func loadGenreSections() async throws {
 
@@ -303,7 +303,7 @@ extension GenreView {
        let mockGenre = genreMock,
        let genre = mockGenre.items.first {
         AppRootNavigation {
-            GenreView(genre: genre, charts: mockData)
+            GenreScreen(genre: genre, charts: mockData)
         }
         .environment(MusicPlayerService())
         .environment(NavPath())
