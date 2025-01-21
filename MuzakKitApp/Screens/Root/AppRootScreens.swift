@@ -52,6 +52,7 @@ enum AppRootScreen: Hashable, CaseIterable, Identifiable {
         case playlist(_ playlist: Playlist)
         case artist(_ artist: Artist)
         case genre(_ genre: Genre)
+        case artistLibrary(_ library: MusicLibrarySection<Artist, Album>)
 
         var id: DetailsView { self }
     }
@@ -97,7 +98,7 @@ extension AppRootScreen.LibraryList {
     var destination: some View {
         switch self {
         case .playlists: PlaylistLibraryScreen()
-        case .artists: Text(self.title)
+        case .artists: ArtistLibraryScreen()
         case .albums: AlbumLibraryScreen()
         case .songs: Text(self.title)
         case .genres: Text(self.title)
@@ -114,6 +115,7 @@ extension AppRootScreen.DetailsView {
         case .playlist(let playlist): PlaylistDetailScreen(playlist: playlist)
         case .artist(let artist): ArtistPageScreen(artist: artist)
         case .genre(let genre): GenreScreen(genre: genre)
+        case .artistLibrary(let library): ArtistLibraryDetailsScreen(details: library)
         }
     }
 }
