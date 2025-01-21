@@ -63,13 +63,12 @@ struct GenreScreen: View {
                                 width: width
                             ) { width in
                                 ForEach(section.items, id: \.self) { item in
-                                    songCell(for: item, width: width)
+                                    SongItemCell(item: item, width: width)
                                 }
                             }.horizontalDefaultInsets()
                         }
                         .listRowSeparator(.hidden)
                         .padding(.bottom)
-
                     }
                 }
 
@@ -284,6 +283,7 @@ extension GenreScreen {
 
         let charts = try await genreChartsRquest.response()
         let items = try await genreRequest.response()
+        
         updateView(charts, items)
     }
 

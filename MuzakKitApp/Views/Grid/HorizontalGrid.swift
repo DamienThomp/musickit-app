@@ -21,7 +21,7 @@ struct HorizontalGrid<Content: View>: View {
     }
 
     private var gridRows: [GridItem] {
-        Array(repeating: .init(), count: rows)
+        Array(repeating: .init(.flexible(minimum: 50)), count: rows)
     }
 
     @ViewBuilder let content: (_ width: CGFloat) -> Content

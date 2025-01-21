@@ -11,6 +11,11 @@ import SwiftUI
 @SFSymbol
 enum Symbols: String {
 
+    // MusicItem
+    case albumPlaceholder = "waveform.circle"
+    case artistPlaceholder = "person.2.circle"
+    case playlistPlaceholder = "recordingtape.circle"
+
     // Player
     case play = "play.fill"
     case pause = "pause.fill"

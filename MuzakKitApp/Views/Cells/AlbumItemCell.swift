@@ -10,36 +10,54 @@ import MusicKit
 
 struct AlbumItemCell: View {
     
-    let item: Album
+    let item: Album?
     let size: CGFloat
+
+    private var title: String {
+        item?.title ?? "Album Title"
+    }
+
+    private var subtitle: String {
+        item?.artistName ?? "Artist Name"
+    }
+
+    private var artwork: Artwork? {
+        item?.artwork
+    }
 
     var body: some View {
         VStack(alignment: .leading) {
 
-            if let artwork = item.artwork {
+            if let artwork {
 
                 ArtworkImage(artwork, width: size, height: size)
                     .artworkCornerRadius(.medium)
+
             } else {
 
-                Image(systemName: "music.mic")
+            Symbols.albumPlaceholder.image
                     .resizableImage()
-                    .foregroundStyle(.pink, .black)
-                    .background(.secondary)
+                    .padding(36)
+                    .foregroundStyle(.pink.opacity(0.6))
+                    .background(Color(.systemGray5))
                     .artworkCornerRadius(.medium)
                     .frame(width: size, height: size)
-            }
+           }
 
-            Text(item.title)
+            Text(title)
                 .font(.system(.subheadline))
                 .lineLimit(1)
 
 
-            Text(item.artistName)
+            Text(subtitle)
                 .font(.system(.caption2))
                 .foregroundStyle(.secondary)
                 .lineLimit(1)
 
         }.frame(maxWidth: size)
     }
+}
+
+#Preview {
+    AlbumItemCell(item: nil, size: 250)
 }

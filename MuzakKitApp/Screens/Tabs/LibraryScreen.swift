@@ -24,9 +24,7 @@ struct LibraryScreen: View {
 
                 ForEach(AppRootScreen.LibraryList.allCases, id: \.id) { item in
 
-                    NavigationLink {
-                        item.destination
-                    } label: {
+                    NavigationLink(value: item) {
                         HStack {
                             Image(systemName: item.icon)
                                 .frame(minWidth: 30)
@@ -72,7 +70,7 @@ extension LibraryScreen {
     private func loadRecentlyAdded() async throws {
 
         var request: MusicLibraryRequest<Album> = MusicLibraryRequest()
-        request.limit = 25
+        request.limit = 26
         request.sort(by: \.libraryAddedDate, ascending: false)
 
         let albumResponse = try await request.response()
