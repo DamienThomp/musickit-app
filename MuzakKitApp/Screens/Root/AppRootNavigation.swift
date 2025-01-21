@@ -46,6 +46,10 @@ struct AppRootNavigation<Content: View>: View {
                 .navigationDestination(for: Genre.self) { item in
                     GenreScreen(genre: item)
                         .safeAreaPadding(.bottom, musicPlayer.hasQueue ? 60 : 0)
+                }.navigationDestination(for: AppRootScreen.DetailsView.self) { item in
+                    item.destination
+                        .navigationBarTitleDisplayMode(.inline)
+                        .safeAreaPadding(.bottom, musicPlayer.hasQueue ? 60 : 0)
                 }
         }.tint(.pink)
     }

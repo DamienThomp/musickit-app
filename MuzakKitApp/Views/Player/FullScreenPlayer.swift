@@ -79,6 +79,21 @@ struct FullScreenPlayer: View {
         }
     }
 
+    private func handleProgressTimer(_ isDismissing: Bool = false) {
+
+        guard !isDismissing else {
+            musicPlayer.stopPlayBackTimer()
+            return
+        }
+
+        switch musicPlayer.playbackState {
+        case .playing:
+            musicPlayer.startPlayBackTimer()
+        default:
+            musicPlayer.stopPlayBackTimer()
+        }
+    }
+
     var body: some View {
 
         let width = proxy.size.width - 48
@@ -95,7 +110,7 @@ struct FullScreenPlayer: View {
                 .ignoresSafeArea()
 
             VStack {
-                
+
                 Capsule()
                     .fill(secondaryTextColor.opacity(opacity))
                     .frame(width: 50, height: 5)
@@ -156,6 +171,12 @@ struct FullScreenPlayer: View {
                                 .tint(secondaryTextColor)
                                 .foregroundStyle(secondaryTextColor)
                                 .opacity(opacity)
+                                .onAppear {
+                                    handleProgressTimer()
+                                }
+                                .onDisappear {
+                                    handleProgressTimer(true)
+                                }
                         }
 
                     }.frame(maxWidth: .infinity)
@@ -173,12 +194,6 @@ struct FullScreenPlayer: View {
 
         }
         .offset(y: toggleView ? playerOffset : .zero)
-        .onAppear {
-            handleProgressTimer()
-        }
-        .onDisappear {
-            musicPlayer.stopPlayBackTimer()
-        }
         .gesture(
             DragGesture()
                 .onChanged { gesture in
@@ -263,16 +278,6 @@ struct FullScreenPlayer: View {
         .padding(.top)
     }
 
-
-    private func handleProgressTimer() {
-
-        switch musicPlayer.playbackState {
-        case .playing:
-            musicPlayer.startPlayBackTimer()
-        default:
-            musicPlayer.stopPlayBackTimer()
-        }
-    }
 }
 
 #Preview {
@@ -294,7 +299,7 @@ struct PlayerProgressView: View {
     private var progress: TimeInterval {
 
         if let progress = musicPlayerManager.currentPlayBackTime,
-            progress < duration {
+           progress < duration {
             return progress
         }
 
@@ -309,17 +314,17 @@ struct PlayerProgressView: View {
     var body: some View {
 
         Group {
-            
+
             ProgressView(value: progress, total: duration)
-            
+
             HStack {
                 Text(progress, format: .duration(style: .positional))
                     .font(.caption)
-                
+
                 Spacer()
                 Text(remaining, format: .duration(style: .positional))
                     .font(.caption)
-                
+
             }
         }
     }

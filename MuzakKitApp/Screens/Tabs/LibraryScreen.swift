@@ -22,11 +22,10 @@ struct LibraryScreen: View {
 
             List {
 
-                ForEach(LibraryList.allCases, id: \.id) { item in
+                ForEach(AppRootScreen.LibraryList.allCases, id: \.id) { item in
 
                     NavigationLink {
-                        // TODO: - replace with destination view
-                        Text(item.title)
+                        item.destination
                     } label: {
                         HStack {
                             Image(systemName: item.icon)
@@ -69,39 +68,6 @@ struct LibraryScreen: View {
 }
 
 extension LibraryScreen {
-
-    enum LibraryList: String, CaseIterable, Identifiable {
-
-        case playlists
-        case artists
-        case albums
-        case songs
-        case genres
-
-        var id: String {
-            self.rawValue
-        }
-
-        var title: String {
-            self.rawValue.capitalized
-        }
-
-        var icon: String {
-
-            switch self {
-            case .playlists:
-                "music.note.list"
-            case .artists:
-                "music.mic"
-            case .albums:
-                "square.stack"
-            case .songs:
-                "music.note"
-            case .genres:
-                "guitars"
-            }
-        }
-    }
 
     private func loadRecentlyAdded() async throws {
 
