@@ -25,12 +25,18 @@ struct AlbumItemCell: View {
         item?.artwork
     }
 
+    private var itemWidth: CGFloat {
+
+        return size > 0 ? size : 0.0
+    }
+
     var body: some View {
+
         VStack(alignment: .leading) {
 
             if let artwork {
 
-                ArtworkImage(artwork, width: size, height: size)
+                ArtworkImage(artwork, width: itemWidth, height: itemWidth)
                     .artworkCornerRadius(.medium)
 
             } else {
@@ -41,7 +47,7 @@ struct AlbumItemCell: View {
                     .foregroundStyle(.pink.opacity(0.6))
                     .background(Color(.systemGray5))
                     .artworkCornerRadius(.medium)
-                    .frame(width: size, height: size)
+                    .frame(width: itemWidth, height: itemWidth)
            }
 
             Text(title)
@@ -54,7 +60,7 @@ struct AlbumItemCell: View {
                 .foregroundStyle(.secondary)
                 .lineLimit(1)
 
-        }.frame(maxWidth: size)
+        }.frame(maxWidth: itemWidth)
     }
 }
 

@@ -50,7 +50,7 @@ struct ArtistLibraryScreen: View {
                 displayMode: .always
             )
         )
-        .task { loadArtists() }
+        .task { await loadArtists() }
 
     }
 
@@ -78,27 +78,25 @@ struct ArtistLibraryScreen: View {
                 .clipShape(Circle())
         } else {
             Symbols.artistPlaceholder.image
-                    .resizableImage()
-                    .foregroundStyle(.pink.opacity(0.6))
-                    .background(Color(.systemGray5))
-                    .clipShape(Circle())
-                    .frame(width: 40, height: 40)
+                .resizableImage()
+                .foregroundStyle(.pink.opacity(0.6))
+                .background(Color(.systemGray5))
+                .clipShape(Circle())
+                .frame(width: 40, height: 40)
         }
     }
 }
 
 extension ArtistLibraryScreen {
 
-    private func loadArtists() {
+    private func loadArtists() async {
 
-        Task {
-            do {
-                let request = MusicLibrarySectionedRequest<Artist, Album>()
-                let response = try await request.response()
-                updateArtists(with: response)
-            } catch {
-                print("Couldn't load artist library items: \(error)")
-            }
+        do {
+            let request = MusicLibrarySectionedRequest<Artist, Album>()
+            let response = try await request.response()
+            updateArtists(with: response)
+        } catch {
+            print("Couldn't load artist library items: \(error)")
         }
     }
 
