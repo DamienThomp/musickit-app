@@ -59,22 +59,25 @@ struct LibraryScreen: View {
                     }
                 }
             }.listStyle(.plain)
-        }.task {
-            try? await loadRecentlyAdded()
-        }.navigationTitle("Library")
+        }
+        .navigationTitle("Library")
+        .task { await loadRecentlyAdded() }
     }
 }
 
 extension LibraryScreen {
 
-    private func loadRecentlyAdded() async throws {
+    private func loadRecentlyAdded() async {
+        
+        do {
 
-        var request: MusicLibraryRequest<Album> = MusicLibraryRequest()
-        request.limit = 26
-        request.sort(by: \.libraryAddedDate, ascending: false)
+            var request: MusicLibraryRequest<Album> = MusicLibraryRequest()
+            request.limit = 26
+            request.sort(by: \.libraryAddedDate, ascending: false)
 
-        let albumResponse = try await request.response()
-        updateSection(with: albumResponse.items)
+            let albumResponse = try await request.response()
+            updateSection(with: albumResponse.items)
+        } catch { print("Can't load data: \(error.localizedDescription)") }
     }
 
     @MainActor

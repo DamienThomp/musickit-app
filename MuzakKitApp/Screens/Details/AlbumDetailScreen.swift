@@ -21,7 +21,6 @@ struct AlbumDetailScreen: View {
     @State var tracks: MusicItemCollection<Track>? = nil
     @State private var isInLibrary: Bool = false
 
-    //TODO: - Condense state variables into one object
     @State private var related: MusicItemCollection<Album>?
     @State private var similarArtists: MusicItemCollection<Artist>?
     @State private var artistAlbums: MusicItemCollection<Album>?
@@ -114,15 +113,6 @@ struct AlbumDetailScreen: View {
         }
         .background(Color(.systemGray6), ignoresSafeAreaEdges: .bottom)
         .listStyle(.plain)
-        .task {
-            do {
-                try await checkLibraryState(for: album)
-                try await loadTracks()
-            } catch {
-                print(error.localizedDescription)
-            }
-
-        }
         .navigationBarBackButtonHidden(true)
         .toolbar {
 
@@ -155,6 +145,7 @@ struct AlbumDetailScreen: View {
                 }
             }
         }
+        .task { await getData() }
     }
 
 
@@ -216,9 +207,19 @@ struct AlbumDetailScreen: View {
             musicPlayer.shufflePlayback(for: album)
         }
     }
+    
 }
 
 extension AlbumDetailScreen {
+
+    private func getData() async {
+        do {
+            try await checkLibraryState(for: album)
+            try await loadTracks()
+        } catch {
+            print(error.localizedDescription)
+        }
+    }
 
     private func addToLibrary(_ album: Album) {
 

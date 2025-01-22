@@ -44,7 +44,7 @@ struct AlbumLibraryScreen: View {
             .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .always))
         }
         .navigationTitle("Albums")
-        .task { loadAlbums() }
+        .task { await loadAlbums() }
 
     }
 
@@ -81,24 +81,21 @@ struct AlbumLibraryScreen: View {
 
 extension AlbumLibraryScreen {
 
-    private func loadAlbums() {
+    private func loadAlbums() async {
 
-        Task {
+        do {
 
-            do {
+            var request = MusicLibraryRequest<Album>()
+            request.sort(by: \.artistName, ascending: true)
 
-                var request = MusicLibraryRequest<Album>()
-                request.sort(by: \.artistName, ascending: true)
+            let response = try await request.response()
 
-                let response = try await request.response()
+            let sections = Dictionary(grouping: response.items) { $0.artistName.first ?? "?" }
+            let ordered = sections.sorted( by: { $0.0 < $1.0 })
 
-                let sections = Dictionary(grouping: response.items) { $0.artistName.first ?? "?" }
-                let ordered = sections.sorted( by: { $0.0 < $1.0 })
-
-                updateAlbums(with: ordered)
-            } catch {
-                print("Can't load albums with: \(error)")
-            }
+            updateAlbums(with: ordered)
+        } catch {
+            print("Can't load albums with: \(error)")
         }
     }
 

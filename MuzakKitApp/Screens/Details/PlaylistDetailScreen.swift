@@ -105,9 +105,6 @@ struct PlaylistDetailScreen: View {
         .background(Color(.systemGray6), ignoresSafeAreaEdges: .bottom)
         .tint(.pink)
         .listStyle(.plain)
-        .onAppear {
-            loadTracks()
-        }
         .navigationBarBackButtonHidden(true)
         .toolbar {
 
@@ -138,6 +135,7 @@ struct PlaylistDetailScreen: View {
                 }
             }
         }
+        .task { await loadTracks() }
     }
 
     private var header: some View {
@@ -180,20 +178,20 @@ struct PlaylistDetailScreen: View {
 
 extension PlaylistDetailScreen {
 
-    private func loadTracks() {
-        Task {
-            do {
-                let playlist = try await musicService.getData(
-                    for: playlist,
-                    with: [
-                        .tracks,
-                        .featuredArtists
-                    ]
-                )
-                update(tracks: playlist.tracks, artists: playlist.featuredArtists)
-            } catch {
-                print("failed to load tracks for playlist with: \(error.localizedDescription)")
-            }
+    private func loadTracks() async {
+
+        do {
+            
+            let playlist = try await musicService.getData(
+                for: playlist,
+                with: [
+                    .tracks,
+                    .featuredArtists
+                ]
+            )
+            update(tracks: playlist.tracks, artists: playlist.featuredArtists)
+        } catch {
+            print("failed to load tracks for playlist with: \(error.localizedDescription)")
         }
     }
 
