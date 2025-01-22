@@ -44,6 +44,7 @@ struct AppRootView: View {
                     navigation.path = NavigationPath()
                 }
                 .tint(.pink)
+                .scrollIndicators(.hidden)
                 .safeAreaInset(edge: .bottom) {
                     showMiniPlayer(proxy)
                 }.ignoresSafeArea(.container, edges: .top)

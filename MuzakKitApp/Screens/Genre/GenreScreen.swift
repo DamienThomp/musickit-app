@@ -174,10 +174,8 @@ struct GenreScreen: View {
                 }
             }.listStyle(.plain)
         }
-        .task {
-            try? await loadGenreSections()
-        }
         .navigationTitle(genre.name)
+        .task { await loadGenreSections() }
     }
 
     @ViewBuilder
@@ -263,28 +261,33 @@ struct GenreScreen: View {
 
 extension GenreScreen {
 
-    private func loadGenreSections() async throws {
+    private func loadGenreSections() async {
 
-        let genreChartsRquest = MusicCatalogChartsRequest(
-            genre: genre,
-            kinds: [
-                .mostPlayed,
-                .dailyGlobalTop
-            ],
-            types: [
-                Album.self,
-                Playlist.self,
-                Song.self
-            ]
-        )
-        var genreRequest = MusicCatalogSearchRequest(term: genre.name, types: [Album.self, Station.self, Playlist.self, Artist.self])
-        genreRequest.includeTopResults = true
-        genreRequest.limit = 25
+        do {
 
-        let charts = try await genreChartsRquest.response()
-        let items = try await genreRequest.response()
-        
-        updateView(charts, items)
+            let genreChartsRquest = MusicCatalogChartsRequest(
+                genre: genre,
+                kinds: [
+                    .mostPlayed,
+                    .dailyGlobalTop
+                ],
+                types: [
+                    Album.self,
+                    Playlist.self,
+                    Song.self
+                ]
+            )
+            var genreRequest = MusicCatalogSearchRequest(term: genre.name, types: [Album.self, Station.self, Playlist.self, Artist.self])
+            genreRequest.includeTopResults = true
+            genreRequest.limit = 25
+
+            let charts = try await genreChartsRquest.response()
+            let items = try await genreRequest.response()
+
+            updateView(charts, items)
+        } catch {
+            print("Can't load sections for genre: \(error.localizedDescription)")
+        }
     }
 
     @MainActor

@@ -61,9 +61,7 @@ struct BrowseScreen: View {
             .listStyle(.plain)
         }
         .navigationTitle("Browse")
-        .onAppear {
-            getMusic()
-        }
+        .task { await getMusic() }
     }
 
     @ViewBuilder
@@ -106,16 +104,14 @@ extension BrowseScreen {
         musicPlayer.handlePlayback(for: station)
     }
 
-    private func getMusic() {
+    private func getMusic() async {
 
-        Task {
-            do {
-                let recommendationsRequest = MusicPersonalRecommendationsRequest()
-                let recommendations = try await recommendationsRequest.response()
-                update(with: recommendations)
-            } catch {
-                print(error)
-            }
+        do {
+            let recommendationsRequest = MusicPersonalRecommendationsRequest()
+            let recommendations = try await recommendationsRequest.response()
+            update(with: recommendations)
+        } catch {
+            print(error)
         }
     }
 

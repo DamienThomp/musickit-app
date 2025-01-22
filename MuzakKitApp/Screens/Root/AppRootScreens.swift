@@ -21,7 +21,6 @@ enum AppRootScreen: Hashable, CaseIterable, Identifiable {
         case playlists
         case artists
         case albums
-        case songs
         case genres
 
         var id: String { self.rawValue }
@@ -37,8 +36,6 @@ enum AppRootScreen: Hashable, CaseIterable, Identifiable {
                 "music.mic"
             case .albums:
                 "square.stack"
-            case .songs:
-                "music.note"
             case .genres:
                 "guitars"
             }
@@ -101,7 +98,6 @@ extension AppRootScreen.LibraryList {
         case .playlists: PlaylistLibraryScreen()
         case .artists: ArtistLibraryScreen()
         case .albums: AlbumLibraryScreen()
-        case .songs: Text(self.title)
         case .genres: GenreLibraryScreen()
         }
     }

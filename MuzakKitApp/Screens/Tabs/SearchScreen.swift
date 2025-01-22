@@ -74,11 +74,10 @@ struct SearchContainer: View {
                 }
             }.listStyle(.plain)
         }
-        .task {
-            try? await loadData()
-        }.onChange(of: isSearching) {
+        .onChange(of: isSearching) {
             searchResults = nil
         }
+        .task { await loadData() }
     }
 
     @ViewBuilder
@@ -212,12 +211,17 @@ struct SearchContainer: View {
 
 extension SearchContainer {
 
-    private func loadData() async throws {
+    private func loadData() async {
 
-        let charts = MusicCatalogResourceRequest<Genre>()
-        let items = try await charts.response()
+        do {
 
-        updateView(with: items)
+            let charts = MusicCatalogResourceRequest<Genre>()
+            let items = try await charts.response()
+
+            updateView(with: items)
+        } catch {
+            print("Can't load data for search results: \(error.localizedDescription)")
+        }
     }
 
     @MainActor

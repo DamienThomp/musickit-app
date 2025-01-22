@@ -200,16 +200,16 @@ struct ArtistPageScreen: View {
                     .frame(maxWidth: .infinity, alignment: .top)
                     .background(Color(.systemGray6))
                     .transition(.asymmetric(insertion: .opacity, removal: .identity))
-                } .coordinateSpace(.named(CoordinateSpace.scrollView))
-                    .ignoresSafeArea()
-
+                }
+                .coordinateSpace(.named(CoordinateSpace.scrollView))
+                .ignoresSafeArea()
             }
-
         }
         .background(Color(.systemBackground), ignoresSafeAreaEdges: .all)
         .preferredColorScheme(.dark)
         .navigationBarBackButtonHidden(true)
         .toolbar {
+
             ToolbarItem(placement: .topBarLeading) {
                 Button {
                     dismiss()
@@ -222,9 +222,7 @@ struct ArtistPageScreen: View {
                 .foregroundStyle(.primary)
             }
         }
-        .onAppear {
-            loadSections()
-        }
+        .task { await loadSections() }
     }
 
     @ViewBuilder
@@ -298,29 +296,28 @@ struct ArtistPageScreen: View {
 
 extension ArtistPageScreen {
 
-    private func loadSections() {
+    private func loadSections() async {
 
-        Task {
-            do {
+        do {
 
-                let artistDetails = try await musicService.getData(for: artist, with:
-                                                                    [
-                                                                        .albums,
-                                                                        .singles,
-                                                                        .appearsOnAlbums,
-                                                                        .similarArtists,
-                                                                        .featuredAlbums,
-                                                                        .playlists,
-                                                                        .latestRelease,
-                                                                        .compilationAlbums,
-                                                                        .topSongs
-                                                                    ]
-                )
-                print(String(describing: artistDetails.topSongs))
-                updateSections(with: artistDetails)
-            } catch {
-                print("can't load data: \(error.localizedDescription)")
-            }
+            let artistDetails = try await musicService.getData(
+                for: artist,
+                with:
+                    [
+                        .albums,
+                        .singles,
+                        .appearsOnAlbums,
+                        .similarArtists,
+                        .featuredAlbums,
+                        .playlists,
+                        .latestRelease,
+                        .compilationAlbums,
+                        .topSongs
+                    ]
+            )
+            updateSections(with: artistDetails)
+        } catch {
+            print("can't load data: \(error.localizedDescription)")
         }
     }
 

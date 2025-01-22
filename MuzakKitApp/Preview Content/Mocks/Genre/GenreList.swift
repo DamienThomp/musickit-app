@@ -16,7 +16,6 @@ var mockGenrelist: MusicCatalogChartsResponse? {
 
     do {
         let mock = try JSONDecoder().decode(MusicCatalogChartsResponse.self, from: data)
-        print(String(describing: mock))
         return mock
     } catch {
         print(error.localizedDescription)
