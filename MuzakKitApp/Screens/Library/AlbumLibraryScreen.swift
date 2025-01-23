@@ -71,11 +71,14 @@ extension AlbumLibraryScreen {
     }
 
     private func loadAlbums() async {
+
         Task.detached {
+
             do {
 
                 var request = MusicLibraryRequest<Album>()
                 request.sort(by: \.artistName, ascending: true)
+                request.includeOnlyDownloadedContent = true
 
                 let response = try await request.response()
 
