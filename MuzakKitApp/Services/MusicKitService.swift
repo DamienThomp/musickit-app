@@ -8,7 +8,6 @@
 import Foundation
 import SwiftUI
 import MusicKit
-import Observation
 
 @Observable
 class MusicKitService {
@@ -73,29 +72,29 @@ extension MusicKitService {
     func isInLirabry<T: MusicItem>(_ item: T) async throws -> Bool  {
 
         if let item = item as? Album {
-            let response = try await checkLibrary(for: item)
+            let response = try await libraryRequest(for: item)
             return !response.items.isEmpty
         }
 
         if let item = item as? Playlist {
-            let response = try await checkLibrary(for: item)
+            let response = try await libraryRequest(for: item)
             return !response.items.isEmpty
         }
 
         if let item = item as? Song {
-            let response = try await checkLibrary(for: item)
+            let response = try await libraryRequest(for: item)
             return !response.items.isEmpty
         }
 
         if let item = item as? Track {
-            let response = try await checkLibrary(for: item)
+            let response = try await libraryRequest(for: item)
             return !response.items.isEmpty
         }
         
         return false
     }
 
-    func checkLibrary(for item: Album) async throws -> MusicLibraryResponse<Album> {
+    func libraryRequest(for item: Album) async throws -> MusicLibraryResponse<Album> {
 
         var request = MusicLibraryRequest<Album>()
         request.filter(matching: \.id, equalTo: item.id)
@@ -105,7 +104,7 @@ extension MusicKitService {
         return response
     }
 
-    func checkLibrary(for item: Song) async throws -> MusicLibraryResponse<Song> {
+    func libraryRequest(for item: Song) async throws -> MusicLibraryResponse<Song> {
 
         var request: MusicLibraryRequest<Song> = MusicLibraryRequest()
         request.filter(matching: \.id, equalTo: item.id)
@@ -115,7 +114,7 @@ extension MusicKitService {
         return response
     }
 
-    func checkLibrary(for item: Track) async throws -> MusicLibraryResponse<Track> {
+    func libraryRequest(for item: Track) async throws -> MusicLibraryResponse<Track> {
 
         var request: MusicLibraryRequest<Track> = MusicLibraryRequest()
         request.filter(matching: \.id, equalTo: item.id)
@@ -126,7 +125,7 @@ extension MusicKitService {
     }
 
 
-    func checkLibrary(for item: Playlist) async throws -> MusicLibraryResponse<Playlist> {
+    func libraryRequest(for item: Playlist) async throws -> MusicLibraryResponse<Playlist> {
 
         var request: MusicLibraryRequest<Playlist> = MusicLibraryRequest()
         request.filter(matching: \.id, equalTo: item.id)
@@ -135,13 +134,13 @@ extension MusicKitService {
 
         return response
     }
-
 }
 
 // MARK: - MusicKit Search
 extension MusicKitService {
 
     func search(with searchText: String) async throws -> MusicCatalogSearchResponse {
+
         let searchRequest = MusicCatalogSearchRequest(term: searchText, types: [Album.self, Song.self, Playlist.self, Station.self, Artist.self])
 
         let response = try await searchRequest.response()
@@ -150,6 +149,7 @@ extension MusicKitService {
     }
 
     func search(with searchText: String, for types: Array<any MusicLibrarySearchable.Type>) async throws ->  MusicLibrarySearchResponse {
+        
         let searchRequest = MusicLibrarySearchRequest(term: searchText, types: types)
 
         let response = try await searchRequest.response()
