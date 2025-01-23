@@ -40,13 +40,12 @@ struct ArtistPageScreen: View {
 
             let size = proxy.size
 
+            ScrollView {
 
-            if let artistDetails {
+                header()
+                    .padding(.bottom, -10)
 
-                ScrollView {
-
-                    header()
-                        .padding(.bottom, -10)
+                if let artistDetails {
 
                     VStack(alignment: .leading, spacing: 36) {
 
@@ -201,9 +200,9 @@ struct ArtistPageScreen: View {
                     .background(Color(.systemGray6))
                     .transition(.asymmetric(insertion: .opacity, removal: .identity))
                 }
-                .coordinateSpace(.named(CoordinateSpace.scrollView))
-                .ignoresSafeArea()
             }
+            .coordinateSpace(.named(CoordinateSpace.scrollView))
+            .ignoresSafeArea()
         }
         .background(Color(.systemBackground), ignoresSafeAreaEdges: .all)
         .preferredColorScheme(.dark)
