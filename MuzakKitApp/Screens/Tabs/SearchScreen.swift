@@ -9,40 +9,91 @@ import SwiftUI
 import MusicKit
 import Combine
 
+enum SearchType: String, CaseIterable {
+
+    case library
+    case catalog
+
+    var title: String {
+        self.rawValue.capitalized
+    }
+}
+
 struct SearchScreen: View {
 
+    @Environment(MusicKitService.self) private var musicService
+
+    @State private var searchType: SearchType = .library
     @State private var searchText: String = ""
-    @State private var searchResults: MusicCatalogSearchResponse?
+    @State private var searchCatalogResults: MusicCatalogSearchResponse?
+    @State private var searchLibraryResults: MusicLibrarySearchResponse?
 
     var cancellables = Set<AnyCancellable>()
 
     var body: some View {
 
-        SearchContainer(searchResults: $searchResults)
-            .navigationTitle("Search")
-            .searchable(
-                text: $searchText,
-                placement: .navigationBarDrawer(
-                    displayMode: .always
-                ),
-                prompt: Text(
-                    "Artists, Songs, Lyrics and More"
-                )
+        SearchContainer(
+            searchCatalogResults: $searchCatalogResults,
+            searchLibraryResults: $searchLibraryResults,
+            searchType: $searchType
+        )
+        .navigationTitle("Search")
+        .searchable(
+            text: $searchText,
+            placement: .navigationBarDrawer(
+                displayMode: .always
+            ),
+            prompt: Text(
+                "Artists, Songs, Lyrics and More"
             )
-            .onChange(of: searchText) {
-                conductSearch(for: searchText.lowercased())
+        )
+        .onSubmit(of: .search) {
+            conductSearch(for: searchText.lowercased(), of: searchType)
+        }
+        .onChange(of: searchText) {
+            // TOOD: - needs debounce
+            // conductSearch(for: searchText.lowercased(), of: searchType)
+        }
+        .onChange(of: searchType) {
+            clearResults()
+
+            if !searchText.isEmpty {
+                conductSearch(for: searchText.lowercased(), of: searchType)
             }
+        }
     }
 
-    private func conductSearch(for searchTerm: String)  {
-        // TODO: - debounce calls to search + add suggestions
-        // handle empty search term case
+    private func clearResults() {
+        searchCatalogResults = nil
+        searchLibraryResults = nil
+    }
+
+    // TODO: - debounce calls to search + add suggestions
+    private func conductSearch(for query: String, of type: SearchType)  {
+
+        guard !query.isEmpty else { return }
+
         Task {
-            let searchRequest = MusicCatalogSearchRequest(term: searchTerm, types: [Album.self, Song.self, Playlist.self, Station.self, Artist.self])
-
-            let response = try await searchRequest.response()
-
-            updateSearchResults(with: response)
+            do {
+                switch type {
+                case .library:
+                    let response = try await musicService.search(
+                        with: query,
+                        for: [
+                            Album.self,
+                            Song.self,
+                            Playlist.self,
+                            Artist.self
+                        ]
+                    )
+                    updateSearchResults(with: response)
+                case .catalog:
+                    let response = try await musicService.search(with: query)
+                    updateSearchResults(with: response)
+                }
+            } catch {
+                print("Can't load search results for \(type.title) with error: \(error.localizedDescription)")
+            }
         }
     }
 
@@ -50,7 +101,16 @@ struct SearchScreen: View {
     private func updateSearchResults(with response: MusicCatalogSearchResponse) {
         Task {
             withAnimation {
-                self.searchResults = response
+                self.searchCatalogResults = response
+            }
+        }
+    }
+
+    @MainActor
+    private func updateSearchResults(with response: MusicLibrarySearchResponse) {
+        Task {
+            withAnimation {
+                self.searchLibraryResults = response
             }
         }
     }
@@ -62,7 +122,9 @@ struct SearchContainer: View {
     @Environment(\.isSearching) private var isSearching
 
     @State var genres: MusicCatalogResourceResponse<Genre>? = nil
-    @Binding var searchResults: MusicCatalogSearchResponse?
+    @Binding var searchCatalogResults: MusicCatalogSearchResponse?
+    @Binding var searchLibraryResults: MusicLibrarySearchResponse?
+    @Binding var searchType: SearchType
 
     var body: some View {
         GeometryReader { proxy in
@@ -75,7 +137,8 @@ struct SearchContainer: View {
             }.listStyle(.plain)
         }
         .onChange(of: isSearching) {
-            searchResults = nil
+            searchCatalogResults = nil
+            searchLibraryResults = nil
         }
         .task { await loadData() }
     }
@@ -85,9 +148,26 @@ struct SearchContainer: View {
 
         let screenWidth = proxy.size.width
 
-        if let searchResults = searchResults {
+        Picker("Search in", selection: $searchType) {
+            ForEach(SearchType.allCases, id: \.self) { selection in
+                Text(selection.title).tag(selection)
+            }
+        }.pickerStyle(.segmented)
 
-            Text("Search Results")
+        if let catalog = searchCatalogResults {
+            catalogResults(screenWidth, catalog: catalog)
+        }
+
+        if let library = searchLibraryResults {
+            libraryResults(screenWidth, library: library)
+        }
+
+    }
+
+    @ViewBuilder
+    private func catalogResults(_ screenWidth: CGFloat, catalog: MusicCatalogSearchResponse) -> some View {
+
+            Text("Search Catalog Results")
                 .font(.title2)
                 .fontWeight(.bold)
                 .listRowSeparator(.hidden)
@@ -104,7 +184,7 @@ struct SearchContainer: View {
                     width: screenWidth
                 ) { width in
 
-                    ForEach(searchResults.albums, id: \.self) { item in
+                    ForEach(catalog.albums, id: \.self) { item in
 
                         AlbumItemCell(item: item, size: width).onTapGesture {
                             navigation.path.append(item)
@@ -124,7 +204,7 @@ struct SearchContainer: View {
                     gutterSize: 12,
                     width: screenWidth
                 ) { width in
-                    ForEach(searchResults.songs, id: \.self) { item in
+                    ForEach(catalog.songs, id: \.self) { item in
                         SongItemCell(item: item, width: width).onTapGesture {
                             navigation.path.append(item)
                         }
@@ -144,7 +224,7 @@ struct SearchContainer: View {
                     width: screenWidth
                 ) { width in
 
-                    ForEach(searchResults.artists, id: \.self) { item in
+                    ForEach(catalog.artists, id: \.self) { item in
 
                         ArtistItemCell(item: item, size: 168).onTapGesture {
                             navigation.path.append(item)
@@ -152,32 +232,85 @@ struct SearchContainer: View {
                     }
                 }.horizontalDefaultInsets()
             }.listRowSeparator(.hidden)
-        }
+
     }
 
     @ViewBuilder
-    private func songCell(for item: Song) -> some View {
+    private func libraryResults(_ screenWidth: CGFloat, library: MusicLibrarySearchResponse) -> some View {
 
-        HStack {
+        Text("Search Library Results")
+            .font(.title2)
+            .fontWeight(.bold)
+            .listRowSeparator(.hidden)
 
-            if let artwork = item.artwork {
-                ArtworkImage(artwork, width: 50)
-                    .artworkCornerRadius(.large)
+        if !library.albums.isEmpty {
+
+            Section {
+                Text("Albums")
+                    .sectionHeader()
+
+                HorizontalGrid(
+                    grid: 2.4,
+                    rows: 2,
+                    gutterSize: 12,
+                    width: screenWidth
+                ) { width in
+
+                    ForEach(library.albums, id: \.self) { item in
+
+                        AlbumItemCell(item: item, size: width).onTapGesture {
+                            navigation.path.append(item)
+                        }
+                    }
+                }.horizontalDefaultInsets()
             }
-
-            VStack(alignment: .leading) {
-                Text(item.title)
-                Text(item.artistName)
-                    .font(.caption)
-                    .foregroundStyle(Color.secondary)
-                Divider()
-            }
-            .lineLimit(1)
-            .multilineTextAlignment(.leading)
-
-            Spacer()
         }
-        .frame(width: 318)
+
+        if !library.songs.isEmpty {
+
+            Section {
+
+                Text("Songs")
+                    .sectionHeader()
+
+                HorizontalGrid(
+                    grid: 1.15,
+                    rows: 4,
+                    gutterSize: 12,
+                    width: screenWidth
+                ) { width in
+                    ForEach(library.songs, id: \.self) { item in
+                        SongItemCell(item: item, width: width).onTapGesture {
+                            navigation.path.append(item)
+                        }
+                    }
+                }.horizontalDefaultInsets()
+            }.listRowSeparator(.hidden)
+        }
+
+        if !library.artists.isEmpty {
+
+            Section {
+
+                Text("Artists")
+                    .sectionHeader()
+
+                HorizontalGrid(
+                    grid: 2.4,
+                    rows: 1,
+                    gutterSize: 12,
+                    width: screenWidth
+                ) { width in
+
+                    ForEach(library.artists, id: \.id) { item in
+
+                        ArtistItemCell(item: item, size: width).onTapGesture {
+                            navigation.path.append(item)
+                        }
+                    }
+                }.horizontalDefaultInsets()
+            }.listRowSeparator(.hidden)
+        }
     }
 
     @ViewBuilder

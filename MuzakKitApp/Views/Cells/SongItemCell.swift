@@ -97,7 +97,7 @@ struct SongItemCell: View {
 
             RoundedRectangle(cornerRadius: 12)
                 .fill(Color(.systemGray3))
-                .frame(width: imageWidth)
+                .frame(width: imageWidth, height: imageWidth)
                 .aspectRatio(1/1, contentMode: .fit)
                 .artworkCornerRadius(.medium)
         }

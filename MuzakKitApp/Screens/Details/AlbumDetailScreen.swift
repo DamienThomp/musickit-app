@@ -237,7 +237,7 @@ extension AlbumDetailScreen {
 
     private func checkLibraryState(for album: Album) async throws {
 
-        let response = try await musicService.checkLibraryStatus(for: album)
+        let response = try await musicService.isInLirabry(album)
 
         updateLibraryState(for: response)
     }
