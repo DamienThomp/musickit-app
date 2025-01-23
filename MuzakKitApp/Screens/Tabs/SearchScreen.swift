@@ -22,6 +22,7 @@ enum SearchType: String, CaseIterable {
 struct SearchScreen: View {
 
     @Environment(MusicKitService.self) private var musicService
+    @Environment(\.debounce) private var debounce
 
     @State private var searchType: SearchType = .library
     @State private var searchText: String = ""
@@ -47,20 +48,18 @@ struct SearchScreen: View {
                 "Artists, Songs, Lyrics and More"
             )
         )
-        .onSubmit(of: .search) {
-            conductSearch(for: searchText.lowercased(), of: searchType)
-        }
-        .onChange(of: searchText) {
-            // TOOD: - needs debounce
-            // conductSearch(for: searchText.lowercased(), of: searchType)
-        }
+        .onSubmit(of: .search) { conductSearch(for: searchText.lowercased(), of: searchType) }
+        .onChange(of: searchText) { debounce.send(searchText) }
+        .onChange(of: debounce.output) { conductSearch(for: debounce.output.lowercased(), of: searchType)}
         .onChange(of: searchType) {
+            
             clearResults()
 
             if !searchText.isEmpty {
                 conductSearch(for: searchText.lowercased(), of: searchType)
             }
         }
+        .onDisappear { debounce.cancel() }
     }
 
     private func clearResults() {
@@ -68,10 +67,12 @@ struct SearchScreen: View {
         searchLibraryResults = nil
     }
 
-    // TODO: - debounce calls to search + add suggestions
     private func conductSearch(for query: String, of type: SearchType)  {
 
-        guard !query.isEmpty else { return }
+        guard !query.isEmpty else {
+            clearResults()
+            return
+        }
 
         Task {
             do {
