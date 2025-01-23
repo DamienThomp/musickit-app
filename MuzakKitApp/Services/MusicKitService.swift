@@ -73,62 +73,87 @@ extension MusicKitService {
     func isInLirabry<T: MusicItem>(_ item: T) async throws -> Bool  {
 
         if let item = item as? Album {
-            return try await checkLibraryStatus(for: item)
+            let response = try await checkLibrary(for: item)
+            return !response.items.isEmpty
         }
 
         if let item = item as? Playlist {
-            return try await checkLibraryStatus(for: item)
+            let response = try await checkLibrary(for: item)
+            return !response.items.isEmpty
         }
 
         if let item = item as? Song {
-            return try await checkLibraryStatus(for: item)
+            let response = try await checkLibrary(for: item)
+            return !response.items.isEmpty
         }
 
         if let item = item as? Track {
-            return try await checkLibraryStatus(for: item)
+            let response = try await checkLibrary(for: item)
+            return !response.items.isEmpty
         }
         
         return false
     }
 
-    func checkLibraryStatus(for item: Album) async throws -> Bool {
+    func checkLibrary(for item: Album) async throws -> MusicLibraryResponse<Album> {
 
         var request = MusicLibraryRequest<Album>()
         request.filter(matching: \.id, equalTo: item.id)
 
         let response = try await request.response()
 
-        return !response.items.isEmpty
+        return response
     }
 
-    func checkLibraryStatus(for item: Song) async throws -> Bool {
+    func checkLibrary(for item: Song) async throws -> MusicLibraryResponse<Song> {
 
         var request: MusicLibraryRequest<Song> = MusicLibraryRequest()
         request.filter(matching: \.id, equalTo: item.id)
 
         let response = try await request.response()
 
-        return !response.items.isEmpty
+        return response
     }
 
-    func checkLibraryStatus(for item: Track) async throws -> Bool {
+    func checkLibrary(for item: Track) async throws -> MusicLibraryResponse<Track> {
 
         var request: MusicLibraryRequest<Track> = MusicLibraryRequest()
         request.filter(matching: \.id, equalTo: item.id)
 
         let response = try await request.response()
 
-        return !response.items.isEmpty
+        return response
     }
 
 
-    func checkLibraryStatus(for item: Playlist) async throws -> Bool {
+    func checkLibrary(for item: Playlist) async throws -> MusicLibraryResponse<Playlist> {
 
         var request: MusicLibraryRequest<Playlist> = MusicLibraryRequest()
         request.filter(matching: \.id, equalTo: item.id)
 
         let response = try await request.response()
 
-        return !response.items.isEmpty
+        return response
+    }
+
+}
+
+// MARK: - MusicKit Search
+extension MusicKitService {
+
+    func search(with searchText: String) async throws -> MusicCatalogSearchResponse {
+        let searchRequest = MusicCatalogSearchRequest(term: searchText, types: [Album.self, Song.self, Playlist.self, Station.self, Artist.self])
+
+        let response = try await searchRequest.response()
+
+        return response
+    }
+
+    func search(with searchText: String, for types: Array<any MusicLibrarySearchable.Type>) async throws ->  MusicLibrarySearchResponse {
+        let searchRequest = MusicLibrarySearchRequest(term: searchText, types: types)
+
+        let response = try await searchRequest.response()
+
+        return response
     }
 }
