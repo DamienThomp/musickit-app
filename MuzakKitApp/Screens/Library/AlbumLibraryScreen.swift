@@ -15,6 +15,7 @@ struct AlbumLibraryScreen: View {
     typealias SectionedALbumLibrary = [Dictionary<String.Element, [MusicItemCollection<Album>.Element]>.Element]
 
     @Environment(MusicKitService.self) private var musicService
+    @Environment(\.debounce) private var debounce
 
     @State private var albums: SectionedALbumLibrary?
     @State private var albumResults: MusicLibrarySearchResponse?
@@ -39,13 +40,13 @@ struct AlbumLibraryScreen: View {
             .scrollIndicators(.hidden)
             .contentMargins([.horizontal, .top], 12)
         }
-        .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .always))
-        .onSubmit(of: .search) {
-            searchAlbums(with: searchText)
-        }
         .navigationTitle("Albums")
+        .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .always))
+        .onSubmit(of: .search) { searchAlbums(with: searchText.lowercased()) }
+        .onChange(of: searchText) { debounce.send(searchText) }
+        .onChange(of: debounce.output) { searchAlbums(with: debounce.output) }
+        .onDisappear { debounce.cancel() }
         .task { await loadAlbums() }
-
     }
 }
 
@@ -53,7 +54,11 @@ extension AlbumLibraryScreen {
 
     private func searchAlbums(with query: String) {
 
-        guard !query.isEmpty else { return }
+        guard !query.isEmpty else {
+
+            clearSearchResults()
+            return
+        }
 
         Task {
             do {
@@ -91,6 +96,11 @@ extension AlbumLibraryScreen {
     @MainActor
     private func updateSearchResults(with response: MusicLibrarySearchResponse) {
         self.albumResults = response
+    }
+
+    @MainActor
+    private func clearSearchResults() {
+        self.albumResults = nil
     }
 }
 
