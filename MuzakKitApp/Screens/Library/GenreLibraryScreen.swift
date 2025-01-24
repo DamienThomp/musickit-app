@@ -33,7 +33,6 @@ struct GenreLibraryScreen: View {
             }
         }
         .listStyle(.plain)
-        .scrollIndicators(.hidden)
         .navigationTitle("Genres")
         .navigationBarTitleDisplayMode(.large)
         .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .always))

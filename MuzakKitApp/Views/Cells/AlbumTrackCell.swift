@@ -10,9 +10,18 @@ import MusicKit
 
 struct AlbumTrackCell<Content: View>: View {
 
+    @Environment(MusicPlayerService.self) private var musicPlayer
+
     let track: Track
 
     @ViewBuilder let menuContent: Content
+
+    private var isActiveTrack: Bool {
+        guard let currentItem = musicPlayer.currentItem,
+              let currentID = currentItem.item?.id else { return false }
+
+        return track.id == currentID
+    }
 
     var body: some View {
 
@@ -34,6 +43,7 @@ struct AlbumTrackCell<Content: View>: View {
                     .padding(.horizontal, 8)
                     .lineLimit(1)
                     .frame(maxWidth: .infinity, alignment: .leading)
+                    .foregroundStyle(isActiveTrack ? .pink : .primary)
 
             }.contentShape(Rectangle())
 

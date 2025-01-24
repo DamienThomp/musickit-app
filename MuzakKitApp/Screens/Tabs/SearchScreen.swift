@@ -206,7 +206,7 @@ struct SearchContainer: View {
                     width: screenWidth
                 ) { width in
                     ForEach(catalog.songs, id: \.self) { item in
-                        SongItemCell(item: item, width: width).onTapGesture {
+                        SongItemCell(item: item, width: width) {
                             navigation.path.append(item)
                         }
                     }
@@ -281,7 +281,7 @@ struct SearchContainer: View {
                     width: screenWidth
                 ) { width in
                     ForEach(library.songs, id: \.self) { item in
-                        SongItemCell(item: item, width: width).onTapGesture {
+                        SongItemCell(item: item, width: width) {
                             navigation.path.append(item)
                         }
                     }

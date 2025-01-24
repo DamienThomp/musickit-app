@@ -12,8 +12,6 @@ typealias SectionedALbumLibrary = [Dictionary<String.Element, [MusicItemCollecti
 
 struct AlbumLibraryScreen: View {
 
-    typealias SectionedALbumLibrary = [Dictionary<String.Element, [MusicItemCollection<Album>.Element]>.Element]
-
     @Environment(MusicKitService.self) private var musicService
     @Environment(\.debounce) private var debounce
 
@@ -37,7 +35,6 @@ struct AlbumLibraryScreen: View {
                 )
             }
             .frame(maxWidth: .infinity)
-            .scrollIndicators(.hidden)
             .contentMargins([.horizontal, .top], 12)
         }
         .navigationTitle("Albums")
