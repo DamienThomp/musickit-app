@@ -113,6 +113,7 @@ struct PlaylistDetailScreen: View {
                     dismiss()
                 } label: {
                     Symbols.chevronBack.image
+                        .padding([.trailing, .vertical])
                 }
             }
 
@@ -132,7 +133,7 @@ struct PlaylistDetailScreen: View {
                     MenuItems(item: playlist, isInLibrary: $isInLibrary)
                 } label: {
                     Symbols.ellipsis.image
-                }
+                }.contentShape(Rectangle())
             }
         }
         .task { await loadTracks() }
