@@ -116,10 +116,7 @@ struct SongItemCell: View {
                         value: animateIcon
                     )
                     .foregroundStyle(.primary)
-                    .onAppear {
-
-                        animateIcon = true
-                    }
+                    .onAppear { animateIcon = true }
                     .onDisappear { animateIcon = false }
             }
             .padding(4)
