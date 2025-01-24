@@ -7,7 +7,6 @@
 
 import SwiftUI
 import MusicKit
-import Combine
 
 enum SearchType: String, CaseIterable {
 
@@ -29,8 +28,6 @@ struct SearchScreen: View {
     @State private var searchCatalogResults: MusicCatalogSearchResponse?
     @State private var searchLibraryResults: MusicLibrarySearchResponse?
 
-    var cancellables = Set<AnyCancellable>()
-
     var body: some View {
 
         SearchContainer(
@@ -50,7 +47,7 @@ struct SearchScreen: View {
         )
         .onSubmit(of: .search) { conductSearch(for: searchText.lowercased(), of: searchType) }
         .onChange(of: searchText) { debounce.send(searchText) }
-        .onChange(of: debounce.output) { conductSearch(for: debounce.output.lowercased(), of: searchType)}
+        .onChange(of: debounce.output) { conductSearch(for: debounce.output.lowercased(), of: searchType) }
         .onChange(of: searchType) {
             
             clearResults()
@@ -60,6 +57,7 @@ struct SearchScreen: View {
             }
         }
         .onDisappear { debounce.cancel() }
+        .onAppear { conductSearch(for: debounce.output.lowercased(), of: searchType) }
     }
 
     private func clearResults() {

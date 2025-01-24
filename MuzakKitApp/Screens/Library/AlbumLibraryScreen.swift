@@ -42,6 +42,7 @@ struct AlbumLibraryScreen: View {
         .onSubmit(of: .search) { searchAlbums(with: searchText.lowercased()) }
         .onChange(of: searchText) { debounce.send(searchText) }
         .onChange(of: debounce.output) { searchAlbums(with: debounce.output) }
+        .onAppear { searchAlbums(with: searchText.lowercased()) }
         .onDisappear { debounce.cancel() }
         .task { await loadAlbums() }
     }
@@ -151,11 +152,11 @@ struct AlbumsLibraryContainer: View {
                     alignment: .center,
                     spacing: spacing
                 ) {
-                    ForEach(albumResults.albums, id: \.self) { item in
+                    ForEach(albumResults.albums, id: \.id) { item in
                         AlbumItemCell(item: item, size: cellWidth)
                             .onTapGesture {
                                 navigation.path.append(AppRootScreen.DetailsView.album(item))
-                            }
+                            }.id(item.id)
                     }
                 }.frame(maxWidth: .infinity)
             }
@@ -180,17 +181,16 @@ struct AlbumsLibraryContainer: View {
                         alignment: .center,
                         spacing: spacing
                     ) {
-                        ForEach(value, id: \.self) { item in
+                        ForEach(value, id: \.id) { item in
                             AlbumItemCell(item: item, size: cellWidth)
                                 .onTapGesture {
                                     navigation.path.append(AppRootScreen.DetailsView.album(item))
-                                }
+                                }.id(item.id)
                         }
                     }.frame(maxWidth: .infinity)
                 }
             }
         }
     }
-
 }
 

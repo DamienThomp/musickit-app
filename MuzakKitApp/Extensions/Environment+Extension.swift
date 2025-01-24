@@ -9,5 +9,6 @@ import Foundation
 import SwiftUI
 
 extension EnvironmentValues {
+    
     @Entry var debounce: DebounceHelper = DebounceHelper()
 }
