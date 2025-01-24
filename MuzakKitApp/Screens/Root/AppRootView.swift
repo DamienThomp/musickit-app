@@ -47,7 +47,9 @@ struct AppRootView: View {
                 .scrollIndicators(.hidden)
                 .safeAreaInset(edge: .bottom) {
                     showMiniPlayer(proxy)
-                }.ignoresSafeArea(.container, edges: .top)
+                }
+                .ignoresSafeArea(.container, edges: .top)
+                .ignoresSafeArea(.keyboard, edges: .bottom)
             }
         }
     }
