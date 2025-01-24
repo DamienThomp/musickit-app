@@ -15,6 +15,8 @@ struct SongItemCell: View {
     let item: Song?
     let width: CGFloat
 
+    let action: (() -> Void)?
+
     @State var animateIcon: Bool = false
     @State var animateBackground: Bool = false
 
@@ -30,18 +32,13 @@ struct SongItemCell: View {
         return musicPlayer.playbackState == .playing
     }
 
-    private var imageWidth: CGFloat {
-        width / 8
-    }
+    private var imageWidth: CGFloat { width / 8 }
 
     var body: some View {
 
         HStack {
 
-            songArtwork()
-                .overlay {
-                    artworkOverlay()
-                }
+            songArtwork().overlay { artworkOverlay() }
 
             VStack(alignment: .leading) {
 
@@ -49,22 +46,25 @@ struct SongItemCell: View {
 
                 Divider()
             }
-            .contentShape(Rectangle())
-            .onTapGesture {
-                withAnimation(.easeIn(duration: 0.2)) {
-                    animateBackground = true
-                } completion: {
-                    withAnimation(.easeOut(duration: 0.2)) {
-                        animateBackground = false
-                    }
-                }
-            }
 
             Spacer()
         }
+        .contentShape(Rectangle())
         .padding(.vertical, 4)
         .frame(width: width)
-        .background(animateBackground ? Color(.systemGray4) : .clear)
+        .background(
+            RoundedRectangle(cornerRadius: 12)
+                .fill(animateBackground ? Color(.systemGray4) : .clear)
+        ).onTapGesture {
+            withAnimation(.easeIn(duration: 0.1)) {
+                animateBackground = true
+                action?()
+            } completion: {
+                withAnimation(.easeOut(duration: 0.1)) {
+                    animateBackground = false
+                }
+            }
+        }
     }
 
     @ViewBuilder
@@ -117,8 +117,10 @@ struct SongItemCell: View {
                     )
                     .foregroundStyle(.primary)
                     .onAppear {
+
                         animateIcon = true
                     }
+                    .onDisappear { animateIcon = false }
             }
             .padding(4)
             .frame(width: imageWidth, height: imageWidth)
@@ -132,7 +134,7 @@ struct SongItemCell: View {
     VStack {
         GeometryReader {
             let width = $0.size.width
-            SongItemCell(item: nil, width: width)
+            SongItemCell(item: nil, width: width, action: {})
                 .environment(MusicPlayerService())
         }
     }

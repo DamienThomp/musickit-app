@@ -49,7 +49,6 @@ struct PlaylistLibraryScreen: View {
                 }
             }
             .frame(maxWidth: .infinity)
-            .scrollIndicators(.hidden)
             .contentMargins([.horizontal, .top], gutters)
         }
         .navigationTitle("Playlists")

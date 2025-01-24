@@ -76,7 +76,9 @@ struct ArtistPageScreen: View {
                                     width: size.width
                                 ) { width in
                                     ForEach(songs, id: \.self) { item in
-                                        SongItemCell(item: item, width: width)
+                                        SongItemCell(item: item, width: width) {
+                                            musicPlayer.handleSongSelected(for: item, from: songs)
+                                        }
                                     }
                                 }
                             }

@@ -42,7 +42,6 @@ struct GenreLibraryDetailsScreen: View {
             }
             .contentMargins(.horizontal, 12)
             .frame(maxWidth: .infinity)
-            .scrollIndicators(.hidden)
         }
         .navigationTitle(details.name)
         .navigationBarTitleDisplayMode(.large)

@@ -11,6 +11,7 @@ import MusicKit
 struct GenreScreen: View {
 
     @Environment(NavPath.self) private var navigation
+    @Environment(MusicPlayerService.self) private var musicPlayer
 
     let genre: Genre
 
@@ -63,7 +64,9 @@ struct GenreScreen: View {
                                 width: width
                             ) { width in
                                 ForEach(section.items, id: \.self) { item in
-                                    SongItemCell(item: item, width: width)
+                                    SongItemCell(item: item, width: width) {
+                                        musicPlayer.handleSongSelected(for: item, from: section.items)
+                                    }
                                 }
                             }.horizontalDefaultInsets()
                         }
