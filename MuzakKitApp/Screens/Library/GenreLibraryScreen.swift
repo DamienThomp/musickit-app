@@ -27,8 +27,9 @@ struct GenreLibraryScreen: View {
 
         List {
             if let results, !results.isEmpty {
-                ForEach(results, id: \.self) { item in
+                ForEach(results, id: \.id) { item in
                     genreListCell(item)
+                        .id(item.id)
                 }
             }
         }

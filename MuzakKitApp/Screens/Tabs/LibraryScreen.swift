@@ -50,13 +50,15 @@ struct LibraryScreen: View {
                         alignment: .center,
                         spacing: 24
                     ) {
-                        ForEach(items, id: \.self) { item in
-                            
-                            AlbumItemCell(item: item, size: width).onTapGesture {
-                                navigation.path.append(item)
-                            }
+                        ForEach(items, id: \.id) { item in
+
+                            AlbumItemCell(item: item, size: width)
+                                .onTapGesture {
+                                    navigation.path.append(item)
+                                }
+                                .id(item.id)
                         }
-                    }
+                    }.listRowSeparator(.hidden)
                 }
             }.listStyle(.plain)
         }
@@ -68,7 +70,7 @@ struct LibraryScreen: View {
 extension LibraryScreen {
 
     private func loadRecentlyAdded() async {
-        
+
         do {
 
             var request: MusicLibraryRequest<Album> = MusicLibraryRequest()

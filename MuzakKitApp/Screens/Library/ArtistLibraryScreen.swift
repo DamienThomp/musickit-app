@@ -32,12 +32,13 @@ struct ArtistLibraryScreen: View {
 
         List {
             if let filteredItems {
-                ForEach(filteredItems, id: \.self) { item in
+                ForEach(filteredItems, id: \.id) { item in
                     NavigationLink(
                         value: AppRootScreen.DetailsView.artistLibrary(item)
                     ) {
                         artistCell(item)
                     }
+                    .id(item.id)
                 }
             }
         }

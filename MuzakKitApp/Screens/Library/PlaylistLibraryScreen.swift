@@ -71,21 +71,6 @@ extension PlaylistLibraryScreen {
         }
     }
 
-    private func loadNextBatch() {
-
-        // TODO: - Add pagination to view
-        guard let playlists = self.playlists,
-              playlists.hasNextBatch else { return }
-        Task {
-            do {
-                guard let response = try await playlists.nextBatch() else { return }
-                // updatePlaylists(with: response)
-            } catch {
-                print("Can't load next batch with: \(error.localizedDescription)")
-            }
-        }
-    }
-
     @MainActor
     private func updatePlaylists(with response: MusicItemCollection<Playlist>) {
         self.playlists = response

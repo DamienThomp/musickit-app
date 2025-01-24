@@ -40,7 +40,6 @@ enum AppRootScreen: Hashable, CaseIterable, Identifiable {
                 "guitars"
             }
         }
-
     }
 
     enum DetailsView: Hashable, Identifiable {
