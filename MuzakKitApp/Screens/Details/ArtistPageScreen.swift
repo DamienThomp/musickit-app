@@ -25,6 +25,7 @@ struct ArtistPageScreen: View {
 
     @State var artistDetails: Artist? = nil
     @State private var isLoading: Bool = true
+    @State private var showNavigationBar: Bool = false
 
     private var artwork: Artwork? {
         artist.artwork
@@ -32,6 +33,17 @@ struct ArtistPageScreen: View {
 
     private var title: String {
         artist.name
+    }
+
+    private func calculatePosition(_ proxy: GeometryProxy) -> CGFloat {
+        return proxy.frame(in: .global).origin.y - proxy.safeAreaInsets.top - proxy.size.height
+    }
+
+    struct ScrollOffsetPreferenceKey: PreferenceKey {
+        static var defaultValue: CGFloat = 0
+        static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
+            value += nextValue()
+        }
     }
 
     var body: some View {
@@ -47,7 +59,7 @@ struct ArtistPageScreen: View {
 
                 if let artistDetails {
 
-                    VStack(alignment: .leading, spacing: 36) {
+                    LazyVStack(alignment: .leading, spacing: 36) {
 
                         if let latest = artistDetails.latestRelease {
                             VStack(alignment: .leading) {
@@ -222,8 +234,16 @@ struct ArtistPageScreen: View {
                 .tint(Color(.systemGray2).opacity(0.6))
                 .foregroundStyle(.primary)
             }
+
+            if let artistDetails {
+                ToolbarItem(placement: .principal) {
+                    Text(artist.name)
+                        .opacity(showNavigationBar ? 1.0 : 0)
+                }
+            }
         }
-        .toolbarBackground(.hidden, for: .navigationBar)
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbarBackground(showNavigationBar ? .visible : .hidden, for: .navigationBar)
         .task { await loadSections() }
     }
 
@@ -260,6 +280,17 @@ struct ArtistPageScreen: View {
                     .font(.system(.largeTitle))
                     .foregroundStyle(.primary)
                     .frame(maxWidth: .infinity, alignment: .leading)
+                    .background(
+                         GeometryReader { proxy in
+                             let value = calculatePosition(proxy)
+                             Color.clear.preference(key: ScrollOffsetPreferenceKey.self, value: value)
+                         }
+                    )
+                    .onPreferenceChange(ScrollOffsetPreferenceKey.self) { value in
+                        withAnimation {
+                            showNavigationBar = value < 0
+                        }
+                    }
 
                 Spacer()
 
@@ -301,26 +332,28 @@ extension ArtistPageScreen {
 
     private func loadSections() async {
 
-        do {
+        Task.detached {
+            do {
 
-            let artistDetails = try await musicService.getData(
-                for: artist,
-                with:
-                    [
-                        .albums,
-                        .singles,
-                        .appearsOnAlbums,
-                        .similarArtists,
-                        .featuredAlbums,
-                        .playlists,
-                        .latestRelease,
-                        .compilationAlbums,
-                        .topSongs
-                    ]
-            )
-            updateSections(with: artistDetails)
-        } catch {
-            print("can't load data: \(error.localizedDescription)")
+                let artistDetails = try await musicService.getData(
+                    for: artist,
+                    with:
+                        [
+                            .albums,
+                            .singles,
+                            .appearsOnAlbums,
+                            .similarArtists,
+                            .featuredAlbums,
+                            .playlists,
+                            .latestRelease,
+                            .compilationAlbums,
+                            .topSongs
+                        ]
+                )
+                await updateSections(with: artistDetails)
+            } catch {
+                print("can't load data: \(error.localizedDescription)")
+            }
         }
     }
 
