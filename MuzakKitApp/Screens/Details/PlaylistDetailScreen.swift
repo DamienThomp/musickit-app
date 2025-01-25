@@ -117,12 +117,11 @@ struct PlaylistDetailScreen: View {
                 }
             }
 
-            //TODO: - Add to playlist action
             ToolbarItem(placement: .topBarTrailing) {
                 Button {
                     let impactLight = UIImpactFeedbackGenerator(style: .light)
                     impactLight.impactOccurred()
-
+                    addToLibrary()
                 } label: {
                     Image(systemName: isInLibrary ? Symbols.checkmarkCircle.name : Symbols.plusCircle.name)
                 }
@@ -178,6 +177,20 @@ struct PlaylistDetailScreen: View {
 }
 
 extension PlaylistDetailScreen {
+
+    private func addToLibrary() {
+
+        guard !isInLibrary else { return }
+
+        Task { @MainActor in
+            do {
+                try await musicService.addToLibrary(playlist)
+                self.isInLibrary = true
+            } catch {
+                print("can't add to library: \(error.localizedDescription)")
+            }
+        }
+    }
 
     private func loadTracks() async {
 
