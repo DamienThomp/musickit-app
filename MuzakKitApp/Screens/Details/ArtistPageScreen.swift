@@ -223,6 +223,7 @@ struct ArtistPageScreen: View {
                 .foregroundStyle(.primary)
             }
         }
+        .toolbarBackground(.hidden, for: .navigationBar)
         .task { await loadSections() }
     }
 
@@ -270,6 +271,7 @@ struct ArtistPageScreen: View {
         .scrollTransition(axis: .vertical) { content, phase in
             content
                 .opacity(phase.isIdentity ? 1.0 : 0.1)
+
         }
     }
 

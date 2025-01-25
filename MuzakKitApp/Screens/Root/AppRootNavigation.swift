@@ -20,10 +20,12 @@ struct AppRootNavigation<Content: View>: View {
 
     @Environment(NavPath.self) private var navigation
     @Environment(MusicPlayerService.self) private var musicPlayer
+    @Environment(MusicKitService.self) private var musicKitService
 
     var body: some View {
 
         @Bindable var navigation = navigation
+        @Bindable var musicKitService = musicKitService
 
         NavigationStack(path: $navigation.path) {
             content
@@ -55,7 +57,7 @@ struct AppRootNavigation<Content: View>: View {
                     item.destination
                         .navigationBarTitleDisplayMode(.inline)
                         .safeAreaPadding(.bottom, musicPlayer.hasQueue ? 60 : 0)
-                }
+                }.sheet(isPresented: $musicKitService.presentPlaylistform) { PlaylistForm() }
         }.tint(.pink)
     }
 }

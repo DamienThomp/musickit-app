@@ -143,7 +143,9 @@ struct AlbumDetailScreen: View {
                     MenuItems(item: album, isInLibrary: $isInLibrary)
                 } label: {
                     Symbols.ellipsis.image
-                }.contentShape(Rectangle())
+                        .padding([.vertical, .trailing], 12)
+                }
+                .contentShape(Rectangle())
             }
         }
         .task { await getData() }
