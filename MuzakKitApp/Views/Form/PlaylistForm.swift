@@ -16,6 +16,7 @@ struct PlaylistForm: View {
     @State private var playlists: MusicItemCollection<Playlist>?
     @State private var errorMessage: String = ""
     @State private var presentError: Bool = false
+    @State private var showLoadingView: Bool = false
 
     private var recentPlaylists: [Playlist]? {
 
@@ -71,6 +72,15 @@ struct PlaylistForm: View {
                         Text("Cancel")
                     }
                 }
+            }.overlay(alignment: .center) {
+                if showLoadingView {
+                    ZStack {
+                        Color(.systemGray6)
+                            .opacity(0.8)
+                            .ignoresSafeArea()
+                        ProgressView()
+                    }
+                }
             }
         }
         .task { await loadPlaylists() }
@@ -91,9 +101,10 @@ struct PlaylistForm: View {
             playlistArtwork(item.artwork)
             Text(item.name)
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
         .contentShape(Rectangle())
         .padding(.horizontal)
-        .frame(maxWidth: .infinity, alignment: .leading)
+
     }
 
     @ViewBuilder
@@ -121,10 +132,11 @@ extension PlaylistForm {
         guard let item = musicKitService.itemToAdd else { return }
 
         Task {
-
+            showLoadingView = true
             do {
                 let library = MusicLibrary.shared
                 try await library.add(item, to: selected)
+                showLoadingView = false
                 dismiss()
             } catch {
                 handleError(with: "Can't add item to Playlist: \(error)")
