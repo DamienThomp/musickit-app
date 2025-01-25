@@ -17,6 +17,7 @@ struct AlbumTrackCell<Content: View>: View {
     @ViewBuilder let menuContent: Content
 
     private var isActiveTrack: Bool {
+        
         guard let currentItem = musicPlayer.currentItem,
               let currentID = currentItem.item?.id else { return false }
 
