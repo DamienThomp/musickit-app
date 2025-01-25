@@ -15,6 +15,8 @@ struct BrowseScreen: View {
 
     @State var recommendations: MusicItemCollection<MusicPersonalRecommendation>?
 
+    @State private var showLoadingView: Bool = true
+
     var body: some View {
 
         GeometryReader {
@@ -59,6 +61,16 @@ struct BrowseScreen: View {
                 }
             }
             .listStyle(.plain)
+            .overlay(alignment: .center) {
+                if showLoadingView {
+                    ZStack {
+                        Color(.systemGray6)
+                            .opacity(0.8)
+                            .ignoresSafeArea()
+                        ProgressView()
+                    }
+                }
+            }
         }
         .navigationTitle("Browse")
         .task { await getMusic() }
@@ -111,6 +123,7 @@ extension BrowseScreen {
             let recommendations = try await recommendationsRequest.response()
             update(with: recommendations)
         } catch {
+            self.showLoadingView = false
             print(error)
         }
     }
@@ -118,6 +131,7 @@ extension BrowseScreen {
     @MainActor
     private func update(with items: MusicPersonalRecommendationsResponse) {
         withAnimation {
+            self.showLoadingView = false
             self.recommendations = items.recommendations
         }
     }
