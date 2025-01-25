@@ -30,6 +30,8 @@ struct AppRootView: View {
 
     var body: some View {
 
+        @Bindable var musicKitService = musicKitService
+
         if showDefaultScreen {
             unAuthorizedView
         } else {
@@ -40,14 +42,10 @@ struct AppRootView: View {
                         buildTab(for: screen)
                     }
                 }
-                .onChange(of: selection) {
-                    navigation.path = NavigationPath()
-                }
+                .onChange(of: selection) { navigation.path = NavigationPath() }
                 .tint(.pink)
                 .scrollIndicators(.hidden)
-                .safeAreaInset(edge: .bottom) {
-                    showMiniPlayer(proxy)
-                }
+                .safeAreaInset(edge: .bottom) { showMiniPlayer(proxy) }
                 .ignoresSafeArea(.container, edges: .top)
                 .ignoresSafeArea(.keyboard, edges: .bottom)
             }

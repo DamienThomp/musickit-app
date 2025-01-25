@@ -15,6 +15,9 @@ class MusicKitService {
     var authStatus: MusicAuthorization.Status = MusicAuthorization.currentStatus
     var subscription: MusicSubscription?
 
+    var presentPlaylistform: Bool = false
+    var itemToAdd: MusicPlaylistAddable? = nil
+
     init() {
         listeForSubscriptionUpdates()
         checkAuthStatus()
@@ -136,7 +139,7 @@ extension MusicKitService {
     }
 }
 
-// MARK: - MusicKit Search
+// MARK: - Search
 extension MusicKitService {
 
     func search(with searchText: String) async throws -> MusicCatalogSearchResponse {
@@ -155,5 +158,14 @@ extension MusicKitService {
         let response = try await searchRequest.response()
 
         return response
+    }
+}
+
+// MARK: - Playlist
+extension MusicKitService {
+
+    func presentAddToPlaylistForm<T>(for item: T) where T: MusicPlaylistAddable {
+        presentPlaylistform = true
+        itemToAdd = item
     }
 }

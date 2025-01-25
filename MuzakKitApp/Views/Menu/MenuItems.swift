@@ -31,6 +31,12 @@ struct MenuItems: View {
             }
     }
 
+    private func addToPlaylist() {
+        guard let item = item as? MusicPlaylistAddable else { return }
+
+        musicService.presentAddToPlaylistForm(for: item)
+    }
+
     private func addToLibrary() {
 
         guard let item = item as? MusicLibraryAddable else { return }
@@ -85,7 +91,7 @@ struct MenuItems: View {
     private func addToPlaylist() -> some View {
 
         Button {
-
+            addToPlaylist()
         } label: {
             Label("Add to Playlist", systemImage: Symbols.musicNoteList.name)
         }
