@@ -235,7 +235,7 @@ struct ArtistPageScreen: View {
                 .foregroundStyle(.primary)
             }
 
-            if artistDetails {
+            if let _ = artistDetails {
                 ToolbarItem(placement: .principal) {
                     Text(artist.name)
                         .opacity(showNavigationBar ? 1.0 : 0)

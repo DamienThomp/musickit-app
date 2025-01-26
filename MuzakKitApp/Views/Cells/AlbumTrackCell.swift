@@ -19,9 +19,20 @@ struct AlbumTrackCell<Content: View>: View {
     private var isActiveTrack: Bool {
         
         guard let currentItem = musicPlayer.currentItem,
-              let currentID = currentItem.item?.id else { return false }
+              let item = currentItem.item else { return false }
 
-        return track.id == currentID
+        /// Albums saved in Library have mismatched Song id's with Song items in MusicPlayer.Queue
+        /// use less safe title and albumTitle matching to synch active track.
+        if case let .song(song) = item {
+
+            let titleIsEqual = track.title == song.title
+            let albumNameIsEqual = track.albumTitle == song.albumTitle
+
+            return titleIsEqual && albumNameIsEqual
+        }
+
+        /// MusicItemID comparison will work for catalog Album plays
+        return track.id == item.id
     }
 
     var body: some View {

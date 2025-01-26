@@ -62,9 +62,14 @@ extension PlaylistLibraryScreen {
     private func loadPlaylists() async {
 
         do {
+
             var request = MusicLibraryRequest<Playlist>()
+            request.sort(by: \.libraryAddedDate, ascending: false)
+            request.includeOnlyDownloadedContent = true
             request.limit = 25
+
             let response = try await request.response()
+
             updatePlaylists(with: response.items)
         } catch {
             print("Can't load playlists with: \(error.localizedDescription)")
