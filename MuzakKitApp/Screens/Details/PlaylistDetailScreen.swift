@@ -62,18 +62,18 @@ struct PlaylistDetailScreen: View {
 
             if let tracks = tracks, !tracks.isEmpty {
                 Section {
-                    ForEach(tracks) { track in
-                        PlaylistTrackCell(track: track) {
-                            MenuItems(item: track, tracks: tracks, isInLibrary: $isInLibrary)
+                    ForEach(tracks.indices, id: \.self) { index in
+                        PlaylistTrackCell(track: tracks[index]) {
+                            MenuItems(item: tracks[index], tracks: tracks, isInLibrary: $isInLibrary)
                         }
                         .onTapGesture {
                             musicPlayer
                                 .handleTrackSelected(
-                                    for: track,
+                                    for: tracks[index],
                                     from: tracks
                                 )
                         }.contextMenu {
-                            MenuItems(item: track, tracks: tracks, isInLibrary: $isInLibrary)
+                            MenuItems(item: tracks[index], tracks: tracks, isInLibrary: $isInLibrary)
                         }
                     }
                 } footer: {

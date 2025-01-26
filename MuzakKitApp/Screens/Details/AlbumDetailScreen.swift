@@ -39,80 +39,85 @@ struct AlbumDetailScreen: View {
     }
 
     var body: some View {
-        List {
+        GeometryReader { proxy in
+            List {
 
-            header
-                .plainHeaderStyle()
+                header
+                    .plainHeaderStyle()
+                    .safeAreaPadding(.top, proxy.safeAreaInsets.top)
 
-            actions
-                .plainHeaderStyle()
-                .padding(.bottom)
+                actions
+                    .plainHeaderStyle()
+                    .padding(.bottom)
 
-            if let tracks = tracks, !tracks.isEmpty {
+                if let tracks = tracks, !tracks.isEmpty {
 
-                Section {
+                    Section {
 
-                    ForEach(tracks) { track in
-                        AlbumTrackCell(track: track) {
-                            MenuItems(item: track, tracks: tracks, isInLibrary: $isInLibrary)
+                        ForEach(tracks) { track in
+                            AlbumTrackCell(track: track) {
+                                MenuItems(item: track, tracks: tracks, isInLibrary: $isInLibrary)
+                            }
+                            .onTapGesture {
+                                musicPlayer
+                                    .handleTrackSelected(
+                                        for: track,
+                                        from: tracks
+                                    )
+                            }
+                            .contextMenu {
+                                MenuItems(item: track, tracks: tracks, isInLibrary: $isInLibrary)
+                            }
                         }
-                        .onTapGesture {
-                            musicPlayer
-                                .handleTrackSelected(
-                                    for: track,
-                                    from: tracks
-                                )
-                        }
-                        .contextMenu {
-                            MenuItems(item: track, tracks: tracks, isInLibrary: $isInLibrary)
+                    } footer: {
+                        if let copyright = album.copyright {
+                            Text(copyright)
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                                .padding(.vertical)
+                                .listRowSeparator(.hidden)
                         }
                     }
-                } footer: {
-                    if let copyright = album.copyright {
-                        Text(copyright)
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                            .padding(.vertical)
-                            .listRowSeparator(.hidden)
+                }
+
+                if let artistAlbums = artistAlbums, !artistAlbums.isEmpty {
+
+                    ItemsSectionView("More by \(album.artistName)") {
+                        ForEach(artistAlbums, id: \.self) { album in
+                            NavigationLink(value: album) {
+                                AlbumItemCell(item: album, size: 160)
+                            }.tint(.primary)
+                        }
+                    }
+                }
+
+                if let related = related, !related.isEmpty {
+
+                    ItemsSectionView(related.title) {
+                        ForEach(related, id: \.self) { related in
+                            NavigationLink(value: related) {
+                                AlbumItemCell(item: related, size: 160)
+                            }.tint(.primary)
+                        }
+                    }
+                }
+
+                if let similarArtists = similarArtists, !similarArtists.isEmpty {
+
+                    ItemsSectionView(similarArtists.title) {
+                        ForEach(similarArtists, id: \.self) { artist in
+                            NavigationLink(value: artist) {
+                                ArtistItemCell(item: artist, size: 160)
+                            }.tint(.primary)
+                        }
                     }
                 }
             }
+            .ignoresSafeArea(.container, edges: .top)
+            .background(Color(.systemGray6), ignoresSafeAreaEdges: .bottom)
+            .listStyle(.plain)
 
-            if let artistAlbums = artistAlbums, !artistAlbums.isEmpty {
-
-                ItemsSectionView("More by \(album.artistName)") {
-                    ForEach(artistAlbums, id: \.self) { album in
-                        NavigationLink(value: album) {
-                            AlbumItemCell(item: album, size: 160)
-                        }.tint(.primary)
-                    }
-                }
-            }
-
-            if let related = related, !related.isEmpty {
-
-                ItemsSectionView(related.title) {
-                    ForEach(related, id: \.self) { related in
-                        NavigationLink(value: related) {
-                            AlbumItemCell(item: related, size: 160)
-                        }.tint(.primary)
-                    }
-                }
-            }
-
-            if let similarArtists = similarArtists, !similarArtists.isEmpty {
-
-                ItemsSectionView(similarArtists.title) {
-                    ForEach(similarArtists, id: \.self) { artist in
-                        NavigationLink(value: artist) {
-                            ArtistItemCell(item: artist, size: 160)
-                        }.tint(.primary)
-                    }
-                }
-            }
         }
-        .background(Color(.systemGray6), ignoresSafeAreaEdges: .bottom)
-        .listStyle(.plain)
         .navigationBarBackButtonHidden(true)
         .toolbar {
 
@@ -127,10 +132,6 @@ struct AlbumDetailScreen: View {
 
             ToolbarItem(placement: .topBarTrailing) {
                 Button {
-
-                    let impactLight = UIImpactFeedbackGenerator(style: .light)
-                    impactLight.impactOccurred()
-
                     addToLibrary(album)
                 } label: {
                     Image(systemName: isInLibrary ? Symbols.checkmarkCircle.name : Symbols.plusCircle.name)
@@ -230,7 +231,9 @@ extension AlbumDetailScreen {
 
         Task { @MainActor in
             do {
+                let impactLight = UIImpactFeedbackGenerator(style: .light)
                 try await musicService.addToLibrary(album)
+                impactLight.impactOccurred()
                 self.isInLibrary = true
             } catch {
                 print("can't add to library: \(error.localizedDescription)")
