@@ -56,11 +56,11 @@ struct FullScreenPlayer: View {
     }
 
     private var title: String {
-        musicPlayer.currentItem?.title ?? ""
+        musicPlayer.currentItem?.title ?? "Song Title"
     }
 
     private var subtitle: String {
-        musicPlayer.currentItem?.subtitle ?? ""
+        musicPlayer.currentItem?.subtitle ?? "Album Name"
     }
 
     private var duration: Double? {
@@ -102,10 +102,23 @@ struct FullScreenPlayer: View {
 
             Rectangle()
                 .fill(hasBackground ? background.gradient : defaultBackground.gradient)
-                .clipShape(RoundedRectangle(cornerRadius: proxy.safeAreaInsets.top - 10))
+                .matchedGeometryEffect(
+                    id: PlayerMatchedGeometry.background.name,
+                    in: nameSpace
+                )
+                .clipShape(
+                    RoundedRectangle(
+                        cornerRadius: proxy.safeAreaInsets.top - 10
+                    )
+                )
                 .animation(.easeIn, value: hasBackground)
-                .colorMultiply(Color(hue: 0.0, saturation: 0, brightness: 0.7))
-                .matchedGeometryEffect(id: PlayerMatchedGeometry.background.name, in: nameSpace)
+                .colorMultiply(
+                    Color(
+                        hue: 0.0,
+                        saturation: 0,
+                        brightness: 0.7
+                    )
+                )
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .ignoresSafeArea()
 
@@ -121,66 +134,12 @@ struct FullScreenPlayer: View {
                         }
                     }
 
-                Group {
-
-                    if let artwork = artwork {
-
-                        ArtworkImage(artwork, width: width, height: width)
-                            .matchedGeometryEffect(id: PlayerMatchedGeometry.coverImage.name, in: nameSpace)
-                            .frame(width: width, height: width)
-                            .artworkCornerRadius(.large)
-                            .padding(.top, 14)
-                            .padding(.bottom, 32)
-                            .shadow(color: .black.opacity(0.2), radius: 30, y: 15)
-                            .scaleEffect(isPlaying ? 1 : 0.8)
-                            .animation(.interpolatingSpring(duration: 0.5, bounce: 0.5), value: isPlaying)
-
-                    } else {
-
-                        Rectangle()
-                            .fill(.secondary)
-                            .matchedGeometryEffect(id: PlayerMatchedGeometry.coverImage.name, in: nameSpace)
-                            .frame(width: width, height: width)
-                            .artworkCornerRadius(.large)
-                            .padding(.top, 14)
-                            .padding(.bottom, 32)
-                            .shadow(color: .black.opacity(0.2), radius: 30, y: 15)
-                    }
-                }
+                playerArtwork(width)
 
                 VStack {
-                    VStack {
-                        Text(title)
-                            .font(.title3)
-                            .fontWeight(.bold)
-                            .foregroundStyle(primarytextColor)
-                            .lineLimit(1)
-                            .matchedGeometryEffect(id: PlayerMatchedGeometry.title.name, in: nameSpace)
-                            .frame(maxWidth: .infinity, alignment: .leading)
 
-                        Text(subtitle)
-                            .font(.title3)
-                            .foregroundStyle(secondaryTextColor.opacity(opacity))
-                            .lineLimit(1)
-                            .matchedGeometryEffect(id: PlayerMatchedGeometry.subtitle.name, in: nameSpace)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .padding(.bottom, 20)
 
-                        if let duration = duration {
-                            PlayerProgressView(duration: duration)
-                                .tint(secondaryTextColor)
-                                .foregroundStyle(secondaryTextColor)
-                                .opacity(opacity)
-                                .onAppear {
-                                    handleProgressTimer()
-                                }
-                                .onDisappear {
-                                    handleProgressTimer(true)
-                                }
-                        }
-
-                    }.frame(maxWidth: .infinity)
-
+                    playerInfo
                     playerControls
                     volumeSlider
                         .highPriorityGesture(DragGesture())
@@ -189,7 +148,11 @@ struct FullScreenPlayer: View {
                 }.padding(.horizontal, 8)
             }
             .padding(.horizontal, 24)
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+            .frame(
+                maxWidth: .infinity,
+                maxHeight: .infinity,
+                alignment: .top
+            )
             .padding(.top, proxy.safeAreaInsets.top)
 
         }
@@ -226,7 +189,103 @@ struct FullScreenPlayer: View {
         )
     }
 
-    var playerControls: some View {
+    @ViewBuilder
+    private func playerArtwork(_ width: CGFloat) -> some View {
+        Group {
+
+            if let artwork = artwork {
+
+                ArtworkImage(artwork, width: width, height: width)
+                    .matchedGeometryEffect(
+                        id: PlayerMatchedGeometry.coverImage.name,
+                        in: nameSpace
+                    )
+                    .frame(width: width, height: width)
+                    .artworkCornerRadius(.large)
+                    .padding(.top, 14)
+                    .padding(.bottom, 32)
+                    .shadow(
+                        color: .black.opacity(0.2),
+                        radius: 30,
+                        y: 15
+                    )
+                    .scaleEffect(isPlaying ? 1 : 0.8)
+                    .animation(
+                        .interpolatingSpring(
+                            duration: 0.5,
+                            bounce: 0.5
+                        ),
+                        value: isPlaying
+                    )
+
+            } else {
+
+                Rectangle()
+                    .fill(.secondary)
+                    .matchedGeometryEffect(
+                        id: PlayerMatchedGeometry.coverImage.name,
+                        in: nameSpace
+                    )
+                    .frame(width: width, height: width)
+                    .artworkCornerRadius(.large)
+                    .padding(.top, 14)
+                    .padding(.bottom, 32)
+                    .shadow(
+                        color: .black.opacity(0.2),
+                        radius: 30,
+                        y: 15
+                    )
+            }
+        }
+    }
+
+    private var playerInfo: some View {
+
+        VStack {
+
+            Group {
+
+                Text(title)
+                    .font(.title3)
+                    .fontWeight(.bold)
+                    .foregroundStyle(primarytextColor)
+                    .lineLimit(1)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .matchedGeometryEffect(
+                        id: PlayerMatchedGeometry.title.name,
+                        in: nameSpace
+                    )
+
+
+                Text(subtitle)
+                    .font(.title3)
+                    .foregroundStyle(secondaryTextColor.opacity(opacity))
+                    .lineLimit(1)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .matchedGeometryEffect(
+                        id: PlayerMatchedGeometry.subtitle.name,
+                        in: nameSpace
+                    )
+                    .padding(.bottom, 20)
+            }
+
+            if let duration = duration {
+                PlayerProgressView(duration: duration)
+                    .tint(secondaryTextColor)
+                    .foregroundStyle(secondaryTextColor)
+                    .opacity(opacity)
+                    .onAppear {
+                        handleProgressTimer()
+                    }
+                    .onDisappear {
+                        handleProgressTimer(true)
+                    }
+            }
+
+        }.frame(maxWidth: .infinity)
+    }
+
+    private var playerControls: some View {
 
         HStack(spacing: 50) {
 
@@ -262,7 +321,7 @@ struct FullScreenPlayer: View {
 
     }
 
-    var volumeSlider: some View {
+    private var volumeSlider: some View {
 
         VStack {
             HStack(alignment: .top) {
