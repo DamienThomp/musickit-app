@@ -28,13 +28,16 @@ class MusicKitService {
         guard authStatus == .notDetermined else { return }
 
         Task {
+
             let status = await MusicAuthorization.request()
             await updateAuthStatus(with: status)
         }
     }
 
     private func listeForSubscriptionUpdates() {
+
         Task {
+
             for await subscription in MusicSubscription.subscriptionUpdates {
                 await updateSubscription(with: subscription)
             }
@@ -52,7 +55,7 @@ class MusicKitService {
     }
 }
 
-// MARK: - Public methods
+// MARK: - MusicItem with Properties
 extension MusicKitService {
 
     func getData<T: MusicItem & Decodable & MusicPropertyContainer>(
@@ -64,6 +67,10 @@ extension MusicKitService {
 
         return response
     }
+}
+
+// MARK: - Library
+extension MusicKitService {
 
     func addToLibrary<T>(_ item: T) async throws where T: MusicItem, T: MusicLibraryAddable {
 
@@ -126,7 +133,6 @@ extension MusicKitService {
 
         return response
     }
-
 
     func libraryRequest(for item: Playlist) async throws -> MusicLibraryResponse<Playlist> {
 
