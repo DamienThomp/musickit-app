@@ -21,9 +21,8 @@ struct AlbumTrackCell<Content: View>: View {
         guard let currentItem = musicPlayer.currentItem,
               let item = currentItem.item else { return false }
 
-
-        /// `Album` saved in Library have mismatched `Song.ID`  with `Song` items in `MusicPlayer.Queue`
-        /// use less safe `Album.title` and `Album.albumTitle` matching to synch active track.
+        /// `MusicItem` saved in Library have mismatched `Song.ID`  with `Song` items in `MusicPlayer.Queue`
+        /// use less safe `.title` and `.albumTitle` matching to synch active track.
         if case let .song(song) = item {
 
             let titleIsEqual = track.title == song.title
@@ -32,7 +31,7 @@ struct AlbumTrackCell<Content: View>: View {
             return titleIsEqual && albumNameIsEqual
         }
 
-        /// `MusicItemID` comparison will work for catalog `Album` plays
+        /// `MusicItemID` comparison will work for catalog `Album` | `Song` | `Track` plays
         return track.id == item.id
     }
 

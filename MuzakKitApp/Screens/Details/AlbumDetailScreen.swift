@@ -39,85 +39,93 @@ struct AlbumDetailScreen: View {
     }
 
     var body: some View {
-        GeometryReader { proxy in
-            List {
 
-                header
-                    .plainHeaderStyle()
-                    .safeAreaPadding(.top, proxy.safeAreaInsets.top)
+        List {
 
-                actions
-                    .plainHeaderStyle()
-                    .padding(.bottom)
+            header
+                .plainHeaderStyle()
 
-                if let tracks = tracks, !tracks.isEmpty {
+            actions
+                .plainHeaderStyle()
+                .padding(.bottom)
 
-                    Section {
+            if let tracks, !tracks.isEmpty {
 
-                        ForEach(tracks) { track in
-                            AlbumTrackCell(track: track) {
-                                MenuItems(item: track, tracks: tracks, isInLibrary: $isInLibrary)
-                            }
-                            .onTapGesture {
-                                musicPlayer
-                                    .handleTrackSelected(
-                                        for: track,
-                                        from: tracks
-                                    )
-                            }
-                            .contextMenu {
-                                MenuItems(item: track, tracks: tracks, isInLibrary: $isInLibrary)
-                            }
+                Section {
+
+                    ForEach(tracks) { track in
+                        AlbumTrackCell(track: track) {
+                            MenuItems(item: track, tracks: tracks, isInLibrary: $isInLibrary)
                         }
-                    } footer: {
-                        if let copyright = album.copyright {
-                            Text(copyright)
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                                .padding(.vertical)
-                                .listRowSeparator(.hidden)
+                        .onTapGesture {
+                            musicPlayer
+                                .handleTrackSelected(
+                                    for: track,
+                                    from: tracks
+                                )
+                        }
+                        .contextMenu {
+                            MenuItems(item: track, tracks: tracks, isInLibrary: $isInLibrary)
                         }
                     }
-                }
-
-                if let artistAlbums = artistAlbums, !artistAlbums.isEmpty {
-
-                    ItemsSectionView("More by \(album.artistName)") {
-                        ForEach(artistAlbums, id: \.self) { album in
-                            NavigationLink(value: album) {
-                                AlbumItemCell(item: album, size: 160)
-                            }.tint(.primary)
-                        }
-                    }
-                }
-
-                if let related = related, !related.isEmpty {
-
-                    ItemsSectionView(related.title) {
-                        ForEach(related, id: \.self) { related in
-                            NavigationLink(value: related) {
-                                AlbumItemCell(item: related, size: 160)
-                            }.tint(.primary)
-                        }
-                    }
-                }
-
-                if let similarArtists = similarArtists, !similarArtists.isEmpty {
-
-                    ItemsSectionView(similarArtists.title) {
-                        ForEach(similarArtists, id: \.self) { artist in
-                            NavigationLink(value: artist) {
-                                ArtistItemCell(item: artist, size: 160)
-                            }.tint(.primary)
-                        }
+                } footer: {
+                    if let copyright = album.copyright {
+                        Text(copyright)
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                            .padding(.vertical)
+                            .listRowSeparator(.hidden)
                     }
                 }
             }
-            .ignoresSafeArea(.container, edges: .top)
-            .background(Color(.systemGray6), ignoresSafeAreaEdges: .bottom)
-            .listStyle(.plain)
 
+            if let artistAlbums, !artistAlbums.isEmpty {
+
+                ItemsSectionView("More by \(album.artistName)") {
+                    ForEach(artistAlbums, id: \.self) { album in
+                        NavigationLink(value: album) {
+                            AlbumItemCell(item: album, size: 160)
+                        }.tint(.primary)
+                    }
+                }
+            }
+
+            if let related, !related.isEmpty {
+
+                ItemsSectionView(related.title) {
+                    ForEach(related, id: \.self) { related in
+                        NavigationLink(value: related) {
+                            AlbumItemCell(item: related, size: 160)
+                        }.tint(.primary)
+                    }
+                }
+            }
+
+            if let similarArtists, !similarArtists.isEmpty {
+
+                ItemsSectionView(similarArtists.title) {
+                    ForEach(similarArtists, id: \.self) { artist in
+                        NavigationLink(value: artist) {
+                            ArtistItemCell(item: artist, size: 160)
+                        }.tint(.primary)
+                    }
+                }
+            }
         }
+        .background(
+            LinearGradient(
+                colors: [
+                    Color(.systemBackground),
+                    Color(.systemBackground),
+                    Color(.systemGray6),
+                    Color(.systemGray6)
+                ],
+                startPoint: .top,
+                endPoint: .bottom
+            )
+                .ignoresSafeArea()
+        )
+        .listStyle(.plain)
         .navigationBarBackButtonHidden(true)
         .toolbar {
 
@@ -164,7 +172,7 @@ struct AlbumDetailScreen: View {
                     height: 240
                 )
                 .artworkCornerRadius(.large)
-                .padding(.bottom, 14)
+                .padding(.bottom, 12)
             }
 
             Text(title)
@@ -211,13 +219,15 @@ struct AlbumDetailScreen: View {
             musicPlayer.shufflePlayback(for: album)
         }
     }
-    
+
 }
 
 extension AlbumDetailScreen {
 
     private func getData() async {
+
         do {
+
             try await checkLibraryState(for: album)
             try await loadTracks()
         } catch {
@@ -230,7 +240,9 @@ extension AlbumDetailScreen {
         guard !isInLibrary else { return }
 
         Task { @MainActor in
+
             do {
+
                 let impactLight = UIImpactFeedbackGenerator(style: .light)
                 try await musicService.addToLibrary(album)
                 impactLight.impactOccurred()

@@ -13,8 +13,8 @@ struct PlaylistLibraryScreen: View {
     @Environment(NavPath.self) private var navigation
     @State private var playlists: MusicItemCollection<Playlist>?
 
-    private var count: Int = 2
-    private var gutters: CGFloat = 12
+    let count: Int = 2
+    let gutters: CGFloat = 12
 
     private var gridColumns: [GridItem] {
         Array(repeating: .init(spacing: gutters), count: count)

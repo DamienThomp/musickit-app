@@ -27,6 +27,7 @@ struct MuzakKitApp: App {
 
         WindowGroup {
             AppRootView(selection: $selection)
+                .preferredColorScheme(.dark)
                 .environment(musicKitSercice)
                 .environment(musicPlayerManager)
                 .environment(navigation)
