@@ -123,7 +123,7 @@ struct AlbumDetailScreen: View {
                 startPoint: .top,
                 endPoint: .bottom
             )
-                .ignoresSafeArea()
+            .ignoresSafeArea()
         )
         .listStyle(.plain)
         .navigationBarBackButtonHidden(true)

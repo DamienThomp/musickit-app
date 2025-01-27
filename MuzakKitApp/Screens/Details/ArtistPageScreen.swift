@@ -256,7 +256,7 @@ struct ArtistPageScreen: View {
                 defaultHeight: initialHeight
             ) {
 
-                if let artworkUrk = artist.artwork?.url(width: Int(initialHeight * 1.5), height: Int(initialHeight * 1.5)) {
+                if let artworkUrk = artist.artwork?.url(width: Int(initialHeight * 1.85), height: Int(initialHeight * 1.85)) {
 
                     AsyncImage(url: artworkUrk) { phase in
                         phase.image?
