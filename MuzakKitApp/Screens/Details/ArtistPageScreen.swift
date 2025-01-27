@@ -69,7 +69,7 @@ struct ArtistPageScreen: View {
                                         title: latest.title,
                                         subtitle: latest.artistName,
                                         artwork: latest.artwork,
-                                        size: size.width / 1.09
+                                        size: size.width - 36
                                     ).padding(.horizontal)
                                 }.tint(.primary)
                             }
@@ -219,7 +219,6 @@ struct ArtistPageScreen: View {
             .ignoresSafeArea()
         }
         .background(Color(.systemBackground), ignoresSafeAreaEdges: .all)
-        .preferredColorScheme(.dark)
         .navigationBarBackButtonHidden(true)
         .toolbar {
 
