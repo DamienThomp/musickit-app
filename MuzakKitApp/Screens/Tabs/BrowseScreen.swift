@@ -63,12 +63,7 @@ struct BrowseScreen: View {
             .listStyle(.plain)
             .overlay(alignment: .center) {
                 if showLoadingView {
-                    ZStack {
-                        Color(.systemGray6)
-                            .opacity(0.8)
-                            .ignoresSafeArea()
-                        ProgressView()
-                    }
+                    ProgressView()
                 }
             }
         }

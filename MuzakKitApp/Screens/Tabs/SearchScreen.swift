@@ -57,7 +57,7 @@ struct SearchScreen: View {
             }
         }
         .onDisappear { debounce.cancel() }
-        .onAppear { conductSearch(for: debounce.output.lowercased(), of: searchType) }
+        .onAppear { conductSearch(for: searchText.lowercased(), of: searchType) }
     }
 
     private func clearResults() {
