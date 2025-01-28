@@ -19,7 +19,7 @@ class MusicKitService {
     var itemToAdd: MusicPlaylistAddable? = nil
 
     init() {
-        listeForSubscriptionUpdates()
+        listenForSubscriptionUpdates()
         checkAuthStatus()
     }
 
@@ -34,7 +34,7 @@ class MusicKitService {
         }
     }
 
-    private func listeForSubscriptionUpdates() {
+    private func listenForSubscriptionUpdates() {
 
         Task {
 
