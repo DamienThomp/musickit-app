@@ -59,7 +59,7 @@ struct AlbumDetailScreen: View {
                         }
                         .onTapGesture {
                             musicPlayer
-                                .handleTrackSelected(
+                                .handleItemSelected(
                                     for: track,
                                     from: tracks
                                 )

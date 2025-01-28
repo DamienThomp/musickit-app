@@ -89,7 +89,7 @@ struct ArtistPageScreen: View {
                                 ) { width in
                                     ForEach(songs, id: \.self) { item in
                                         SongItemCell(item: item, width: width) {
-                                            musicPlayer.handleSongSelected(for: item, from: songs)
+                                            musicPlayer.handleItemSelected(for: item, from: songs)
                                         }
                                     }
                                 }
@@ -312,7 +312,7 @@ struct ArtistPageScreen: View {
            let firstSong = topSongs.first {
 
             Button {
-                musicPlayer.handleSongSelected(for: firstSong, from: topSongs)
+                musicPlayer.handleItemSelected(for: firstSong, from: topSongs)
             } label: {
                 Image(systemName: "play.fill")
             }

@@ -68,7 +68,7 @@ struct PlaylistDetailScreen: View {
                         }
                         .onTapGesture {
                             musicPlayer
-                                .handleTrackSelected(
+                                .handleItemSelected(
                                     for: tracks[index],
                                     from: tracks
                                 )
