@@ -65,7 +65,7 @@ struct GenreScreen: View {
                             ) { width in
                                 ForEach(section.items, id: \.self) { item in
                                     SongItemCell(item: item, width: width) {
-                                        musicPlayer.handleSongSelected(for: item, from: section.items)
+                                        musicPlayer.handleItemSelected(for: item, from: section.items)
                                     }
                                 }
                             }.horizontalDefaultInsets()

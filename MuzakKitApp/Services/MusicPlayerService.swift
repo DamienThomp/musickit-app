@@ -114,20 +114,21 @@ class MusicPlayerService {
 //MARK: - Player controls
 extension MusicPlayerService {
 
-    func handleTrackSelected(for track: Track, from loadedTracks: MusicItemCollection<Track>) {
+    func handleItemSelected<T>(for item: T, from items: MusicItemCollection<T>) where T: PlayableMusicItem {
 
-        player.queue = .init(for: loadedTracks, startingAt: track)
-        beginPlaying()
-    }
-
-    func handleSongSelected(for song: Song, from songs: MusicItemCollection<Song>) {
-
-        player.queue = .init(for: songs, startingAt: song)
+        player.queue = .init(for: items, startingAt: item)
         beginPlaying()
     }
 
     func handlePlayback(for items: PlayableMusicItem) {
 
+        player.queue = [items]
+        beginPlaying()
+    }
+
+    func shufflePlayback(for items: PlayableMusicItem) {
+
+        toggleSuffleState()
         player.queue = [items]
         beginPlaying()
     }
@@ -139,13 +140,6 @@ extension MusicPlayerService {
         } else {
             beginPlaying()
         }
-    }
-
-    func shufflePlayback(for items: PlayableMusicItem) {
-
-        toggleSuffleState()
-        player.queue = [items]
-        beginPlaying()
     }
 
     func playNext(_ track: Track? = nil, _ loadedTracks: MusicItemCollection<Track>? = nil) {
