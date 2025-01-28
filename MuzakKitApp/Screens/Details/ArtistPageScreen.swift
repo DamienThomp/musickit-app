@@ -69,7 +69,7 @@ struct ArtistPageScreen: View {
                                         title: latest.title,
                                         subtitle: latest.artistName,
                                         artwork: latest.artwork,
-                                        size: size.width - 36
+                                        size: size.width - 32
                                     ).padding(.horizontal)
                                 }.tint(.primary)
                             }

@@ -48,6 +48,7 @@ struct AppRootView: View {
                 .safeAreaInset(edge: .bottom) { showMiniPlayer(proxy) }
                 .ignoresSafeArea(.container, edges: .top)
                 .ignoresSafeArea(.keyboard, edges: .bottom)
+                .sheet(isPresented: $musicKitService.presentPlaylistform) { PlaylistForm() }
             }
         }
     }

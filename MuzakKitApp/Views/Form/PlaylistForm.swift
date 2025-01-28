@@ -70,7 +70,7 @@ struct PlaylistForm: View {
                         dismiss()
                     } label: {
                         Text("Cancel")
-                    }
+                    }.tint(.pink)
                 }
             }.overlay(alignment: .center) {
                 if showLoadingView {
