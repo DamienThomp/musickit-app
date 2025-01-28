@@ -80,4 +80,3 @@ MuzakKit is a SwiftUI-based iOS demo app that integrates with Apple Music throug
 ## Acknowledgements
 
 - Thanks to the [MusicKit Documentation](https://developer.apple.com/documentation/musickit) for the API references and guides.
-- Special thanks to the [Apple Developer Program](https://developer.apple.com/programs/) for providing tools to integrate with Apple Music.
