@@ -25,6 +25,7 @@ struct AlbumDetailScreen: View {
     @State private var similarArtists: MusicItemCollection<Artist>?
     @State private var artistAlbums: MusicItemCollection<Album>?
     @State private var artist: Artist?
+    @State private var showNavigationBar: Bool = false
 
     private var artwork: Artwork? {
         album.artwork
@@ -38,12 +39,20 @@ struct AlbumDetailScreen: View {
         album.artistName
     }
 
+    private func toggleNavigationBar(_ value: CGFloat) {
+        showNavigationBar = value < 0
+    }
+
     var body: some View {
 
         List {
 
             header
                 .plainHeaderStyle()
+//                .scrollTransition(axis: .vertical) { content, phase in
+//                    content
+//                        .opacity(phase.isIdentity ? 1.0 : 0.0)
+//                }
 
             actions
                 .plainHeaderStyle()
@@ -156,6 +165,12 @@ struct AlbumDetailScreen: View {
                 }
                 .contentShape(Rectangle())
             }
+
+            ToolbarItem(placement: .principal) {
+                Text(title)
+                    .lineLimit(1)
+                    .opacity(showNavigationBar ? 1.0 : 0)
+            }
         }
         .task { await getData() }
     }
@@ -175,10 +190,13 @@ struct AlbumDetailScreen: View {
                 .padding(.bottom, 12)
             }
 
-            Text(title)
-                .font(.system(.title2))
-                .fontWeight(.semibold)
-                .multilineTextAlignment(.center)
+            HeaderTitle(
+                text: title,
+                action: toggleNavigationBar
+            )
+            .font(.system(.title2))
+            .fontWeight(.semibold)
+            .multilineTextAlignment(.center)
 
 
             Text(artistName)

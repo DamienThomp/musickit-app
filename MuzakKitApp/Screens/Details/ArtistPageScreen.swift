@@ -35,15 +35,8 @@ struct ArtistPageScreen: View {
         artist.name
     }
 
-    private func calculatePosition(_ proxy: GeometryProxy) -> CGFloat {
-        return proxy.frame(in: .global).origin.y - proxy.safeAreaInsets.top - proxy.size.height
-    }
-
-    struct ScrollOffsetPreferenceKey: PreferenceKey {
-        static var defaultValue: CGFloat = 0
-        static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
-            value += nextValue()
-        }
+    private func toggleNavigationBar(_ value: CGFloat) {
+        showNavigationBar = value < 0
     }
 
     var body: some View {
@@ -274,22 +267,16 @@ struct ArtistPageScreen: View {
                 .ignoresSafeArea(.container, edges: .all)
 
             HStack {
-                Text(title)
-                    .padding()
-                    .font(.system(.largeTitle))
-                    .foregroundStyle(.primary)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .background(
-                         GeometryReader { proxy in
-                             let value = calculatePosition(proxy)
-                             Color.clear.preference(key: ScrollOffsetPreferenceKey.self, value: value)
-                         }
-                    )
-                    .onPreferenceChange(ScrollOffsetPreferenceKey.self) { value in
-                        withAnimation {
-                            showNavigationBar = value < 0
-                        }
-                    }
+
+                HeaderTitle(
+                    text: title,
+                    action: toggleNavigationBar
+                )
+                .padding()
+                .font(.system(.largeTitle))
+                .foregroundStyle(.primary)
+                .frame(maxWidth: .infinity, alignment: .leading)
+
 
                 Spacer()
 
@@ -300,8 +287,7 @@ struct ArtistPageScreen: View {
         }
         .scrollTransition(axis: .vertical) { content, phase in
             content
-                .opacity(phase.isIdentity ? 1.0 : 0.1)
-
+                .opacity(phase.isIdentity ? 1.0 : 0.0)
         }
     }
 
