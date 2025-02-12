@@ -25,7 +25,7 @@ struct AlbumDetailScreen: View {
     @State private var similarArtists: MusicItemCollection<Artist>?
     @State private var artistAlbums: MusicItemCollection<Album>?
     @State private var artist: Artist?
-    @State private var showNavigationBar: Bool = false
+    @State private var showNavigationTitle: Bool = false
 
     private var artwork: Artwork? {
         album.artwork
@@ -40,7 +40,7 @@ struct AlbumDetailScreen: View {
     }
 
     private func toggleNavigationBar(_ value: CGFloat) {
-        showNavigationBar = value < 0
+        showNavigationTitle = value < 0
     }
 
     var body: some View {
@@ -49,10 +49,6 @@ struct AlbumDetailScreen: View {
 
             header
                 .plainHeaderStyle()
-//                .scrollTransition(axis: .vertical) { content, phase in
-//                    content
-//                        .opacity(phase.isIdentity ? 1.0 : 0.0)
-//                }
 
             actions
                 .plainHeaderStyle()
@@ -169,7 +165,7 @@ struct AlbumDetailScreen: View {
             ToolbarItem(placement: .principal) {
                 Text(title)
                     .lineLimit(1)
-                    .opacity(showNavigationBar ? 1.0 : 0)
+                    .opacity(showNavigationTitle ? 1.0 : 0)
             }
         }
         .task { await getData() }
