@@ -79,6 +79,37 @@ struct FullScreenPlayer: View {
         }
     }
 
+    private var modalGesture: some Gesture {
+        DragGesture()
+            .onChanged { gesture in
+                let translationY = gesture.translation.height
+                withAnimation {
+                    playerOffset = (translationY > 0 ? translationY : 0)
+                }
+            }.onEnded { value in
+                let velocity = CGSize(
+                    width:  value.predictedEndLocation.x - value.location.x,
+                    height: value.predictedEndLocation.y - value.location.y
+                )
+
+                withAnimation {
+                    if velocity.height > 500.0 {
+                        toggleView.toggle()
+                        playerOffset = .zero
+                        return
+                    }
+
+                    if playerOffset > proxy.size.height /  3 {
+                        toggleView.toggle()
+                        playerOffset = .zero
+                        return
+                    }
+
+                    playerOffset = .zero
+                }
+            }
+    }
+
     private func handleProgressTimer(_ isDismissing: Bool = false) {
 
         guard !isDismissing else {
@@ -157,36 +188,7 @@ struct FullScreenPlayer: View {
 
         }
         .offset(y: toggleView ? playerOffset : .zero)
-        .gesture(
-            DragGesture()
-                .onChanged { gesture in
-                    let translationY = gesture.translation.height
-                    withAnimation {
-                        playerOffset = (translationY > 0 ? translationY : 0)
-                    }
-                }.onEnded { value in
-                    let velocity = CGSize(
-                        width:  value.predictedEndLocation.x - value.location.x,
-                        height: value.predictedEndLocation.y - value.location.y
-                    )
-
-                    withAnimation {
-                        if velocity.height > 500.0 {
-                            toggleView.toggle()
-                            playerOffset = .zero
-                            return
-                        }
-
-                        if playerOffset > proxy.size.height /  3 {
-                            toggleView.toggle()
-                            playerOffset = .zero
-                            return
-                        }
-
-                        playerOffset = .zero
-                    }
-                }
-        )
+        .gesture(modalGesture)
     }
 
     @ViewBuilder
