@@ -11,6 +11,7 @@ import MusicKit
 struct AlbumDetailScreen: View {
 
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.haptics) private var haptics
 
     @Environment(NavPath.self) private var navigation
     @Environment(MusicPlayerService.self) private var musicPlayer
@@ -37,6 +38,19 @@ struct AlbumDetailScreen: View {
 
     private var artistName: String {
         album.artistName
+    }
+
+    private var background: LinearGradient {
+        LinearGradient(
+            colors: [
+                Color(.systemBackground),
+                Color(.systemBackground),
+                Color(.systemGray6),
+                Color(.systemGray6)
+            ],
+            startPoint: .top,
+            endPoint: .bottom
+        )
     }
 
     private func toggleNavigationBar(_ value: CGFloat) {
@@ -117,19 +131,7 @@ struct AlbumDetailScreen: View {
                 }
             }
         }
-        .background(
-            LinearGradient(
-                colors: [
-                    Color(.systemBackground),
-                    Color(.systemBackground),
-                    Color(.systemGray6),
-                    Color(.systemGray6)
-                ],
-                startPoint: .top,
-                endPoint: .bottom
-            )
-            .ignoresSafeArea()
-        )
+        .background(background.ignoresSafeArea())
         .listStyle(.plain)
         .navigationBarBackButtonHidden(true)
         .toolbar {
@@ -256,10 +258,8 @@ extension AlbumDetailScreen {
         Task { @MainActor in
 
             do {
-
-                let impactLight = UIImpactFeedbackGenerator(style: .light)
                 try await musicService.addToLibrary(album)
-                impactLight.impactOccurred()
+                haptics.impact(.light)
                 self.isInLibrary = true
             } catch {
                 print("can't add to library: \(error.localizedDescription)")

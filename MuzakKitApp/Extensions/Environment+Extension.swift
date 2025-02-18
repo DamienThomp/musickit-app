@@ -11,4 +11,6 @@ import SwiftUI
 extension EnvironmentValues {
     
     @Entry var debounce: DebounceHelper = DebounceHelper()
+
+    @Entry var haptics: HapticHelper = HapticHelper()
 }
