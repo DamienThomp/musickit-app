@@ -20,7 +20,7 @@ struct AppRootView: View {
     private var showDefaultScreen: Bool {
 
         let authStatus = musicKitService.authStatus
-        return authStatus != .authorized 
+        return authStatus != .authorized
     }
 
     private var hasSeenAuthMessage: Bool {
@@ -63,9 +63,7 @@ struct AppRootView: View {
     @ViewBuilder
     private func showMiniPlayer(_ proxy: GeometryProxy) -> some View {
         if musicPlayer.hasQueue {
-            withAnimation {
-                PlayerContainer(proxy: proxy)
-            }
+            PlayerContainer(proxy: proxy)
         }
     }
 
