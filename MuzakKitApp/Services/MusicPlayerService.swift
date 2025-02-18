@@ -8,7 +8,7 @@
 import MusicKit
 import Observation
 import Combine
-import Foundation
+import SwiftUI
 
 @Observable
 class MusicPlayerService {
@@ -106,7 +106,9 @@ class MusicPlayerService {
     private func updateHasQueue() {
 
         Task { @MainActor in
-            self.hasQueue = !self.player.queue.entries.isEmpty
+            withAnimation(.spring) {
+                self.hasQueue = !self.player.queue.entries.isEmpty
+            }
         }
     }
 }
