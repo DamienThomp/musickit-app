@@ -31,13 +31,13 @@ enum AppRootScreen: Hashable, CaseIterable, Identifiable {
 
             switch self {
             case .playlists:
-                "music.note.list"
+                Symbols.musicNoteList.name
             case .artists:
-                "music.mic"
+                Symbols.musicMic.name
             case .albums:
-                "square.stack"
+                Symbols.squareStack.name
             case .genres:
-                "guitars"
+                Symbols.guitars.name
             }
         }
     }
@@ -61,11 +61,11 @@ extension AppRootScreen {
     var label: some View {
         switch self {
         case .browse:
-            Label("Browse", systemImage: "square.grid.2x2.fill")
+            Label("Browse", systemImage: Symbols.browse.name)
         case .library:
-            Label("Library", systemImage: "music.note.list")
+            Label("Library", systemImage: Symbols.musicNoteList.name)
         case .search:
-            Label("Search", systemImage: "magnifyingglass")
+            Label("Search", systemImage: Symbols.search.name)
         }
     }
 

@@ -11,6 +11,10 @@ import SwiftUI
 @SFSymbol
 enum Symbols: String {
 
+    // Tabs
+    case browse = "square.grid.2x2.fill"
+    case search = "magnifyingglass"
+
     // MusicItem
     case albumPlaceholder = "waveform.circle"
     case artistPlaceholder = "person.2.circle"
@@ -41,4 +45,7 @@ enum Symbols: String {
     case circle = "circle.fill"
     case warning = "exclamationmark.triangle.fill"
     case chevronBack = "chevron.backward"
+    case musicMic = "music.mic"
+    case squareStack = "square.stack"
+    case guitars
 }
