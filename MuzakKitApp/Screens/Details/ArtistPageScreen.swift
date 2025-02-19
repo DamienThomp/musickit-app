@@ -27,6 +27,8 @@ struct ArtistPageScreen: View {
     @State private var isLoading: Bool = true
     @State private var showNavigationBar: Bool = false
 
+    @Namespace private var detailsNamespace
+
     private var artwork: Artwork? {
         artist.artwork
     }
@@ -57,14 +59,23 @@ struct ArtistPageScreen: View {
                         if let latest = artistDetails.latestRelease {
                             VStack(alignment: .leading) {
 
-                                NavigationLink(value: latest) {
-                                    TopResultCell(
-                                        title: latest.title,
-                                        subtitle: latest.artistName,
-                                        artwork: latest.artwork,
-                                        size: size.width - 32
-                                    ).padding(.horizontal)
-                                }.tint(.primary)
+                                NavigationLink {
+                                    if #available(iOS 18.0, *) {
+                                        AlbumDetailScreen(album: latest)
+                                            .navigationTransition(.zoom(sourceID: latest.id, in: detailsNamespace))
+                                    } else {
+                                        AlbumDetailScreen(album: latest)
+                                    }
+                                } label: {
+
+                                    if #available(iOS 18.0, *) {
+                                        heroCell(latest, size: size)
+                                            .matchedTransitionSource(id: latest.id, in: detailsNamespace)
+                                    } else {
+                                        heroCell(latest, size: size)
+                                    }
+                                }
+                                .tint(.primary)
                             }
                         }
 
@@ -223,7 +234,7 @@ struct ArtistPageScreen: View {
                 }
                 .buttonBorderShape(.circle)
                 .buttonStyle(.borderedProminent)
-                .tint(Color(.systemGray2).opacity(0.6))
+                .tint(showNavigationBar ? .pink : Color(.systemGray2).opacity(0.6))
                 .foregroundStyle(.primary)
             }
 
@@ -256,14 +267,31 @@ struct ArtistPageScreen: View {
                             .resizableImage(.fill)
                             .background(Color(.black))
                             .mask {
-                                LinearGradient(colors: [.black.opacity(0), .black, .black], startPoint: .top, endPoint: .bottom)
+                                LinearGradient(
+                                    colors: [
+                                        .black.opacity(0),
+                                        .black,
+                                        .black
+                                    ],
+                                    startPoint: .top,
+                                    endPoint: .bottom
+                                )
                             }
                     }
                 }
             }
 
             Rectangle()
-                .fill(LinearGradient(colors: [.black.opacity(0.0), .black.opacity(0.5)], startPoint: .top, endPoint: .bottom))
+                .fill(
+                    LinearGradient(
+                        colors: [
+                            .black.opacity(0.0),
+                            .black.opacity(0.5)
+                        ],
+                        startPoint: .top,
+                        endPoint: .bottom
+                    )
+                )
                 .ignoresSafeArea(.container, edges: .all)
 
             HStack {
@@ -310,6 +338,18 @@ struct ArtistPageScreen: View {
         } else {
             EmptyView()
         }
+    }
+
+    @ViewBuilder
+    private func heroCell(_ item: Album, size: CGSize) -> some View {
+
+        TopResultCell(
+            title: item.title,
+            subtitle: item.artistName,
+            artwork: item.artwork,
+            size: size.width - 32
+        )
+        .padding(.horizontal)
     }
 }
 
