@@ -27,6 +27,7 @@ struct AlbumDetailScreen: View {
     @State private var artistAlbums: MusicItemCollection<Album>?
     @State private var artist: Artist?
     @State private var showNavigationTitle: Bool = false
+    @State private var isAddingToLibrary: Bool = false
 
     private var artwork: Artwork? {
         album.artwork
@@ -146,10 +147,14 @@ struct AlbumDetailScreen: View {
             }
 
             ToolbarItem(placement: .topBarTrailing) {
-                Button {
-                    addToLibrary(album)
-                } label: {
-                    Image(systemName: isInLibrary ? Symbols.checkmarkCircle.name : Symbols.plusCircle.name)
+                if isAddingToLibrary {
+                    ProgressView()
+                } else {
+                    Button {
+                        addToLibrary(album)
+                    } label: {
+                        Image(systemName: isInLibrary ? Symbols.checkmarkCircle.name : Symbols.plusCircle.name)
+                    }
                 }
             }
 
@@ -258,11 +263,14 @@ extension AlbumDetailScreen {
         Task { @MainActor in
 
             do {
+                self.isAddingToLibrary = true
                 try await musicService.addToLibrary(album)
                 haptics.impact(.light)
+                self.isAddingToLibrary = false
                 self.isInLibrary = true
             } catch {
                 print("can't add to library: \(error.localizedDescription)")
+                self.isAddingToLibrary = false
             }
         }
     }
