@@ -62,7 +62,8 @@ struct MiniMusicPlayer: View {
             ArtworkImage(artwork, width: 34, height: 34)
                 .matchedGeometryEffect(
                     id: PlayerMatchedGeometry.coverImage.name,
-                    in: nameSpace
+                    in: nameSpace,
+                    isSource: true
                 )
                 .frame(width: 34, height: 34)
                 .artworkCornerRadius(.small)
@@ -76,7 +77,8 @@ struct MiniMusicPlayer: View {
                 .fill(.secondary)
                 .matchedGeometryEffect(
                     id: PlayerMatchedGeometry.coverImage.name,
-                    in: nameSpace
+                    in: nameSpace,
+                    isSource: true
                 )
                 .frame(width: 34, height: 34)
                 .artworkCornerRadius(.small)

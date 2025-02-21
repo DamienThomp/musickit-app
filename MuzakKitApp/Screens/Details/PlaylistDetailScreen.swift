@@ -11,6 +11,7 @@ import MusicKit
 struct PlaylistDetailScreen: View {
 
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.haptics) private var haptics
 
     @Environment(MusicPlayerService.self) private var musicPlayer
     @Environment(MusicKitService.self) private var musicService
@@ -119,8 +120,6 @@ struct PlaylistDetailScreen: View {
 
             ToolbarItem(placement: .topBarTrailing) {
                 Button {
-                    let impactLight = UIImpactFeedbackGenerator(style: .light)
-                    impactLight.impactOccurred()
                     addToLibrary()
                 } label: {
                     Image(systemName: isInLibrary ? Symbols.checkmarkCircle.name : Symbols.plusCircle.name)
@@ -186,6 +185,7 @@ extension PlaylistDetailScreen {
             do {
                 try await musicService.addToLibrary(playlist)
                 self.isInLibrary = true
+                haptics.impact(.light)
             } catch {
                 print("can't add to library: \(error.localizedDescription)")
             }
