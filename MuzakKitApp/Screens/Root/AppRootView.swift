@@ -94,7 +94,7 @@ struct AppRootView: View {
                 openURL(settingsURL)
             }
         } label: {
-            Label("Authorize", systemImage: "checkmark.circle")
+            Label("Authorize", systemImage: Symbols.checkMarkCircle.name)
         }
         .foregroundStyle(.pink)
         .buttonStyle(.bordered)
