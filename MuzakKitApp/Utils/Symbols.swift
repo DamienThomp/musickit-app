@@ -48,4 +48,5 @@ enum Symbols: String {
     case musicMic = "music.mic"
     case squareStack = "square.stack"
     case guitars
+    case checkMarkCircle = "checkmark.circle"
 }
