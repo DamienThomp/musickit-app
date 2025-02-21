@@ -8,6 +8,7 @@
 import SwiftUI
 import MusicKit
 
+// swiftlint:disable:next type_body_length
 struct ArtistPageScreen: View {
 
     @Environment(\.dismiss) var dismiss
@@ -23,7 +24,7 @@ struct ArtistPageScreen: View {
 
     let artist: Artist
 
-    @State var artistDetails: Artist? = nil
+    @State var artistDetails: Artist?
     @State private var isLoading: Bool = true
     @State private var showNavigationBar: Bool = false
 
@@ -85,12 +86,7 @@ struct ArtistPageScreen: View {
 
                                 SectionTitle(title: songs.title ?? "Top Songs")
 
-                                HorizontalGrid(
-                                    grid: 1.15,
-                                    rows: 4,
-                                    gutterSize: 12,
-                                    width: size.width
-                                ) { width in
+                                HorizontalGrid(grid: 1.15, rows: 4, gutterSize: 12, width: size.width) { width in
                                     ForEach(songs, id: \.self) { item in
                                         SongItemCell(item: item, width: width) {
                                             musicPlayer.handleItemSelected(for: item, from: songs)
@@ -238,7 +234,7 @@ struct ArtistPageScreen: View {
                 .foregroundStyle(.primary)
             }
 
-            if let _ = artistDetails {
+            if artistDetails != nil {
                 ToolbarItem(placement: .principal) {
                     Text(artist.name)
                         .opacity(showNavigationBar ? 1.0 : 0)
@@ -305,7 +301,6 @@ struct ArtistPageScreen: View {
                 .foregroundStyle(.primary)
                 .frame(maxWidth: .infinity, alignment: .leading)
 
-
                 Spacer()
 
                 headerAction()
@@ -334,7 +329,6 @@ struct ArtistPageScreen: View {
             .buttonStyle(.borderedProminent)
             .tint(.pink)
             .foregroundStyle(.primary)
-
         } else {
             EmptyView()
         }
@@ -391,11 +385,9 @@ extension ArtistPageScreen {
 }
 
 #Preview {
-
     if let artist = artistMock {
 
         NavigationStack {
-
             ArtistPageScreen(artist: artist, artistDetails: artist)
                 .environment(MusicKitService())
                 .environment(MusicPlayerService())

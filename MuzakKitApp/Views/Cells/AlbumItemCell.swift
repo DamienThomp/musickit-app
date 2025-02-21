@@ -38,7 +38,6 @@ struct AlbumItemCell: View {
 
                 ArtworkImage(artwork, width: itemWidth, height: itemWidth)
                     .artworkCornerRadius(.medium)
-
             } else {
 
             Symbols.albumPlaceholder.image
@@ -54,12 +53,10 @@ struct AlbumItemCell: View {
                 .font(.system(.subheadline))
                 .lineLimit(1)
 
-
             Text(subtitle)
                 .font(.system(.caption2))
                 .foregroundStyle(.secondary)
                 .lineLimit(1)
-
         }.frame(maxWidth: itemWidth)
     }
 }

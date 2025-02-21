@@ -11,6 +11,7 @@ import Observation
 
 @Observable
 class NavPath {
+
     var path: NavigationPath = NavigationPath()
 }
 

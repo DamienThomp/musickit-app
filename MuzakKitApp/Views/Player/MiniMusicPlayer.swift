@@ -39,7 +39,6 @@ struct MiniMusicPlayer: View {
             Spacer()
 
             playerActions
-
         }
         .padding(10)
         .padding(.trailing, 6)
@@ -99,7 +98,6 @@ struct MiniMusicPlayer: View {
                     in: nameSpace
                 )
 
-
             Text(subtitle)
                 .font(.caption)
                 .foregroundStyle(.secondary)
@@ -132,7 +130,6 @@ struct MiniMusicPlayer: View {
                     .imageScale(.large)
                     .font(.system(size: 20))
                     .foregroundStyle(.pink)
-
             }.matchedGeometryEffect(id: PlayerMatchedGeometry.secondaryAction.name, in: nameSpace)
         }
     }
@@ -143,6 +140,6 @@ struct MiniMusicPlayer: View {
     @Previewable @Namespace var nameSpace
     @Previewable @State var toggle = false
 
-    MiniMusicPlayer(toggleView: $toggle ,nameSpace: nameSpace)
+    MiniMusicPlayer(toggleView: $toggle, nameSpace: nameSpace)
         .environment(MusicPlayerService())
 }

@@ -13,7 +13,6 @@ struct SectionHeaderStyle: ViewModifier {
         content
             .font(.system(.title2))
             .fontWeight(.bold)
-
     }
 }
 

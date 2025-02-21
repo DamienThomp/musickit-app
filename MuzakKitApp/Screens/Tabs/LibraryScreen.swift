@@ -8,10 +8,9 @@
 import SwiftUI
 import MusicKit
 
-
 struct LibraryScreen: View {
 
-    @State var items: MusicItemCollection<Album>? = nil
+    @State var items: MusicItemCollection<Album>?
     @Environment(NavPath.self) private var navigation
 
     var body: some View {

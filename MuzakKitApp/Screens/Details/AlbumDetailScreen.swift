@@ -19,7 +19,7 @@ struct AlbumDetailScreen: View {
 
     let album: Album
 
-    @State var tracks: MusicItemCollection<Track>? = nil
+    @State var tracks: MusicItemCollection<Track>?
     @State private var isInLibrary: Bool = false
 
     @State private var related: MusicItemCollection<Album>?
@@ -178,7 +178,6 @@ struct AlbumDetailScreen: View {
         .task { await getData() }
     }
 
-
     private var header: some View {
 
         VStack(alignment: .center, spacing: 2) {
@@ -200,7 +199,6 @@ struct AlbumDetailScreen: View {
             .font(.system(.title2))
             .fontWeight(.semibold)
             .multilineTextAlignment(.center)
-
 
             Text(artistName)
                 .font(.system(.title2))
@@ -240,7 +238,6 @@ struct AlbumDetailScreen: View {
             musicPlayer.shufflePlayback(for: album)
         }
     }
-
 }
 
 extension AlbumDetailScreen {

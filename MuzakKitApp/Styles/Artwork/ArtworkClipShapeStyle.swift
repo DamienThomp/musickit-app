@@ -17,12 +17,12 @@ struct ArtworkClipShapeStyle: ViewModifier {
         case custom(_ size: CGFloat)
 
         var value: CGFloat {
-            
+
             switch self {
-                case .large: 12
-                case .medium: 8
-                case .small: 6
-                case .custom(let radius): radius
+            case .large: 12
+            case .medium: 8
+            case .small: 6
+            case .custom(let radius): radius
             }
         }
     }

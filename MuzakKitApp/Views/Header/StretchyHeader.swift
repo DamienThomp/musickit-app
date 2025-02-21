@@ -28,8 +28,6 @@ struct StretchyHeader<Content: View, Space: Hashable>: View {
                     height: proxy.size.height + heightModifier
                 )
                 .offset(y: offset)
-
-
         }.frame(height: defaultHeight)
     }
 

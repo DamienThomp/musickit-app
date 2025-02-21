@@ -8,6 +8,7 @@
 import SwiftUI
 import MusicKit
 
+// swiftlint:disable:next type_body_length
 struct FullScreenPlayer: View {
 
     @Environment(MusicPlayerService.self) private var musicPlayer
@@ -88,7 +89,7 @@ struct FullScreenPlayer: View {
                 }
             }.onEnded { value in
                 let velocity = CGSize(
-                    width:  value.predictedEndLocation.x - value.location.x,
+                    width: value.predictedEndLocation.x - value.location.x,
                     height: value.predictedEndLocation.y - value.location.y
                 )
 
@@ -169,13 +170,11 @@ struct FullScreenPlayer: View {
 
                 VStack {
 
-
                     playerInfo
                     playerControls
                     volumeSlider
                         .highPriorityGesture(DragGesture())
                         .opacity(opacity)
-
                 }.padding(.horizontal, 8)
             }
             .padding(.horizontal, 24)
@@ -185,7 +184,6 @@ struct FullScreenPlayer: View {
                 alignment: .top
             )
             .padding(.top, proxy.safeAreaInsets.top)
-
         }
         .offset(y: toggleView ? playerOffset : .zero)
         .gesture(modalGesture)
@@ -193,6 +191,7 @@ struct FullScreenPlayer: View {
 
     @ViewBuilder
     private func playerArtwork(_ width: CGFloat) -> some View {
+
         Group {
 
             if let artwork = artwork {
@@ -219,7 +218,6 @@ struct FullScreenPlayer: View {
                         ),
                         value: isPlaying
                     )
-
             } else {
 
                 Rectangle()
@@ -258,7 +256,6 @@ struct FullScreenPlayer: View {
                         in: nameSpace
                     )
 
-
                 Text(subtitle)
                     .font(.title3)
                     .foregroundStyle(secondaryTextColor.opacity(opacity))
@@ -272,6 +269,7 @@ struct FullScreenPlayer: View {
             }
 
             if let duration = duration {
+
                 PlayerProgressView(duration: duration)
                     .tint(secondaryTextColor)
                     .foregroundStyle(secondaryTextColor)
@@ -283,7 +281,6 @@ struct FullScreenPlayer: View {
                         handleProgressTimer(true)
                     }
             }
-
         }.frame(maxWidth: .infinity)
     }
 
@@ -306,7 +303,6 @@ struct FullScreenPlayer: View {
                 Image(systemName: isPlaying ? Symbols.pause.name : Symbols.play.name)
                     .imageScale(.large)
                     .font(.system(size: 40))
-
             }.matchedGeometryEffect(id: PlayerMatchedGeometry.primaryAction.name, in: nameSpace)
                 .frame(minWidth: 50, minHeight: 60)
 
@@ -320,7 +316,6 @@ struct FullScreenPlayer: View {
         }
         .padding()
         .foregroundStyle(primarytextColor)
-
     }
 
     private var volumeSlider: some View {
@@ -338,7 +333,6 @@ struct FullScreenPlayer: View {
         .foregroundStyle(secondaryTextColor)
         .padding(.top)
     }
-
 }
 
 #Preview {
@@ -385,7 +379,6 @@ struct PlayerProgressView: View {
                 Spacer()
                 Text(remaining, format: .duration(style: .positional))
                     .font(.caption)
-
             }
         }
     }

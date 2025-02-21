@@ -56,7 +56,6 @@ struct AlbumTrackCell<Content: View>: View {
                     .lineLimit(1)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .foregroundStyle(isActiveTrack ? .pink : .primary)
-
             }.contentShape(Rectangle())
 
             Menu {

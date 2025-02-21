@@ -104,7 +104,6 @@ struct PlaylistForm: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .contentShape(Rectangle())
         .padding(.horizontal)
-
     }
 
     @ViewBuilder
@@ -120,7 +119,6 @@ struct PlaylistForm: View {
                 .fill(Color(.systemBackground))
                 .frame(width: 50, height: 50)
                 .artworkCornerRadius(.medium)
-
         }
     }
 }

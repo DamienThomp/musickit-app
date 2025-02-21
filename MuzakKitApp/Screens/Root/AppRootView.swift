@@ -73,7 +73,6 @@ struct AppRootView: View {
             VStack {
                 Image(.launchIcon)
                     .resizableImage()
-
             }.frame(width: 250, height: 250)
         } description: {
             if hasSeenAuthMessage {

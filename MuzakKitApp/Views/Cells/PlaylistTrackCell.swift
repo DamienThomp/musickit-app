@@ -29,7 +29,6 @@ struct PlaylistTrackCell<Content: View>: View {
                     .padding(.vertical, 8)
                     .padding(.horizontal, 8)
                     .frame(maxWidth: .infinity, alignment: .leading)
-                
             }.contentShape(Rectangle())
 
             Spacer()

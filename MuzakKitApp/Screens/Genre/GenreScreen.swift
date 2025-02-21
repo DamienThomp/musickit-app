@@ -15,8 +15,8 @@ struct GenreScreen: View {
 
     let genre: Genre
 
-    @State var charts: MusicCatalogChartsResponse? = nil
-    @State var catalogItems: MusicCatalogSearchResponse? = nil
+    @State var charts: MusicCatalogChartsResponse?
+    @State var catalogItems: MusicCatalogSearchResponse?
 
     var body: some View {
 
@@ -117,13 +117,12 @@ struct GenreScreen: View {
                                 gutterSize: 12,
                                 viewAligned: false,
                                 width: width
-                            ) { width in
+                            ) { _ in
                                 ForEach(section.items, id: \.self) { item in
                                     PlaylistItemCell(item: item, size: 168)
                                         .onTapGesture {
                                             navigation.path.append(item)
                                         }
-
                                 }
                             }.horizontalDefaultInsets()
                         }.listRowSeparator(.hidden)
@@ -236,7 +235,7 @@ struct GenreScreen: View {
                 artwork: station.artwork,
                 size: size
             )
-        case .recordLabel(_), .radioShow(_), .musicVideo(_), .song(_), .curator(_):
+        case .recordLabel, .radioShow, .musicVideo, .song, .curator:
             EmptyView()
         @unknown default:
             EmptyView()
@@ -251,15 +250,14 @@ struct GenreScreen: View {
             navigation.path.append(artist)
         case .playlist(let playlist):
             navigation.path.append(playlist)
-        case .station(_):
+        case .station:
             print("start station")
-        case .curator(_), .musicVideo(_), .radioShow(_), .recordLabel(_), .song(_):
+        case .curator, .musicVideo, .radioShow, .recordLabel, .song:
             print("unhandled item")
         @unknown default:
             print("unhandled item")
         }
     }
-
 }
 
 extension GenreScreen {

@@ -10,7 +10,6 @@ import SwiftUI
 public extension Color {
 
     static var randomColor: Color {
-        
         let colors: [Color] = [
             .red,
             .green,
