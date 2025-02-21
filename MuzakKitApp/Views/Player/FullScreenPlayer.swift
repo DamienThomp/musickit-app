@@ -8,7 +8,6 @@
 import SwiftUI
 import MusicKit
 
-// swiftlint:disable:next type_body_length
 struct FullScreenPlayer: View {
 
     @Environment(MusicPlayerService.self) private var musicPlayer
@@ -48,14 +47,6 @@ struct FullScreenPlayer: View {
         return Color(.systemGray4)
     }
 
-    private var primarytextColor: Color {
-        .primary
-    }
-
-    private var secondaryTextColor: Color {
-        .secondary
-    }
-
     private var title: String {
         musicPlayer.currentItem?.title ?? "Song Title"
     }
@@ -66,9 +57,7 @@ struct FullScreenPlayer: View {
 
     private var duration: Double? {
 
-        guard let item = musicPlayer.currentItem?.item else {
-            return nil
-        }
+        guard let item = musicPlayer.currentItem?.item else { return nil }
 
         switch item {
         case .song(let song):
@@ -78,37 +67,6 @@ struct FullScreenPlayer: View {
         @unknown default:
             return nil
         }
-    }
-
-    private var modalGesture: some Gesture {
-        DragGesture()
-            .onChanged { gesture in
-                let translationY = gesture.translation.height
-                withAnimation {
-                    playerOffset = (translationY > 0 ? translationY : 0)
-                }
-            }.onEnded { value in
-                let velocity = CGSize(
-                    width: value.predictedEndLocation.x - value.location.x,
-                    height: value.predictedEndLocation.y - value.location.y
-                )
-
-                withAnimation {
-                    if velocity.height > 500.0 {
-                        toggleView.toggle()
-                        playerOffset = .zero
-                        return
-                    }
-
-                    if playerOffset > proxy.size.height /  3 {
-                        toggleView.toggle()
-                        playerOffset = .zero
-                        return
-                    }
-
-                    playerOffset = .zero
-                }
-            }
     }
 
     private func handleProgressTimer(_ isDismissing: Bool = false) {
@@ -132,44 +90,17 @@ struct FullScreenPlayer: View {
 
         ZStack {
 
-            Rectangle()
-                .fill(hasBackground ? background.gradient : defaultBackground.gradient)
-                .matchedGeometryEffect(
-                    id: PlayerMatchedGeometry.background.name,
-                    in: nameSpace
-                )
-                .clipShape(
-                    RoundedRectangle(
-                        cornerRadius: proxy.safeAreaInsets.top - 10
-                    )
-                )
-                .animation(.easeIn, value: hasBackground)
-                .colorMultiply(
-                    Color(
-                        hue: 0.0,
-                        saturation: 0,
-                        brightness: 0.7
-                    )
-                )
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .ignoresSafeArea()
+            playerBackground
 
             VStack {
 
-                Capsule()
-                    .fill(secondaryTextColor.opacity(opacity))
-                    .frame(width: 50, height: 5)
-                    .padding(.bottom)
-                    .onTapGesture {
-                        withAnimation(PlayerMatchedGeometry.animation) {
-                            toggleView.toggle()
-                        }
-                    }
+                dragHandle
 
                 playerArtwork(width)
+                    .padding(.top, 14)
+                    .padding(.bottom, 32)
 
                 VStack {
-
                     playerInfo
                     playerControls
                     volumeSlider
@@ -178,15 +109,76 @@ struct FullScreenPlayer: View {
                 }.padding(.horizontal, 8)
             }
             .padding(.horizontal, 24)
-            .frame(
-                maxWidth: .infinity,
-                maxHeight: .infinity,
-                alignment: .top
-            )
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
             .padding(.top, proxy.safeAreaInsets.top)
         }
         .offset(y: toggleView ? playerOffset : .zero)
         .gesture(modalGesture)
+    }
+
+    private var modalGesture: some Gesture {
+        
+        DragGesture()
+            .onChanged { gesture in
+
+                let translationY = gesture.translation.height
+
+                withAnimation {
+                    playerOffset = (translationY > 0 ? translationY : 0)
+                }
+            }.onEnded { value in
+
+                let velocity = CGSize(
+                    width: value.predictedEndLocation.x - value.location.x,
+                    height: value.predictedEndLocation.y - value.location.y
+                )
+
+                withAnimation {
+                    if velocity.height > 500.0 {
+                        toggleView.toggle()
+                        playerOffset = .zero
+                        return
+                    }
+
+                    if playerOffset > proxy.size.height /  3 {
+                        toggleView.toggle()
+                        playerOffset = .zero
+                        return
+                    }
+
+                    playerOffset = .zero
+                }
+            }
+    }
+
+    @ViewBuilder
+    private var playerBackground: some View {
+
+        Rectangle()
+            .fill(hasBackground ? background.gradient : defaultBackground.gradient)
+            .matchedGeometryEffect(
+                id: PlayerMatchedGeometry.background.name,
+                in: nameSpace
+            )
+            .clipShape(RoundedRectangle(cornerRadius: proxy.safeAreaInsets.top - 10))
+            .animation(.easeIn, value: hasBackground)
+            .colorMultiply(Color(hue: 0.0, saturation: 0, brightness: 0.7))
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .ignoresSafeArea()
+    }
+
+    @ViewBuilder
+    private var dragHandle: some View {
+
+        Capsule()
+            .fill(.secondary.opacity(opacity))
+            .frame(width: 50, height: 5)
+            .padding(.bottom)
+            .onTapGesture {
+                withAnimation(PlayerMatchedGeometry.animation) {
+                    toggleView.toggle()
+                }
+            }
     }
 
     @ViewBuilder
@@ -203,8 +195,6 @@ struct FullScreenPlayer: View {
                     )
                     .frame(width: width, height: width)
                     .artworkCornerRadius(.large)
-                    .padding(.top, 14)
-                    .padding(.bottom, 32)
                     .shadow(
                         color: .black.opacity(0.2),
                         radius: 30,
@@ -228,8 +218,6 @@ struct FullScreenPlayer: View {
                     )
                     .frame(width: width, height: width)
                     .artworkCornerRadius(.large)
-                    .padding(.top, 14)
-                    .padding(.bottom, 32)
                     .shadow(
                         color: .black.opacity(0.2),
                         radius: 30,
@@ -248,7 +236,7 @@ struct FullScreenPlayer: View {
                 Text(title)
                     .font(.title3)
                     .fontWeight(.bold)
-                    .foregroundStyle(primarytextColor)
+                    .foregroundStyle(.primary)
                     .lineLimit(1)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .matchedGeometryEffect(
@@ -258,7 +246,7 @@ struct FullScreenPlayer: View {
 
                 Text(subtitle)
                     .font(.title3)
-                    .foregroundStyle(secondaryTextColor.opacity(opacity))
+                    .foregroundStyle(.secondary.opacity(opacity))
                     .lineLimit(1)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .matchedGeometryEffect(
@@ -270,16 +258,12 @@ struct FullScreenPlayer: View {
 
             if let duration = duration {
 
-                PlayerProgressView(duration: duration)
-                    .tint(secondaryTextColor)
-                    .foregroundStyle(secondaryTextColor)
+                PlayerProgress(duration: duration)
+                    .tint(.secondary)
+                    .foregroundStyle(.secondary)
                     .opacity(opacity)
-                    .onAppear {
-                        handleProgressTimer()
-                    }
-                    .onDisappear {
-                        handleProgressTimer(true)
-                    }
+                    .onAppear { handleProgressTimer()}
+                    .onDisappear { handleProgressTimer(true) }
             }
         }.frame(maxWidth: .infinity)
     }
@@ -315,7 +299,7 @@ struct FullScreenPlayer: View {
             }.matchedGeometryEffect(id: PlayerMatchedGeometry.secondaryAction.name, in: nameSpace)
         }
         .padding()
-        .foregroundStyle(primarytextColor)
+        .foregroundStyle(.secondary)
     }
 
     private var volumeSlider: some View {
@@ -323,14 +307,14 @@ struct FullScreenPlayer: View {
         VStack {
             HStack(alignment: .top) {
                 Symbols.volumeDown.image
-                VolumeSliderView(tint: UIColor(secondaryTextColor))
+                VolumeSliderView(tint: UIColor(.secondary))
                     .frame(maxWidth: .infinity)
                 Symbols.volumeUp.image
             }
             .frame(height: 50)
             .frame(maxWidth: .infinity)
         }
-        .foregroundStyle(secondaryTextColor)
+        .foregroundStyle(.secondary)
         .padding(.top)
     }
 }
@@ -341,45 +325,5 @@ struct FullScreenPlayer: View {
     GeometryReader { proxy in
         FullScreenPlayer(toggleView: $toggle, proxy: proxy, nameSpace: nameSpace)
             .environment(MusicPlayerService())
-    }
-}
-
-// TODO: - refactor player progress view
-struct PlayerProgressView: View {
-
-    @Environment(MusicPlayerService.self) var musicPlayerManager
-
-    let duration: TimeInterval
-
-    private var progress: TimeInterval {
-
-        if let progress = musicPlayerManager.currentPlayBackTime,
-           progress < duration {
-            return progress
-        }
-
-        return 0.0
-    }
-
-    private var remaining: TimeInterval {
-
-        return -(duration) + progress
-    }
-
-    var body: some View {
-
-        Group {
-
-            ProgressView(value: progress, total: duration)
-
-            HStack {
-                Text(progress, format: .duration(style: .positional))
-                    .font(.caption)
-
-                Spacer()
-                Text(remaining, format: .duration(style: .positional))
-                    .font(.caption)
-            }
-        }
     }
 }

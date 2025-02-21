@@ -8,7 +8,6 @@
 import SwiftUI
 import MusicKit
 
-// swiftlint:disable:next type_body_length
 struct ArtistPageScreen: View {
 
     @Environment(\.dismiss) var dismiss
@@ -28,17 +27,9 @@ struct ArtistPageScreen: View {
     @State private var isLoading: Bool = true
     @State private var showNavigationBar: Bool = false
 
-    private var artwork: Artwork? {
-        artist.artwork
-    }
-
-    private var title: String {
-        artist.name
-    }
-
-    private func toggleNavigationBar(_ value: CGFloat) {
-        showNavigationBar = value < 0
-    }
+    private var artwork: Artwork? { artist.artwork }
+    private var title: String {  artist.name }
+    private func toggleNavigationBar(_ value: CGFloat) {  showNavigationBar = value < 0 }
 
     var body: some View {
 
@@ -56,12 +47,11 @@ struct ArtistPageScreen: View {
                     LazyVStack(alignment: .leading, spacing: 36) {
 
                         if let latest = artistDetails.latestRelease {
-                            VStack(alignment: .leading) {
 
+                            VStack(alignment: .leading) {
                                 NavigationLink(value: latest) {
                                     heroCell(latest, size: size)
-                                }
-                                .tint(.primary)
+                                }.tint(.primary)
                             }
                         }
 
@@ -205,27 +195,7 @@ struct ArtistPageScreen: View {
         }
         .background(Color(.systemBackground), ignoresSafeAreaEdges: .all)
         .navigationBarBackButtonHidden(true)
-        .toolbar {
-
-            ToolbarItem(placement: .topBarLeading) {
-                Button {
-                    dismiss()
-                } label: {
-                    Symbols.chevronBack.image
-                }
-                .buttonBorderShape(.circle)
-                .buttonStyle(.borderedProminent)
-                .tint(showNavigationBar ? .pink : Color(.systemGray2).opacity(0.6))
-                .foregroundStyle(.primary)
-            }
-
-            if artistDetails != nil {
-                ToolbarItem(placement: .principal) {
-                    Text(artist.name)
-                        .opacity(showNavigationBar ? 1.0 : 0)
-                }
-            }
-        }
+        .toolbar { toolBar() }
         .navigationBarTitleDisplayMode(.inline)
         .toolbarBackground(showNavigationBar ? .visible : .hidden, for: .navigationBar)
         .task { await loadSections() }
@@ -329,6 +299,29 @@ struct ArtistPageScreen: View {
             size: size.width - 32
         )
         .padding(.horizontal)
+    }
+
+    @ToolbarContentBuilder
+    private func toolBar() -> some ToolbarContent {
+
+        ToolbarItem(placement: .topBarLeading) {
+            Button {
+                dismiss()
+            } label: {
+                Symbols.chevronBack.image
+            }
+            .buttonBorderShape(.circle)
+            .buttonStyle(.borderedProminent)
+            .tint(showNavigationBar ? .pink : Color(.systemGray2).opacity(0.6))
+            .foregroundStyle(.primary)
+        }
+
+        if artistDetails != nil {
+            ToolbarItem(placement: .principal) {
+                Text(artist.name)
+                    .opacity(showNavigationBar ? 1.0 : 0)
+            }
+        }
     }
 }
 
