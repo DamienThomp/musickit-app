@@ -28,8 +28,6 @@ struct ArtistPageScreen: View {
     @State private var isLoading: Bool = true
     @State private var showNavigationBar: Bool = false
 
-    @Namespace private var detailsNamespace
-
     private var artwork: Artwork? {
         artist.artwork
     }
@@ -60,21 +58,8 @@ struct ArtistPageScreen: View {
                         if let latest = artistDetails.latestRelease {
                             VStack(alignment: .leading) {
 
-                                NavigationLink {
-                                    if #available(iOS 18.0, *) {
-                                        AlbumDetailScreen(album: latest)
-                                            .navigationTransition(.zoom(sourceID: latest.id, in: detailsNamespace))
-                                    } else {
-                                        AlbumDetailScreen(album: latest)
-                                    }
-                                } label: {
-
-                                    if #available(iOS 18.0, *) {
-                                        heroCell(latest, size: size)
-                                            .matchedTransitionSource(id: latest.id, in: detailsNamespace)
-                                    } else {
-                                        heroCell(latest, size: size)
-                                    }
+                                NavigationLink(value: latest) {
+                                    heroCell(latest, size: size)
                                 }
                                 .tint(.primary)
                             }
