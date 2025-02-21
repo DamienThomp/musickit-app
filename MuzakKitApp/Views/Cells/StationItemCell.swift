@@ -29,7 +29,6 @@ struct StationItemCell: View {
             Text(item.name)
                 .font(.system(.subheadline))
                 .lineLimit(1)
-
         }.frame(maxWidth: size)
     }
 }

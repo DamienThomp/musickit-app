@@ -28,7 +28,6 @@ struct PlaylistItemCell: View {
 
                 ArtworkImage(artwork, width: size, height: size)
                     .artworkCornerRadius(.medium)
-
             } else {
                 Symbols.playlistPlaceholder.image
                         .resizableImage()
@@ -42,7 +41,6 @@ struct PlaylistItemCell: View {
             Text(title)
                 .font(.system(.subheadline))
                 .lineLimit(1)
-
         }.frame(maxWidth: size)
     }
 }

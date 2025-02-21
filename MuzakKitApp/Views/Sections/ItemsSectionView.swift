@@ -43,4 +43,3 @@ struct ItemsSectionView<Content: View>: View {
         .background(Color(.systemGray6))
     }
 }
-

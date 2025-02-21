@@ -48,4 +48,3 @@ struct HorizontalGrid<Content: View>: View {
         }
     }
 }
-

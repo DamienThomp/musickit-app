@@ -19,8 +19,8 @@ class MusicPlayerService {
     private var queueChangePublisher: AnyCancellable?
 
     var playbackState: MusicPlayer.PlaybackStatus = .stopped
-    var currentItem: MusicPlayer.Queue.Entry? = nil
-    var artwork: Artwork? = nil
+    var currentItem: MusicPlayer.Queue.Entry?
+    var artwork: Artwork?
     var hasQueue: Bool = false
     var currentPlayBackTime: TimeInterval? = 0.0
 
@@ -113,7 +113,7 @@ class MusicPlayerService {
     }
 }
 
-//MARK: - Player controls
+// MARK: - Player controls
 extension MusicPlayerService {
 
     func handleItemSelected<T>(for item: T, from items: MusicItemCollection<T>) where T: PlayableMusicItem {

@@ -52,7 +52,6 @@ struct ArtistLibraryScreen: View {
             )
         )
         .task { await loadArtists() }
-
     }
 
     @ViewBuilder
@@ -66,8 +65,6 @@ struct ArtistLibraryScreen: View {
                 .font(.title3)
                 .lineLimit(1)
                 .frame(maxWidth: .infinity, alignment: .leading)
-
-
         }.frame(maxWidth: .infinity)
     }
 
@@ -102,7 +99,7 @@ extension ArtistLibraryScreen {
     }
 
     @MainActor
-    private func updateArtists(with response:  MusicLibrarySectionedResponse<Artist, Album>) {
+    private func updateArtists(with response: MusicLibrarySectionedResponse<Artist, Album>) {
         self.artistSections = response.sections
     }
 }

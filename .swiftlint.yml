@@ -1,0 +1,27 @@
+line_length: 140
+function_body_length: 60
+
+disabled_rules:
+  - trailing_whitespace
+
+opt_in_rules:
+  - vertical_whitespace_closing_braces
+
+type_name:
+  max_length:
+    warning: 60
+  min_length:
+    warning: 3
+
+cyclomatic_complexity:
+  ignores_case_statements: true
+
+custom_rules:
+  space_after_main_type:
+    name: 'No space after main type'
+    regex: '(class|extension)((?-s)\s.*\{$\n)(?!^\s*$)'
+    message: 'Empty line required after main declarations'
+    severity: warning
+
+excluded:
+  - MuzakKitApp/Preview Content/Mocks

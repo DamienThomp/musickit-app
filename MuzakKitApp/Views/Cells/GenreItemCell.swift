@@ -25,8 +25,16 @@ struct GenreItemCell: View {
                 .padding()
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .foregroundStyle(.white)
-                .background(LinearGradient(colors: [.black.opacity(0), .black.opacity(0.5)], startPoint: .top, endPoint: .bottom))
-            
+                .background(
+                    LinearGradient(
+                        colors: [
+                            .black.opacity(0),
+                            .black.opacity(0.5)
+                        ],
+                        startPoint: .top,
+                        endPoint: .bottom
+                    )
+                )            
         }.artworkCornerRadius(.large)
     }
 }

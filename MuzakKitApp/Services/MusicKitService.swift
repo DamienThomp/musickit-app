@@ -16,7 +16,7 @@ class MusicKitService {
     var subscription: MusicSubscription?
 
     var presentPlaylistform: Bool = false
-    var itemToAdd: MusicPlaylistAddable? = nil
+    var itemToAdd: MusicPlaylistAddable?
 
     init() {
         listenForSubscriptionUpdates()
@@ -79,7 +79,7 @@ extension MusicKitService {
         try await library.add(item)
     }
 
-    func isInLirabry<T: MusicItem>(_ item: T) async throws -> Bool  {
+    func isInLirabry<T: MusicItem>(_ item: T) async throws -> Bool {
 
         if let item = item as? Album {
             let response = try await libraryRequest(for: item)
@@ -100,7 +100,6 @@ extension MusicKitService {
             let response = try await libraryRequest(for: item)
             return !response.items.isEmpty
         }
-        
         return false
     }
 
@@ -150,14 +149,26 @@ extension MusicKitService {
 
     func search(with searchText: String) async throws -> MusicCatalogSearchResponse {
 
-        let searchRequest = MusicCatalogSearchRequest(term: searchText, types: [Album.self, Song.self, Playlist.self, Station.self, Artist.self])
+        let searchRequest = MusicCatalogSearchRequest(
+            term: searchText,
+            types: [
+                Album.self,
+                Song.self,
+                Playlist.self,
+                Station.self,
+                Artist.self
+            ]
+        )
 
         let response = try await searchRequest.response()
 
         return response
     }
 
-    func search(with searchText: String, for types: Array<any MusicLibrarySearchable.Type>) async throws ->  MusicLibrarySearchResponse {
+    func search(
+        with searchText: String,
+        for types: [any MusicLibrarySearchable.Type]
+    ) async throws -> MusicLibrarySearchResponse {
         
         let searchRequest = MusicLibrarySearchRequest(term: searchText, types: types)
 

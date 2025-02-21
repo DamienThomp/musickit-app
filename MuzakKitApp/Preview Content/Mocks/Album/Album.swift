@@ -8,7 +8,7 @@
 import Foundation
 import MusicKit
 
-let albumJSON = """
+let albumJSON = Data("""
 {
     "id": "420783673600460988",
     "meta": {
@@ -65,14 +65,12 @@ let albumJSON = """
         "releaseDate": "2000-03-13"
     }
 }
-""".data(using: .utf8)
+""".utf8)
 
 var albumMock: Album? {
 
-    guard let data = albumJSON else { return nil }
-    
     do {
-        return try JSONDecoder().decode(Album.self, from: data)
+        return try JSONDecoder().decode(Album.self, from: albumJSON)
     } catch {
         print(error.localizedDescription)
         return nil

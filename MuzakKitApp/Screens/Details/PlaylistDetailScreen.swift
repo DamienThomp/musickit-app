@@ -195,7 +195,6 @@ extension PlaylistDetailScreen {
     private func loadTracks() async {
 
         do {
-            
             let playlist = try await musicService.getData(
                 for: playlist,
                 with: [

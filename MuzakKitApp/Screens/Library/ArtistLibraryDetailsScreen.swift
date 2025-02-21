@@ -39,7 +39,6 @@ struct ArtistLibraryDetailsScreen: View {
                         .font(.largeTitle)
                         .multilineTextAlignment(.center)
 
-
                     LazyVGrid(
                         columns: [
                             GridItem(spacing: 12),
@@ -76,4 +75,3 @@ struct ArtistLibraryDetailsScreen: View {
         }
     }
 }
-

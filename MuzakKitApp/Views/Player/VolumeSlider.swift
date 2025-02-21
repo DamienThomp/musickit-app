@@ -14,7 +14,7 @@ struct VolumeSliderView: UIViewRepresentable {
 
     func makeUIView(context: Context) -> MPVolumeView {
 
-        let volumeView = MPVolumeView(frame:.zero)
+        let volumeView = MPVolumeView(frame: .zero)
         volumeView.showsVolumeSlider = true
 
         let image = UIImage(systemName: Symbols.circle.name)

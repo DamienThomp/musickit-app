@@ -42,14 +42,13 @@ struct SearchScreen: View {
                 displayMode: .always
             ),
             prompt: Text(
-                "Artists, Songs, Lyrics and More"
+                "Artists, Albums and More"
             )
         )
         .onSubmit(of: .search) { conductSearch(for: searchText.lowercased(), of: searchType) }
         .onChange(of: searchText) { debounce.send(searchText) }
         .onChange(of: debounce.output) { conductSearch(for: debounce.output.lowercased(), of: searchType) }
         .onChange(of: searchType) {
-            
             clearResults()
 
             if !searchText.isEmpty {
@@ -65,7 +64,7 @@ struct SearchScreen: View {
         searchLibraryResults = nil
     }
 
-    private func conductSearch(for query: String, of type: SearchType)  {
+    private func conductSearch(for query: String, of type: SearchType) {
 
         guard !query.isEmpty else {
             clearResults()
@@ -120,7 +119,7 @@ struct SearchContainer: View {
     @Environment(NavPath.self) private var navigation
     @Environment(\.isSearching) private var isSearching
 
-    @State var genres: MusicCatalogResourceResponse<Genre>? = nil
+    @State var genres: MusicCatalogResourceResponse<Genre>?
     @Binding var searchCatalogResults: MusicCatalogSearchResponse?
     @Binding var searchLibraryResults: MusicLibrarySearchResponse?
     @Binding var searchType: SearchType
@@ -160,7 +159,6 @@ struct SearchContainer: View {
         if let library = searchLibraryResults {
             libraryResults(screenWidth, library: library)
         }
-
     }
 
     @ViewBuilder
@@ -221,7 +219,7 @@ struct SearchContainer: View {
                     rows: 1,
                     gutterSize: 12,
                     width: screenWidth
-                ) { width in
+                ) { _ in
 
                     ForEach(catalog.artists, id: \.self) { item in
 
@@ -231,7 +229,6 @@ struct SearchContainer: View {
                     }
                 }.horizontalDefaultInsets()
             }.listRowSeparator(.hidden)
-
     }
 
     @ViewBuilder
@@ -329,7 +326,7 @@ struct SearchContainer: View {
                     ],
                     alignment: .center,
                     spacing: 12
-                ){
+                ) {
                     ForEach(genres.items, id: \.self) { genre in
                         GenreItemCell(genre: genre).onTapGesture {
                             navigation.path.append(genre)

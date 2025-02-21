@@ -14,11 +14,12 @@ struct MenuItems: View {
     @Environment(MusicKitService.self) private var musicService
 
     let item: MusicItem?
-    var tracks: MusicItemCollection<Track>? = nil
+    var tracks: MusicItemCollection<Track>?
 
-    @Binding var isInLibrary: Bool
     @State private var errorMessage: String = ""
     @State private var showAlert: Bool = false
+
+    @Binding var isInLibrary: Bool
 
     var body: some View {
         creatMenu()
@@ -84,7 +85,6 @@ struct MenuItems: View {
 
         playNext()
         playLast()
-
     }
 
     @ViewBuilder
