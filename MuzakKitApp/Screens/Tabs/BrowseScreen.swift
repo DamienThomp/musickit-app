@@ -16,6 +16,7 @@ struct BrowseScreen: View {
     @State var recommendations: MusicItemCollection<MusicPersonalRecommendation>?
 
     @State private var showLoadingView: Bool = true
+    @State private var showErrorView: Bool = false
 
     var body: some View {
 
@@ -65,6 +66,11 @@ struct BrowseScreen: View {
                 if showLoadingView {
                     ProgressView()
                 }
+                if showErrorView {
+                    ErrorView(message: "Something went wrong!") {
+                        Task { await getMusic() }
+                    }
+                }
             }
         }
         .navigationTitle("Browse")
@@ -112,6 +118,9 @@ extension BrowseScreen {
     }
 
     private func getMusic() async {
+        
+        self.showLoadingView = true
+        self.showErrorView = false
 
         do {
             let recommendationsRequest = MusicPersonalRecommendationsRequest()
@@ -119,6 +128,7 @@ extension BrowseScreen {
             update(with: recommendations)
         } catch {
             self.showLoadingView = false
+            self.showErrorView = true
             print(error)
         }
     }
@@ -138,4 +148,5 @@ extension BrowseScreen {
     }
     .environment(NavPath())
     .environment(MusicPlayerService())
+    .environment(MusicKitService())
 }
