@@ -13,20 +13,15 @@ struct BrowseScreen: View {
     @Environment(MusicPlayerService.self) private var musicPlayer
     @Environment(NavPath.self) private var navigation
 
-    @State var recommendations: MusicItemCollection<MusicPersonalRecommendation>?
-
-    @State private var showLoadingView: Bool = true
-    @State private var showErrorView: Bool = false
-
     var body: some View {
 
         GeometryReader {
 
             let width = $0.size.width
 
-            List {
+            LoadingContainerView(loadingAction: fetchData) { recommendations in
 
-                if let recommendations {
+                List {
 
                     ForEach(recommendations, id: \.self) { section in
 
@@ -60,21 +55,10 @@ struct BrowseScreen: View {
                         }.listRowSeparator(.hidden)
                     }
                 }
-            }
-            .listStyle(.plain)
-            .overlay(alignment: .center) {
-                if showLoadingView {
-                    ProgressView()
-                }
-                if showErrorView {
-                    ErrorView(message: "Something went wrong!") {
-                        Task { await getMusic() }
-                    }
-                }
+                .listStyle(.plain)
             }
         }
         .navigationTitle("Browse")
-        .task { await getMusic() }
     }
 
     @ViewBuilder
@@ -117,28 +101,12 @@ extension BrowseScreen {
         musicPlayer.handlePlayback(for: station)
     }
 
-    private func getMusic() async {
-        
-        self.showLoadingView = true
-        self.showErrorView = false
+    private func fetchData() async throws -> MusicItemCollection<MusicPersonalRecommendation> {
 
-        do {
-            let recommendationsRequest = MusicPersonalRecommendationsRequest()
-            let recommendations = try await recommendationsRequest.response()
-            update(with: recommendations)
-        } catch {
-            self.showLoadingView = false
-            self.showErrorView = true
-            print(error)
-        }
-    }
+        let recommendationsRequest = MusicPersonalRecommendationsRequest()
+        let response = try await recommendationsRequest.response()
 
-    @MainActor
-    private func update(with items: MusicPersonalRecommendationsResponse) {
-        withAnimation {
-            self.showLoadingView = false
-            self.recommendations = items.recommendations
-        }
+        return response.recommendations
     }
 }
 

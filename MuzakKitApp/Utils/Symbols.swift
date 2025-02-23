@@ -49,4 +49,5 @@ enum Symbols: String {
     case squareStack = "square.stack"
     case guitars
     case checkMarkCircle = "checkmark.circle"
+    case appIcon = "waveform.path"
 }
