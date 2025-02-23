@@ -123,6 +123,7 @@ struct PlaylistDetailScreen: View {
                     addToLibrary()
                 } label: {
                     Image(systemName: isInLibrary ? Symbols.checkmarkCircle.name : Symbols.plusCircle.name)
+                        .contentTransition(.symbolEffect(.replace))
                 }
             }
 
