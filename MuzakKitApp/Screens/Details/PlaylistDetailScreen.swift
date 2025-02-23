@@ -61,7 +61,7 @@ struct PlaylistDetailScreen: View {
                 .plainHeaderStyle()
                 .padding(.bottom)
 
-            if let tracks = tracks, !tracks.isEmpty {
+            if let tracks, !tracks.isEmpty {
                 Section {
                     ForEach(tracks.indices, id: \.self) { index in
                         PlaylistTrackCell(track: tracks[index]) {
@@ -107,34 +107,7 @@ struct PlaylistDetailScreen: View {
         .tint(.pink)
         .listStyle(.plain)
         .navigationBarBackButtonHidden(true)
-        .toolbar {
-
-            ToolbarItem(placement: .topBarLeading) {
-                Button {
-                    dismiss()
-                } label: {
-                    Symbols.chevronBack.image
-                        .padding([.trailing, .vertical])
-                }
-            }
-
-            ToolbarItem(placement: .topBarTrailing) {
-                Button {
-                    addToLibrary()
-                } label: {
-                    Image(systemName: isInLibrary ? Symbols.checkmarkCircle.name : Symbols.plusCircle.name)
-                        .contentTransition(.symbolEffect(.replace))
-                }
-            }
-
-            ToolbarItem(placement: .topBarTrailing) {
-                Menu {
-                    MenuItems(item: playlist, isInLibrary: $isInLibrary)
-                } label: {
-                    Symbols.ellipsis.image
-                }.contentShape(Rectangle())
-            }
-        }
+        .toolbar { toolBar() }
         .task { await loadTracks() }
     }
 
@@ -172,6 +145,36 @@ struct PlaylistDetailScreen: View {
             musicPlayer.handlePlayback(for: playlist)
         } _: {
             musicPlayer.shufflePlayback(for: playlist)
+        }
+    }
+
+    @ToolbarContentBuilder
+    private func toolBar() -> some ToolbarContent {
+
+        ToolbarItem(placement: .topBarLeading) {
+            Button {
+                dismiss()
+            } label: {
+                Symbols.chevronBack.image
+                    .padding([.trailing, .vertical])
+            }
+        }
+
+        ToolbarItem(placement: .topBarTrailing) {
+            Button {
+                addToLibrary()
+            } label: {
+                Image(systemName: isInLibrary ? Symbols.checkmarkCircle.name : Symbols.plusCircle.name)
+                    .contentTransition(.symbolEffect(.replace))
+            }
+        }
+
+        ToolbarItem(placement: .topBarTrailing) {
+            Menu {
+                MenuItems(item: playlist, isInLibrary: $isInLibrary)
+            } label: {
+                Symbols.ellipsis.image
+            }.contentShape(Rectangle())
         }
     }
 }
