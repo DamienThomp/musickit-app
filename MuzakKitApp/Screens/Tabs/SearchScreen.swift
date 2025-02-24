@@ -247,7 +247,7 @@ struct SearchContainer: View {
 
                 HorizontalGrid(
                     grid: 2.4,
-                    rows: 2,
+                    rows: library.albums.count > 4 ? 2 : 1,
                     gutterSize: 12,
                     width: screenWidth
                 ) { width in
