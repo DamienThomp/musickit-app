@@ -22,6 +22,6 @@ enum PlayerMatchedGeometry: String {
     }
 
     static var animation: Animation {
-        .interpolatingSpring(duration: 0.3, bounce: 0.2)
+        .interpolatingSpring(duration: 0.4, bounce: 0.2)
     }
 }

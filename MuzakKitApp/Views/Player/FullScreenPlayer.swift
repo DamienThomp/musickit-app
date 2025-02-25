@@ -88,13 +88,11 @@ struct FullScreenPlayer: View {
 
         let width = proxy.size.width - 48
 
-        ZStack {
-
-            playerBackground
-
+        playerBackground.overlay {
             VStack {
 
                 dragHandle
+                    .opacity(toggleView ? 1 : 0)
 
                 playerArtwork(width)
                     .padding(.top, 14)
@@ -114,10 +112,11 @@ struct FullScreenPlayer: View {
         }
         .offset(y: toggleView ? playerOffset : .zero)
         .gesture(modalGesture)
+        .onAppear { playerOffset = .zero }
     }
 
     private var modalGesture: some Gesture {
-        
+
         DragGesture()
             .onChanged { gesture in
 
@@ -133,16 +132,14 @@ struct FullScreenPlayer: View {
                     height: value.predictedEndLocation.y - value.location.y
                 )
 
-                withAnimation {
+                withAnimation(PlayerMatchedGeometry.animation) {
                     if velocity.height > 500.0 {
                         toggleView.toggle()
-                        playerOffset = .zero
                         return
                     }
 
-                    if playerOffset > proxy.size.height /  3 {
+                    if playerOffset > proxy.size.height / 3 {
                         toggleView.toggle()
-                        playerOffset = .zero
                         return
                     }
 
@@ -256,7 +253,7 @@ struct FullScreenPlayer: View {
                     .padding(.bottom, 20)
             }
 
-            if let duration = duration {
+            if let duration {
 
                 PlayerProgress(duration: duration)
                     .tint(.secondary)
