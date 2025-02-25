@@ -4,11 +4,11 @@ MuzakKit is a SwiftUI-based iOS demo app that integrates with Apple Music throug
 
 - App design is a simplified version of the Apple Music App. 
 - This demo app is a work in progress, code refactor passes will happen and features will be added or improved:
-  - Music player improvements with animation and layout.
+  - ~~Music player improvements with animation and layout.~~ ✅
   - Move padding and layout values out the views and into a shared theme.
   - Improved playlist features: editing and creating.
   - General code cleanup.
-  - Add more error handling (view container for loading state)
+  - ~~Add more error handling (view container for loading state)~~ ✅
 - This app was built to experiment with SwiftUI features by building a complete app that connects to a framework (in this case MusicKit).
 - This app loosely followed the [MV pattern](https://azamsharp.com/2022/08/09/intro-to-mv-state-pattern.html) for state management.
 
