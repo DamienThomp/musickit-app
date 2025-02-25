@@ -29,30 +29,31 @@ struct MiniMusicPlayer: View {
     }
 
     var body: some View {
+        Rectangle()
+            .fill(Color(.systemGray5))
+            .clipShape(RoundedRectangle(cornerRadius: 8))
+            .matchedGeometryEffect(
+                id: PlayerMatchedGeometry.background.name,
+                in: nameSpace
+            )
+            .frame(maxWidth: .infinity, maxHeight: 60)
+            .overlay {
+                HStack(spacing: 12) {
 
-        HStack(spacing: 12) {
+                    playerArtwork()
 
-            playerArtwork()
+                    playerInfo
 
-            playerInfo
+                    Spacer()
 
-            Spacer()
-
-            playerActions
-        }
-        .padding(10)
-        .padding(.trailing, 6)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(
-            Rectangle()
-                .fill(Color(.systemGray5))
-                .matchedGeometryEffect(
-                    id: PlayerMatchedGeometry.background.name,
-                    in: nameSpace
-                )
-        )
-        .artworkCornerRadius(.medium)
-        .padding(8)
+                    playerActions
+                }
+                .padding(10)
+                .padding(.trailing, 6)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .artworkCornerRadius(.medium)
+                .padding(8)
+            }
     }
 
     @ViewBuilder
