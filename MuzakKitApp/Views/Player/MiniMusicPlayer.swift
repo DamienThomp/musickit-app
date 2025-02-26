@@ -48,8 +48,7 @@ struct MiniMusicPlayer: View {
 
                     playerActions
                 }
-                .padding(10)
-                .padding(.trailing, 6)
+                .padding(.horizontal, 6)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .artworkCornerRadius(.medium)
                 .padding(8)

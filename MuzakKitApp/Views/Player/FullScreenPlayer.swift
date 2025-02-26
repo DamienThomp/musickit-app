@@ -20,7 +20,7 @@ struct FullScreenPlayer: View {
     let proxy: GeometryProxy
     let nameSpace: Namespace.ID
 
-    private let opacity: CGFloat = 0.9
+    private let opacity: CGFloat = 0.8
 
     private var isPlaying: Bool {
         musicPlayer.playbackState == .playing
@@ -256,7 +256,7 @@ struct FullScreenPlayer: View {
             if let duration {
 
                 PlayerProgress(duration: duration)
-                    .tint(.secondary)
+                    .tint(.primary)
                     .foregroundStyle(.secondary)
                     .opacity(opacity)
                     .onAppear { handleProgressTimer()}
