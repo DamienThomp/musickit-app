@@ -284,6 +284,7 @@ struct FullScreenPlayer: View {
                 Image(systemName: isPlaying ? Symbols.pause.name : Symbols.play.name)
                     .imageScale(.large)
                     .font(.system(size: 40))
+                    .contentTransition(.symbolEffect(.replace))
             }.matchedGeometryEffect(id: PlayerMatchedGeometry.primaryAction.name, in: nameSpace)
                 .frame(minWidth: 50, minHeight: 60)
 

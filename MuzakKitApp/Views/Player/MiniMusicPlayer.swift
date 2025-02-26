@@ -121,6 +121,7 @@ struct MiniMusicPlayer: View {
                 musicPlayer.togglePlayBack()
             } label: {
                 Image(systemName: musicPlayer.playbackState == .playing ? Symbols.pause.name : Symbols.play.name)
+                    .contentTransition(.symbolEffect(.replace))
                     .imageScale(.large)
                     .font(.system(size: 20))
                     .foregroundStyle(.pink)
