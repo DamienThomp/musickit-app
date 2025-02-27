@@ -21,7 +21,7 @@ struct LoadingContainerView<T: Codable, Content: View>: View {
 
     @ViewBuilder let content: (T) -> Content
 
-    @State private var loadingState: LoadingState<T> = .idle
+    @State private var loadingState: LoadingState<T> = .loading
 
     var body: some View {
         VStack(alignment: .center) {
@@ -30,7 +30,8 @@ struct LoadingContainerView<T: Codable, Content: View>: View {
             case .idle:
                 EmptyView()
             case .loading:
-                ProgressView().frame(maxWidth: .infinity, maxHeight: .infinity)
+                LoadingView()
+               // ProgressView().frame(maxWidth: .infinity, maxHeight: .infinity)
             case .success(let response):
                 content(response)
             case .error(let error):
@@ -45,7 +46,6 @@ struct LoadingContainerView<T: Codable, Content: View>: View {
 
         Task {
             do {
-                loadingState = .loading
                 let response = try await loadingAction()
                 updateView(with: response)
             } catch {

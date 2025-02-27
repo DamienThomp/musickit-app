@@ -23,8 +23,8 @@ struct PlayerContainer: View {
                 toggleView: $showFullscreenView,
                 nameSpace: playerNamespace
             )
-            .padding()
-            .offset(y: -proxy.safeAreaInsets.bottom)
+            .padding(4)
+            .offset(y: -proxy.safeAreaInsets.bottom - 16)
         } else {
 
             FullScreenPlayer(

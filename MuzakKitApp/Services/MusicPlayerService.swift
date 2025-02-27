@@ -34,7 +34,7 @@ class MusicPlayerService {
 
         self.player = ApplicationMusicPlayer.shared
         self.playerState = ApplicationMusicPlayer.shared.state
-        
+
         setupPlayerStateListener()
         setupQueueChangeListener()
     }
@@ -83,7 +83,7 @@ class MusicPlayerService {
     }
 
     private func updateCurrentEntry() {
-        
+
         Task { @MainActor in
             self.currentItem = player.queue.currentEntry
         }
@@ -163,7 +163,7 @@ extension MusicPlayerService {
     }
 
     func playLast() {
-       
+
         guard player.isPreparedToPlay, !player.queue.entries.isEmpty else { return }
 
         let lastTrack = player.queue.entries.last
@@ -210,12 +210,10 @@ extension MusicPlayerService {
 
     func beginPlaying() {
 
-        Task {
+        Task.detached {
             do {
-                if !player.isPreparedToPlay {
-                    try await player.prepareToPlay()
-                }
-                try await player.play()
+                try await self.player.prepareToPlay()
+                try await self.player.play()
             } catch {
                 print("Failed to begin playback with error: \(error).")
             }
