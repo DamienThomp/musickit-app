@@ -23,13 +23,19 @@ struct ArtistPageScreen: View {
 
     let artist: Artist
 
-    @State var artistDetails: Artist?
-    @State private var isLoading: Bool = true
     @State private var showNavigationBar: Bool = false
 
-    private var artwork: Artwork? { artist.artwork }
-    private var title: String {  artist.name }
-    private func toggleNavigationBar(_ value: CGFloat) {  showNavigationBar = value < 0 }
+    private var artwork: Artwork? {
+        artist.artwork
+    }
+
+    private var title: String {
+        artist.name
+    }
+
+    private func toggleNavigationBar(_ value: CGFloat) {
+        showNavigationBar = value < 0
+    }
 
     var body: some View {
 
@@ -37,12 +43,12 @@ struct ArtistPageScreen: View {
 
             let size = proxy.size
 
-            ScrollView {
+            LoadingContainerView(loadingAction: fetchData) { artistDetails in
 
-                header()
-                    .padding(.bottom, -10)
+                ScrollView {
 
-                if let artistDetails {
+                    header(artistDetails)
+                        .padding(.bottom, -10)
 
                     LazyVStack(alignment: .leading, spacing: 36) {
 
@@ -198,11 +204,10 @@ struct ArtistPageScreen: View {
         .toolbar { toolBar() }
         .navigationBarTitleDisplayMode(.inline)
         .toolbarBackground(showNavigationBar ? .visible : .hidden, for: .navigationBar)
-        .task { await loadSections() }
     }
 
     @ViewBuilder
-    private func header() -> some View {
+    private func header(_ artistDetails: Artist) -> some View {
 
         ZStack(alignment: .bottom) {
 
@@ -258,7 +263,7 @@ struct ArtistPageScreen: View {
 
                 Spacer()
 
-                headerAction()
+                headerAction(artistDetails)
                     .padding(.trailing)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -270,9 +275,9 @@ struct ArtistPageScreen: View {
     }
 
     @ViewBuilder
-    private func headerAction() -> some View {
+    private func headerAction(_ artistDetails: Artist) -> some View {
 
-        if let topSongs = artistDetails?.topSongs,
+        if let topSongs = artistDetails.topSongs,
            let firstSong = topSongs.first {
 
             Button {
@@ -316,49 +321,31 @@ struct ArtistPageScreen: View {
             .foregroundStyle(.primary)
         }
 
-        if artistDetails != nil {
-            ToolbarItem(placement: .principal) {
-                Text(artist.name)
-                    .opacity(showNavigationBar ? 1.0 : 0)
-            }
+        ToolbarItem(placement: .principal) {
+            Text(artist.name)
+                .opacity(showNavigationBar ? 1.0 : 0)
         }
     }
 }
 
 extension ArtistPageScreen {
 
-    private func loadSections() async {
-
-        Task.detached {
-            do {
-
-                let artistDetails = try await musicService.getData(
-                    for: artist,
-                    with:
-                        [
-                            .albums,
-                            .singles,
-                            .appearsOnAlbums,
-                            .similarArtists,
-                            .featuredAlbums,
-                            .playlists,
-                            .latestRelease,
-                            .compilationAlbums,
-                            .topSongs
-                        ]
-                )
-                await updateSections(with: artistDetails)
-            } catch {
-                print("can't load data: \(error.localizedDescription)")
-            }
-        }
-    }
-
-    @MainActor
-    private func updateSections(with artist: Artist) {
-
-        self.isLoading = false
-        self.artistDetails = artist
+    private func fetchData() async throws -> Artist {
+        return try await musicService.getData(
+            for: artist,
+            with:
+                [
+                    .albums,
+                    .singles,
+                    .appearsOnAlbums,
+                    .similarArtists,
+                    .featuredAlbums,
+                    .playlists,
+                    .latestRelease,
+                    .compilationAlbums,
+                    .topSongs
+                ]
+        )
     }
 }
 
@@ -366,7 +353,7 @@ extension ArtistPageScreen {
     if let artist = artistMock {
 
         NavigationStack {
-            ArtistPageScreen(artist: artist, artistDetails: artist)
+            ArtistPageScreen(artist: artist)
                 .environment(MusicKitService())
                 .environment(MusicPlayerService())
         }
