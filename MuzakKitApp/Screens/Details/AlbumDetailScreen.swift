@@ -135,47 +135,7 @@ struct AlbumDetailScreen: View {
         .background(background.ignoresSafeArea())
         .listStyle(.plain)
         .navigationBarBackButtonHidden(true)
-        .toolbar {
-
-            ToolbarItem(placement: .topBarLeading) {
-                Button {
-                    dismiss()
-                } label: {
-                    Symbols.chevronBack.image
-                        .padding([.trailing, .vertical])
-                }
-            }
-
-            ToolbarItem(placement: .topBarTrailing) {
-                if isAddingToLibrary {
-                    ProgressView()
-                } else {
-                    Button {
-                        addToLibrary(album)
-                    } label: {
-                        Image(systemName: isInLibrary ? Symbols.checkmarkCircle.name : Symbols.plusCircle.name)
-                            .contentTransition(.symbolEffect(.replace))
-                    }
-                }
-            }
-
-            ToolbarItem(placement: .topBarTrailing) {
-
-                Menu {
-                    MenuItems(item: album, isInLibrary: $isInLibrary)
-                } label: {
-                    Symbols.ellipsis.image
-                        .padding([.vertical, .trailing], 12)
-                }
-                .contentShape(Rectangle())
-            }
-
-            ToolbarItem(placement: .principal) {
-                Text(title)
-                    .lineLimit(1)
-                    .opacity(showNavigationTitle ? 1.0 : 0)
-            }
-        }
+        .toolbar { toolBar() }
         .task { await getData() }
     }
 
@@ -237,6 +197,49 @@ struct AlbumDetailScreen: View {
             musicPlayer.handlePlayback(for: album)
         } _: {
             musicPlayer.shufflePlayback(for: album)
+        }
+    }
+
+    @ToolbarContentBuilder
+    private func toolBar() -> some ToolbarContent {
+
+        ToolbarItem(placement: .topBarLeading) {
+            Button {
+                dismiss()
+            } label: {
+                Symbols.chevronBack.image
+                    .padding([.trailing, .vertical])
+            }
+        }
+
+        ToolbarItem(placement: .topBarTrailing) {
+            if isAddingToLibrary {
+                ProgressView()
+            } else {
+                Button {
+                    addToLibrary(album)
+                } label: {
+                    Image(systemName: isInLibrary ? Symbols.checkmarkCircle.name : Symbols.plusCircle.name)
+                        .contentTransition(.symbolEffect(.replace))
+                }
+            }
+        }
+
+        ToolbarItem(placement: .topBarTrailing) {
+
+            Menu {
+                MenuItems(item: album, isInLibrary: $isInLibrary)
+            } label: {
+                Symbols.ellipsis.image
+                    .padding([.vertical, .trailing], 12)
+            }
+            .contentShape(Rectangle())
+        }
+
+        ToolbarItem(placement: .principal) {
+            Text(title)
+                .lineLimit(1)
+                .opacity(showNavigationTitle ? 1.0 : 0)
         }
     }
 }

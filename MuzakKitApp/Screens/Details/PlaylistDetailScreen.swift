@@ -18,9 +18,6 @@ struct PlaylistDetailScreen: View {
 
     let playlist: Playlist
 
-    @State private var tracks: MusicItemCollection<Track>?
-    @State private var featuredArtists: MusicItemCollection<Artist>?
-
     @State private var isInLibrary: Bool = false
 
     private var artwork: Artwork? {
@@ -35,80 +32,75 @@ struct PlaylistDetailScreen: View {
         playlist.curatorName
     }
 
-    private var count: Int? {
-        tracks?.count
-    }
+    private func getDuration(_ tracks: MusicItemCollection<Track>) -> TimeInterval {
 
-    private var duration: TimeInterval {
-
-        let total = tracks?.reduce(0.0, { partialResult, track in
+        tracks.reduce(0.0, { partialResult, track in
             guard let duration = track.duration else { return 0.0 }
             return partialResult + duration
         })
-
-        return total ?? 0.0
     }
 
     var body: some View {
 
-        List {
+        LoadingContainerView(loadingAction: fetchData) { playlist in
 
-            header
-                .plainHeaderStyle()
-                .frame(maxWidth: .infinity)
+            List {
 
-            actions
-                .plainHeaderStyle()
-                .padding(.bottom)
+                header
+                    .plainHeaderStyle()
+                    .frame(maxWidth: .infinity)
 
-            if let tracks, !tracks.isEmpty {
-                Section {
-                    ForEach(tracks.indices, id: \.self) { index in
-                        PlaylistTrackCell(track: tracks[index]) {
-                            MenuItems(item: tracks[index], tracks: tracks, isInLibrary: $isInLibrary)
+                actions
+                    .plainHeaderStyle()
+                    .padding(.bottom)
+
+                if let tracks = playlist.tracks, !tracks.isEmpty {
+                    Section {
+                        ForEach(tracks.indices, id: \.self) { index in
+                            PlaylistTrackCell(track: tracks[index]) {
+                                MenuItems(item: tracks[index], tracks: tracks, isInLibrary: $isInLibrary)
+                            }
+                            .onTapGesture {
+                                musicPlayer
+                                    .handleItemSelected(
+                                        for: tracks[index],
+                                        from: tracks
+                                    )
+                            }.contextMenu {
+                                MenuItems(item: tracks[index], tracks: tracks, isInLibrary: $isInLibrary)
+                            }
                         }
-                        .onTapGesture {
-                            musicPlayer
-                                .handleItemSelected(
-                                    for: tracks[index],
-                                    from: tracks
-                                )
-                        }.contextMenu {
-                            MenuItems(item: tracks[index], tracks: tracks, isInLibrary: $isInLibrary)
-                        }
-                    }
-                } footer: {
-                    HStack {
-                        if let count = count {
-                            Text("\(count) songs,")
+                    } footer: {
+                        HStack {
+
+                            Text("\(tracks.count) songs,")
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
 
-                            Text(duration, format: .duration(style: .full))
+                            Text(getDuration(tracks), format: .duration(style: .full))
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
-                        }
-                    }.padding(.vertical)
+                        }.padding(.vertical)
+                    }
                 }
-            }
 
-            if let artists = featuredArtists, !artists.isEmpty {
+                if let artists = playlist.featuredArtists, !artists.isEmpty {
 
-                ItemsSectionView(artists.title ?? "Featured Artists") {
-                    ForEach(artists, id: \.self) { artist in
-                        NavigationLink(value: artist) {
-                            ArtistItemCell(item: artist, size: 160)
-                        }.tint(.primary)
+                    ItemsSectionView(artists.title ?? "Featured Artists") {
+                        ForEach(artists, id: \.self) { artist in
+                            NavigationLink(value: artist) {
+                                ArtistItemCell(item: artist, size: 160)
+                            }.tint(.primary)
+                        }
                     }
                 }
             }
+            .background(Color(.systemGray6), ignoresSafeAreaEdges: .bottom)
+            .tint(.pink)
+            .listStyle(.plain)
+            .navigationBarBackButtonHidden(true)
+            .toolbar { toolBar() }
         }
-        .background(Color(.systemGray6), ignoresSafeAreaEdges: .bottom)
-        .tint(.pink)
-        .listStyle(.plain)
-        .navigationBarBackButtonHidden(true)
-        .toolbar { toolBar() }
-        .task { await loadTracks() }
     }
 
     private var header: some View {
@@ -196,27 +188,14 @@ extension PlaylistDetailScreen {
         }
     }
 
-    private func loadTracks() async {
+    private func fetchData() async throws -> Playlist {
 
-        do {
-            let playlist = try await musicService.getData(
-                for: playlist,
-                with: [
-                    .tracks,
-                    .featuredArtists
-                ]
-            )
-            update(tracks: playlist.tracks, artists: playlist.featuredArtists)
-        } catch {
-            print("failed to load tracks for playlist with: \(error.localizedDescription)")
-        }
-    }
-
-    @MainActor
-    private func update(tracks: MusicItemCollection<Track>?, artists: MusicItemCollection<Artist>?) {
-        withAnimation {
-            self.tracks = tracks
-            self.featuredArtists = artists
-        }
+        try await musicService.getData(
+            for: playlist,
+            with: [
+                .tracks,
+                .featuredArtists
+            ]
+        )
     }
 }
