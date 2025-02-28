@@ -97,19 +97,17 @@ struct SearchScreen: View {
 
     @MainActor
     private func updateSearchResults(with response: MusicCatalogSearchResponse) {
-        Task {
-            withAnimation {
-                self.searchCatalogResults = response
-            }
+
+        withAnimation {
+            self.searchCatalogResults = response
         }
     }
 
     @MainActor
     private func updateSearchResults(with response: MusicLibrarySearchResponse) {
-        Task {
-            withAnimation {
-                self.searchLibraryResults = response
-            }
+        
+        withAnimation {
+            self.searchLibraryResults = response
         }
     }
 }
@@ -164,71 +162,71 @@ struct SearchContainer: View {
     @ViewBuilder
     private func catalogResults(_ screenWidth: CGFloat, catalog: MusicCatalogSearchResponse) -> some View {
 
-            Text("Search Catalog Results")
-                .font(.title2)
-                .fontWeight(.bold)
-                .listRowSeparator(.hidden)
+        Text("Search Catalog Results")
+            .font(.title2)
+            .fontWeight(.bold)
+            .listRowSeparator(.hidden)
 
-            Section {
+        Section {
 
-                Text("Albums")
-                    .sectionHeader()
+            Text("Albums")
+                .sectionHeader()
 
-                HorizontalGrid(
-                    grid: 2.4,
-                    rows: 2,
-                    gutterSize: 12,
-                    width: screenWidth
-                ) { width in
+            HorizontalGrid(
+                grid: 2.4,
+                rows: 2,
+                gutterSize: 12,
+                width: screenWidth
+            ) { width in
 
-                    ForEach(catalog.albums, id: \.self) { item in
+                ForEach(catalog.albums, id: \.self) { item in
 
-                        AlbumItemCell(item: item, size: width).onTapGesture {
-                            navigation.path.append(item)
-                        }
+                    AlbumItemCell(item: item, size: width).onTapGesture {
+                        navigation.path.append(item)
                     }
-                }.horizontalDefaultInsets()
-            }.listRowSeparator(.hidden)
+                }
+            }.horizontalDefaultInsets()
+        }.listRowSeparator(.hidden)
 
-            Section {
+        Section {
 
-                Text("Songs")
-                    .sectionHeader()
+            Text("Songs")
+                .sectionHeader()
 
-                HorizontalGrid(
-                    grid: 1.15,
-                    rows: 4,
-                    gutterSize: 12,
-                    width: screenWidth
-                ) { width in
-                    ForEach(catalog.songs, id: \.self) { item in
-                        SongItemCell(item: item, width: width) {
-                            navigation.path.append(item)
-                        }
+            HorizontalGrid(
+                grid: 1.15,
+                rows: 4,
+                gutterSize: 12,
+                width: screenWidth
+            ) { width in
+                ForEach(catalog.songs, id: \.self) { item in
+                    SongItemCell(item: item, width: width) {
+                        navigation.path.append(item)
                     }
-                }.horizontalDefaultInsets()
-            }.listRowSeparator(.hidden)
+                }
+            }.horizontalDefaultInsets()
+        }.listRowSeparator(.hidden)
 
-            Section {
+        Section {
 
-                Text("Artists")
-                    .sectionHeader()
+            Text("Artists")
+                .sectionHeader()
 
-                HorizontalGrid(
-                    grid: 2.4,
-                    rows: 1,
-                    gutterSize: 12,
-                    width: screenWidth
-                ) { _ in
+            HorizontalGrid(
+                grid: 2.4,
+                rows: 1,
+                gutterSize: 12,
+                width: screenWidth
+            ) { _ in
 
-                    ForEach(catalog.artists, id: \.self) { item in
+                ForEach(catalog.artists, id: \.self) { item in
 
-                        ArtistItemCell(item: item, size: 168).onTapGesture {
-                            navigation.path.append(item)
-                        }
+                    ArtistItemCell(item: item, size: 168).onTapGesture {
+                        navigation.path.append(item)
                     }
-                }.horizontalDefaultInsets()
-            }.listRowSeparator(.hidden)
+                }
+            }.horizontalDefaultInsets()
+        }.listRowSeparator(.hidden)
     }
 
     @ViewBuilder
@@ -355,10 +353,9 @@ extension SearchContainer {
 
     @MainActor
     private func updateView(with items: MusicCatalogResourceResponse<Genre>?) {
-        Task {
-            withAnimation {
-                self.genres = items
-            }
+
+        withAnimation {
+            self.genres = items
         }
     }
 }
