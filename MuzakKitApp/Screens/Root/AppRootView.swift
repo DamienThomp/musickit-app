@@ -24,6 +24,7 @@ struct AppRootView: View {
     }
 
     private var hasSeenAuthMessage: Bool {
+        
         let authStatus = musicKitService.authStatus
         return authStatus != .notDetermined
     }
@@ -47,9 +48,9 @@ struct AppRootView: View {
                 .scrollIndicators(.hidden)
                 .safeAreaInset(edge: .bottom) { showMiniPlayer(proxy) }
                 .ignoresSafeArea(.container, edges: .top)
-                .ignoresSafeArea(.keyboard, edges: .bottom)
                 .sheet(isPresented: $musicKitService.presentPlaylistform) { PlaylistForm() }
             }
+            .ignoresSafeArea(.keyboard, edges: .bottom)
         }
     }
 
