@@ -44,7 +44,7 @@ struct AlbumLibraryScreen: View {
         .onChange(of: debounce.output) { searchAlbums(with: debounce.output) }
         .onAppear { searchAlbums(with: searchText.lowercased()) }
         .onDisappear { debounce.cancel() }
-        .task { await loadAlbums() }
+        .task { loadAlbums() }
     }
 }
 
@@ -70,7 +70,7 @@ extension AlbumLibraryScreen {
         }
     }
 
-    private func loadAlbums() async {
+    private func loadAlbums() {
 
         Task.detached {
 
