@@ -75,7 +75,7 @@ struct SearchScreen: View {
             do {
                 switch type {
                 case .library:
-                    let response = try await musicService.search(
+                    let response = try await musicService.searchLibrary(
                         with: query,
                         for: [
                             Album.self,
@@ -86,7 +86,7 @@ struct SearchScreen: View {
                     )
                     updateSearchResults(with: response)
                 case .catalog:
-                    let response = try await musicService.search(with: query)
+                    let response = try await musicService.searchCatalog(with: query)
                     updateSearchResults(with: response)
                 }
             } catch {

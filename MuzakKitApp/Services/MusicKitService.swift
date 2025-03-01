@@ -147,7 +147,7 @@ extension MusicKitService {
 // MARK: - Search
 extension MusicKitService {
 
-    func search(with searchText: String) async throws -> MusicCatalogSearchResponse {
+    func searchCatalog(with searchText: String) async throws -> MusicCatalogSearchResponse {
 
         let searchRequest = MusicCatalogSearchRequest(
             term: searchText,
@@ -165,7 +165,7 @@ extension MusicKitService {
         return response
     }
 
-    func search(
+    func searchLibrary(
         with searchText: String,
         for types: [any MusicLibrarySearchable.Type]
     ) async throws -> MusicLibrarySearchResponse {
