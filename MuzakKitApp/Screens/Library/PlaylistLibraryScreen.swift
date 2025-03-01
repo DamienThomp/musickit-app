@@ -53,26 +53,29 @@ struct PlaylistLibraryScreen: View {
         }
         .navigationTitle("Playlists")
         .navigationBarTitleDisplayMode(.large)
-        .task { await loadPlaylists() }
+        .task { loadPlaylists() }
     }
 }
 
 extension PlaylistLibraryScreen {
 
-    private func loadPlaylists() async {
+    private func loadPlaylists() {
 
-        do {
+        Task.detached {
 
-            var request = MusicLibraryRequest<Playlist>()
-            request.sort(by: \.libraryAddedDate, ascending: false)
-            request.includeOnlyDownloadedContent = true
-            request.limit = 25
+            do {
 
-            let response = try await request.response()
+                var request = MusicLibraryRequest<Playlist>()
+                request.sort(by: \.libraryAddedDate, ascending: false)
+                request.includeOnlyDownloadedContent = true
+                request.limit = 25
 
-            updatePlaylists(with: response.items)
-        } catch {
-            print("Can't load playlists with: \(error.localizedDescription)")
+                let response = try await request.response()
+
+                await updatePlaylists(with: response.items)
+            } catch {
+                print("Can't load playlists with: \(error.localizedDescription)")
+            }
         }
     }
 
