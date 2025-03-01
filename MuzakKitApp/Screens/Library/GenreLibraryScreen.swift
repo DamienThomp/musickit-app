@@ -37,7 +37,7 @@ struct GenreLibraryScreen: View {
         .navigationTitle("Genres")
         .navigationBarTitleDisplayMode(.large)
         .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .always))
-        .task { await loadData() }
+        .task { loadData() }
     }
 
     @ViewBuilder
@@ -55,15 +55,19 @@ struct GenreLibraryScreen: View {
 
 extension GenreLibraryScreen {
 
-    private func loadData() async {
+    private func loadData() {
 
-        do {
-            let request = MusicLibrarySectionedRequest<Genre, Album>()
-            let response = try await request.response()
+        Task.detached {
 
-            updateData(with: response)
-        } catch {
-            print("Can't load genre data: \(error.localizedDescription)")
+            do {
+
+                let request = MusicLibrarySectionedRequest<Genre, Album>()
+                let response = try await request.response()
+
+                await updateData(with: response)
+            } catch {
+                print("Can't load genre data: \(error.localizedDescription)")
+            }
         }
     }
 

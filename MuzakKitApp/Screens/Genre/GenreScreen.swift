@@ -177,7 +177,7 @@ struct GenreScreen: View {
             }.listStyle(.plain)
         }
         .navigationTitle(genre.name)
-        .task { await loadGenreSections() }
+        .task { loadGenreSections() }
     }
 
     @ViewBuilder
@@ -262,37 +262,43 @@ struct GenreScreen: View {
 
 extension GenreScreen {
 
-    private func loadGenreSections() async {
+    private func loadGenreSections() {
 
-        do {
+        Task.detached {
 
-            let genreChartsRquest = MusicCatalogChartsRequest(
-                genre: genre,
-                kinds: [
-                    .mostPlayed,
-                    .dailyGlobalTop
-                ],
-                types: [
-                    Album.self,
-                    Playlist.self,
-                    Song.self
-                ]
-            )
-            var genreRequest = MusicCatalogSearchRequest(term: genre.name, types: [Album.self, Station.self, Playlist.self, Artist.self])
-            genreRequest.includeTopResults = true
-            genreRequest.limit = 25
+            do {
 
-            let charts = try await genreChartsRquest.response()
-            let items = try await genreRequest.response()
+                let genreChartsRquest = MusicCatalogChartsRequest(
+                    genre: genre,
+                    kinds: [
+                        .mostPlayed,
+                        .dailyGlobalTop
+                    ],
+                    types: [
+                        Album.self,
+                        Playlist.self,
+                        Song.self
+                    ]
+                )
+                var genreRequest = MusicCatalogSearchRequest(term: genre.name, types: [Album.self, Station.self, Playlist.self, Artist.self])
+                genreRequest.includeTopResults = true
+                genreRequest.limit = 25
 
-            updateView(charts, items)
-        } catch {
-            print("Can't load sections for genre: \(error.localizedDescription)")
+                let charts = try await genreChartsRquest.response()
+                let items = try await genreRequest.response()
+
+                await updateView(charts, items)
+            } catch {
+                print("Can't load sections for genre: \(error.localizedDescription)")
+            }
         }
     }
 
     @MainActor
-    private func updateView(_ charts: MusicCatalogChartsResponse, _ items: MusicCatalogSearchResponse) {
+    private func updateView(
+        _ charts: MusicCatalogChartsResponse,
+        _ items: MusicCatalogSearchResponse
+    ) {
 
         withAnimation(.easeInOut) {
             self.charts = charts

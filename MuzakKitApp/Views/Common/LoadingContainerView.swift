@@ -31,7 +31,6 @@ struct LoadingContainerView<T: Codable, Content: View>: View {
                 EmptyView()
             case .loading:
                 LoadingView()
-               // ProgressView().frame(maxWidth: .infinity, maxHeight: .infinity)
             case .success(let response):
                 content(response)
             case .error(let error):
@@ -44,18 +43,27 @@ struct LoadingContainerView<T: Codable, Content: View>: View {
 
     private func fetchData() {
 
-        Task {
+        Task.detached {
             do {
                 let response = try await loadingAction()
-                updateView(with: response)
+                await updateView(with: response)
             } catch {
-                loadingState = .error(error)
+                await setErrorState(with: error)
             }
         }
     }
 
     @MainActor
+    private func setErrorState(with error: Error) {
+
+        withAnimation {
+            loadingState = .error(error)
+        }
+    }
+
+    @MainActor
     private func updateView(with data: T) {
+
         withAnimation {
             loadingState = .success(data)
         }

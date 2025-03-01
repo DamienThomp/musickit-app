@@ -51,7 +51,7 @@ struct ArtistLibraryScreen: View {
                 displayMode: .always
             )
         )
-        .task { await loadArtists() }
+        .task { loadArtists() }
     }
 
     @ViewBuilder
@@ -87,14 +87,18 @@ struct ArtistLibraryScreen: View {
 
 extension ArtistLibraryScreen {
 
-    private func loadArtists() async {
+    private func loadArtists() {
 
-        do {
-            let request = MusicLibrarySectionedRequest<Artist, Album>()
-            let response = try await request.response()
-            updateArtists(with: response)
-        } catch {
-            print("Couldn't load artist library items: \(error)")
+        Task.detached {
+
+            do {
+
+                let request = MusicLibrarySectionedRequest<Artist, Album>()
+                let response = try await request.response()
+                await updateArtists(with: response)
+            } catch {
+                print("Couldn't load artist library items: \(error)")
+            }
         }
     }
 

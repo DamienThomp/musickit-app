@@ -15,6 +15,7 @@ struct LoadingView: View {
             VStack(spacing: 12) {
                 ProgressView()
                 Text("Loading ...")
+                    .font(.headline)
             }
         }
     }
