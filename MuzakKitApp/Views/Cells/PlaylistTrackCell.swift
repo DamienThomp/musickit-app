@@ -24,11 +24,19 @@ struct PlaylistTrackCell<Content: View>: View {
                         .artworkCornerRadius(.medium)
                 }
 
-                Text(track.title)
-                    .lineLimit(1)
-                    .padding(.vertical, 8)
-                    .padding(.horizontal, 8)
-                    .frame(maxWidth: .infinity, alignment: .leading)
+                VStack(spacing: 6) {
+                    Text(track.title)
+                        .lineLimit(1)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+
+                    Text(track.artistName)
+                        .font(.caption)
+                        .lineLimit(1)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .foregroundStyle(.secondary)
+                }
+                .padding(.vertical, 2)
+                .padding(.horizontal, 8)
             }.contentShape(Rectangle())
 
             Spacer()
