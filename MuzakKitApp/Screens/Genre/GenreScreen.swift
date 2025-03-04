@@ -280,7 +280,15 @@ extension GenreScreen {
                         Song.self
                     ]
                 )
-                var genreRequest = MusicCatalogSearchRequest(term: genre.name, types: [Album.self, Station.self, Playlist.self, Artist.self])
+                var genreRequest = MusicCatalogSearchRequest(
+                    term: genre.name,
+                    types: [
+                        Album.self,
+                        Station.self,
+                        Playlist.self,
+                        Artist.self
+                    ]
+                )
                 genreRequest.includeTopResults = true
                 genreRequest.limit = 25
 
