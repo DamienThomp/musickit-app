@@ -208,7 +208,7 @@ struct FullScreenPlayer: View {
             } else {
 
                 Rectangle()
-                    .fill(.secondary)
+                    .fill(.tertiary)
                     .matchedGeometryEffect(
                         id: PlayerMatchedGeometry.coverImage.name,
                         in: nameSpace
