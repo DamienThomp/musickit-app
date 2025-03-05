@@ -24,7 +24,8 @@ struct LoadingContainerView<T: Codable, Content: View>: View {
     @State private var loadingState: LoadingState<T> = .loading
 
     var body: some View {
-        VStack(alignment: .center) {
+
+        VStack {
 
             switch loadingState {
             case .idle:
