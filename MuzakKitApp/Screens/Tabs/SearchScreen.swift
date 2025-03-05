@@ -136,7 +136,7 @@ struct SearchContainer: View {
             searchCatalogResults = nil
             searchLibraryResults = nil
         }
-        .task { await loadData() }
+        .task(loadData)
     }
 
     @ViewBuilder
@@ -338,6 +338,7 @@ struct SearchContainer: View {
 
 extension SearchContainer {
 
+    @Sendable
     private func loadData() async {
 
         do {

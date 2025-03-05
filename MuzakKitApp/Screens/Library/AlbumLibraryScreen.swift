@@ -44,7 +44,7 @@ struct AlbumLibraryScreen: View {
         .onChange(of: debounce.output) { searchAlbums(with: debounce.output) }
         .onAppear { searchAlbums(with: searchText.lowercased()) }
         .onDisappear { debounce.cancel() }
-        .task { loadAlbums() }
+        .task(loadAlbums)
     }
 }
 
@@ -70,25 +70,23 @@ extension AlbumLibraryScreen {
         }
     }
 
-    private func loadAlbums() {
+    @Sendable
+    private func loadAlbums() async {
 
-        Task.detached {
+        do {
 
-            do {
+            var request = MusicLibraryRequest<Album>()
+            request.sort(by: \.artistName, ascending: true)
+            request.includeOnlyDownloadedContent = true
 
-                var request = MusicLibraryRequest<Album>()
-                request.sort(by: \.artistName, ascending: true)
-                request.includeOnlyDownloadedContent = true
+            let response = try await request.response()
 
-                let response = try await request.response()
+            let sections = Dictionary(grouping: response.items) { $0.artistName.first ?? "?" }
+            let ordered = sections.sorted( by: { $0.0 < $1.0 })
 
-                let sections = Dictionary(grouping: response.items) { $0.artistName.first ?? "?" }
-                let ordered = sections.sorted( by: { $0.0 < $1.0 })
-
-                await updateAlbums(with: ordered)
-            } catch {
-                print("Can't load albums with: \(error)")
-            }
+            updateAlbums(with: ordered)
+        } catch {
+            print("Can't load albums with: \(error)")
         }
     }
 
