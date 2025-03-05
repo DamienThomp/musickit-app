@@ -177,7 +177,7 @@ struct GenreScreen: View {
             }.listStyle(.plain)
         }
         .navigationTitle(genre.name)
-        .task { loadGenreSections() }
+        .task(loadGenreSections)
     }
 
     @ViewBuilder
@@ -262,43 +262,41 @@ struct GenreScreen: View {
 
 extension GenreScreen {
 
-    private func loadGenreSections() {
+    @Sendable
+    private func loadGenreSections() async {
 
-        Task.detached {
+        do {
 
-            do {
+            let genreChartsRquest = MusicCatalogChartsRequest(
+                genre: genre,
+                kinds: [
+                    .mostPlayed,
+                    .dailyGlobalTop
+                ],
+                types: [
+                    Album.self,
+                    Playlist.self,
+                    Song.self
+                ]
+            )
+            var genreRequest = MusicCatalogSearchRequest(
+                term: genre.name,
+                types: [
+                    Album.self,
+                    Station.self,
+                    Playlist.self,
+                    Artist.self
+                ]
+            )
+            genreRequest.includeTopResults = true
+            genreRequest.limit = 25
 
-                let genreChartsRquest = MusicCatalogChartsRequest(
-                    genre: genre,
-                    kinds: [
-                        .mostPlayed,
-                        .dailyGlobalTop
-                    ],
-                    types: [
-                        Album.self,
-                        Playlist.self,
-                        Song.self
-                    ]
-                )
-                var genreRequest = MusicCatalogSearchRequest(
-                    term: genre.name,
-                    types: [
-                        Album.self,
-                        Station.self,
-                        Playlist.self,
-                        Artist.self
-                    ]
-                )
-                genreRequest.includeTopResults = true
-                genreRequest.limit = 25
+            let charts = try await genreChartsRquest.response()
+            let items = try await genreRequest.response()
 
-                let charts = try await genreChartsRquest.response()
-                let items = try await genreRequest.response()
-
-                await updateView(charts, items)
-            } catch {
-                print("Can't load sections for genre: \(error.localizedDescription)")
-            }
+            updateView(charts, items)
+        } catch {
+            print("Can't load sections for genre: \(error.localizedDescription)")
         }
     }
 

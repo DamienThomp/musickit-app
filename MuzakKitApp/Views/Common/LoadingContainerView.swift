@@ -35,21 +35,31 @@ struct LoadingContainerView<T: Codable, Content: View>: View {
                 content(response)
             case .error(let error):
                 ErrorView(message: error.localizedDescription) {
-                    fetchData()
+                    Task {
+                        retryLoading()
+                        await fetchData()
+                    }
                 }
             }
-        }.task { fetchData() }
+        }.task(fetchData)
     }
 
-    private func fetchData() {
+    @Sendable
+    private func fetchData() async {
 
-        Task.detached {
-            do {
-                let response = try await loadingAction()
-                await updateView(with: response)
-            } catch {
-                await setErrorState(with: error)
-            }
+        do {
+            let response = try await loadingAction()
+            updateView(with: response)
+        } catch {
+            setErrorState(with: error)
+        }
+    }
+
+    @MainActor
+    private func retryLoading() {
+        
+        withAnimation {
+            loadingState = .loading
         }
     }
 

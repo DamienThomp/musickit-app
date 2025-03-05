@@ -83,7 +83,7 @@ struct PlaylistForm: View {
                 }
             }
         }
-        .task { await loadPlaylists() }
+        .task(loadPlaylists)
         .alert(errorMessage, isPresented: $presentError) {
             Button {
                 presentError = false
@@ -142,6 +142,7 @@ extension PlaylistForm {
         }
     }
 
+    @Sendable
     private func loadPlaylists() async {
 
         do {
