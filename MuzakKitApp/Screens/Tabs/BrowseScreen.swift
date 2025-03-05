@@ -27,14 +27,17 @@ struct BrowseScreen: View {
 
                         Section {
 
-                            if let title = section.title {
-                                Text(title)
-                                    .sectionHeader()
-                            }
+                            VStack(alignment: .leading) {
 
-                            if let reason = section.reason {
-                                Text(reason)
-                                    .sectionSubtitle()
+                                if let title = section.title {
+                                    Text(title)
+                                        .sectionHeader()
+                                }
+
+                                if let reason = section.reason {
+                                    Text(reason)
+                                        .sectionSubtitle()
+                                }
                             }
 
                             if !section.items.isEmpty {
