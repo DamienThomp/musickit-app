@@ -218,7 +218,7 @@ struct ArtistPageScreen: View {
 
                 if let artworkUrk = artist.artwork?.url(width: Int(initialHeight * 1.85), height: Int(initialHeight * 1.85)) {
 
-                    AsyncImage(url: artworkUrk) { phase in
+                    AsyncImage(url: artworkUrk, transaction: Transaction(animation: .spring())) { phase in
                         phase.image?
                             .resizableImage(.fill)
                             .background(Color(.black))
