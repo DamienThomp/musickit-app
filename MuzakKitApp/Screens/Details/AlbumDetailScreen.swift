@@ -53,7 +53,9 @@ struct AlbumDetailScreen: View {
     }
 
     var body: some View {
+
         LoadingContainerView(loadingAction: fetchData) { albumDetails in
+
             List {
 
                 header(albumDetails.album)
@@ -83,6 +85,7 @@ struct AlbumDetailScreen: View {
                             }
                         }
                     } footer: {
+                        
                         if let copyright = albumDetails.album.copyright {
                             Text(copyright)
                                 .font(.caption)
