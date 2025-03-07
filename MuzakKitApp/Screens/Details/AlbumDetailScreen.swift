@@ -19,13 +19,7 @@ struct AlbumDetailScreen: View {
 
     let album: Album
 
-    @State var tracks: MusicItemCollection<Track>?
     @State private var isInLibrary: Bool = false
-
-    @State private var related: MusicItemCollection<Album>?
-    @State private var similarArtists: MusicItemCollection<Artist>?
-    @State private var artistAlbums: MusicItemCollection<Album>?
-    @State private var artist: Artist?
     @State private var showNavigationTitle: Bool = false
     @State private var isAddingToLibrary: Bool = false
 
@@ -59,87 +53,89 @@ struct AlbumDetailScreen: View {
     }
 
     var body: some View {
+        LoadingContainerView(loadingAction: fetchData) { albumDetails in
+            List {
 
-        List {
+                header(albumDetails.album)
+                    .plainHeaderStyle()
 
-            header
-                .plainHeaderStyle()
+                actions
+                    .plainHeaderStyle()
+                    .padding(.bottom)
 
-            actions
-                .plainHeaderStyle()
-                .padding(.bottom)
+                if let tracks = albumDetails.album.tracks, !tracks.isEmpty {
 
-            if let tracks, !tracks.isEmpty {
+                    Section {
 
-                Section {
-
-                    ForEach(tracks) { track in
-                        AlbumTrackCell(track: track) {
-                            MenuItems(item: track, tracks: tracks, isInLibrary: $isInLibrary)
+                        ForEach(tracks) { track in
+                            AlbumTrackCell(track: track) {
+                                MenuItems(item: track, tracks: tracks, isInLibrary: $isInLibrary)
+                            }
+                            .onTapGesture {
+                                musicPlayer
+                                    .handleItemSelected(
+                                        for: track,
+                                        from: tracks
+                                    )
+                            }
+                            .contextMenu {
+                                MenuItems(item: track, tracks: tracks, isInLibrary: $isInLibrary)
+                            }
                         }
-                        .onTapGesture {
-                            musicPlayer
-                                .handleItemSelected(
-                                    for: track,
-                                    from: tracks
-                                )
-                        }
-                        .contextMenu {
-                            MenuItems(item: track, tracks: tracks, isInLibrary: $isInLibrary)
+                    } footer: {
+                        if let copyright = albumDetails.album.copyright {
+                            Text(copyright)
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                                .padding(.vertical)
+                                .listRowSeparator(.hidden)
                         }
                     }
-                } footer: {
-                    if let copyright = album.copyright {
-                        Text(copyright)
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                            .padding(.vertical)
-                            .listRowSeparator(.hidden)
+                }
+
+                if let artistAlbums = albumDetails.album.relatedAlbums, !artistAlbums.isEmpty {
+
+                    ItemsSectionView("More by \(album.artistName)") {
+                        ForEach(artistAlbums, id: \.self) { album in
+                            NavigationLink(value: album) {
+                                AlbumItemCell(item: album, size: 160)
+                            }.tint(.primary)
+                        }
+                    }
+                }
+
+                if let related = albumDetails.similarArtist?.albums, !related.isEmpty {
+
+                    ItemsSectionView(related.title) {
+                        ForEach(related, id: \.self) { related in
+                            NavigationLink(value: related) {
+                                AlbumItemCell(item: related, size: 160)
+                            }.tint(.primary)
+                        }
+                    }
+                }
+
+                if let similarArtists = albumDetails.similarArtist?.similarArtists, !similarArtists.isEmpty {
+
+                    ItemsSectionView(similarArtists.title) {
+                        ForEach(similarArtists, id: \.self) { artist in
+                            NavigationLink(value: artist) {
+                                ArtistItemCell(item: artist, size: 160)
+                            }.tint(.primary)
+                        }
                     }
                 }
             }
-
-            if let artistAlbums, !artistAlbums.isEmpty {
-
-                ItemsSectionView("More by \(album.artistName)") {
-                    ForEach(artistAlbums, id: \.self) { album in
-                        NavigationLink(value: album) {
-                            AlbumItemCell(item: album, size: 160)
-                        }.tint(.primary)
-                    }
-                }
-            }
-
-            if let related, !related.isEmpty {
-
-                ItemsSectionView(related.title) {
-                    ForEach(related, id: \.self) { related in
-                        NavigationLink(value: related) {
-                            AlbumItemCell(item: related, size: 160)
-                        }.tint(.primary)
-                    }
-                }
-            }
-
-            if let similarArtists, !similarArtists.isEmpty {
-
-                ItemsSectionView(similarArtists.title) {
-                    ForEach(similarArtists, id: \.self) { artist in
-                        NavigationLink(value: artist) {
-                            ArtistItemCell(item: artist, size: 160)
-                        }.tint(.primary)
-                    }
-                }
-            }
+            .background(background.ignoresSafeArea())
+            .listStyle(.plain)
         }
-        .background(background.ignoresSafeArea())
-        .listStyle(.plain)
         .navigationBarBackButtonHidden(true)
         .toolbar { toolBar() }
-        .task { await getData() }
+        .task(getData)
     }
 
-    private var header: some View {
+    @ViewBuilder
+    private func header(_ album: Album) -> some View {
 
         VStack(alignment: .center, spacing: 2) {
 
@@ -166,7 +162,7 @@ struct AlbumDetailScreen: View {
                 .foregroundStyle(.pink)
                 .multilineTextAlignment(.center)
                 .frame(maxWidth: .infinity, alignment: .center).onTapGesture {
-                    if let artist {
+                    if let artist = album.artists?.first {
                         navigation.path.append(artist)
                     }
                 }
@@ -244,17 +240,37 @@ struct AlbumDetailScreen: View {
     }
 }
 
+struct AlbumDetails: Codable {
+    
+    let album: Album
+    let similarArtist: Artist?
+}
+
 extension AlbumDetailScreen {
 
+    @Sendable
     private func getData() async {
 
         do {
-
             try await checkLibraryState(for: album)
-            try await loadTracks()
         } catch {
             print(error.localizedDescription)
         }
+    }
+
+    private func fetchData() async throws -> AlbumDetails {
+
+        let album = try await musicService.getData(for: album, with: [.tracks, .relatedAlbums, .artists])
+        let similarArtist = try await getSimilarArtists(from: album.artists)
+
+        return .init(album: album, similarArtist: similarArtist)
+    }
+
+    private func getSimilarArtists(from artists: MusicItemCollection<Artist>?) async throws -> Artist? {
+
+        guard let artist = artists?.first else { return nil }
+
+        return try await musicService.getData(for: artist, with: [.similarArtists, .albums])
     }
 
     private func addToLibrary(_ album: Album) {
@@ -283,34 +299,6 @@ extension AlbumDetailScreen {
         updateLibraryState(for: response)
     }
 
-    private func loadTracks() async throws {
-
-        let response = try await musicService.getData(for: album, with: [.tracks, .relatedAlbums, .artists])
-
-        if let artists = response.artists {
-            try await loadSimilarArtists(artists)
-        }
-
-        update(tracks: response.tracks, related: response.relatedAlbums)
-    }
-
-    private func loadSimilarArtists(_ artists: MusicItemCollection<Artist>) async throws {
-
-        guard let artist = artists.first else { return }
-
-        let response = try await musicService.getData(for: artist, with: [.similarArtists, .albums])
-
-        Task { @MainActor in
-
-            withAnimation {
-
-                self.similarArtists = response.similarArtists
-                self.artistAlbums = response.albums
-                self.artist = artist
-            }
-        }
-    }
-
     @MainActor
     private func updateLibraryState(for response: Bool) {
 
@@ -318,23 +306,13 @@ extension AlbumDetailScreen {
             self.isInLibrary = response
         }
     }
-
-    @MainActor
-    private func update(tracks: MusicItemCollection<Track>?, related: MusicItemCollection<Album>?) {
-
-        withAnimation {
-            self.tracks = tracks
-            self.related = related
-        }
-    }
 }
 
 #Preview {
 
-    if let album = albumMock,
-       let tracks = albumTracksMock {
+    if let album = albumMock {
         NavigationStack {
-            AlbumDetailScreen(album: album, tracks: tracks)
+            AlbumDetailScreen(album: album)
                 .environment(NavPath())
                 .environment(MusicPlayerService())
                 .environment(MusicKitService())
