@@ -34,7 +34,8 @@ struct MiniMusicPlayer: View {
             .clipShape(RoundedRectangle(cornerRadius: 8))
             .matchedGeometryEffect(
                 id: PlayerMatchedGeometry.background.name,
-                in: nameSpace
+                in: nameSpace,
+                isSource: true
             )
             .frame(maxWidth: .infinity, maxHeight: 60)
             .overlay {
