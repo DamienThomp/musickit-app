@@ -171,6 +171,7 @@ struct FullScreenPlayer: View {
             .fill(.secondary.opacity(opacity))
             .frame(width: 50, height: 5)
             .padding(.bottom)
+            .contentShape(.rect)
             .onTapGesture {
                 withAnimation(PlayerMatchedGeometry.animation) {
                     toggleView.toggle()

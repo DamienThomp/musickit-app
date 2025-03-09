@@ -181,9 +181,10 @@ extension PlaylistDetailScreen {
             do {
                 try await musicService.addToLibrary(playlist)
                 self.isInLibrary = true
-                haptics.impact(.light)
+                haptics.notification(.success)
             } catch {
                 print("can't add to library: \(error.localizedDescription)")
+                haptics.notification(.error)
             }
         }
     }

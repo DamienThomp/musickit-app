@@ -285,12 +285,13 @@ extension AlbumDetailScreen {
             do {
                 self.isAddingToLibrary = true
                 try await musicService.addToLibrary(album)
-                haptics.impact(.light)
+                haptics.notification(.success)
                 self.isAddingToLibrary = false
                 self.isInLibrary = true
             } catch {
                 print("can't add to library: \(error.localizedDescription)")
                 self.isAddingToLibrary = false
+                haptics.notification(.error)
             }
         }
     }
