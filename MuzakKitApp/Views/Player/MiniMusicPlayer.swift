@@ -98,7 +98,8 @@ struct MiniMusicPlayer: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .matchedGeometryEffect(
                     id: PlayerMatchedGeometry.title.name,
-                    in: nameSpace
+                    in: nameSpace,
+                    isSource: true
                 )
 
             Text(subtitle)
@@ -108,7 +109,8 @@ struct MiniMusicPlayer: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .matchedGeometryEffect(
                     id: PlayerMatchedGeometry.subtitle.name,
-                    in: nameSpace
+                    in: nameSpace,
+                    isSource: true
                 )
         }
     }
