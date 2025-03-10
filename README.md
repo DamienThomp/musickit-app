@@ -63,6 +63,10 @@ MuzakKit is a SwiftUI-based iOS demo app that integrates with Apple Music throug
   
 ## Screenshots
 
+### Music Player
+
+https://github.com/user-attachments/assets/3735263d-794a-4bb9-84ba-a9f48b6913fd
+
 ### Browse Page
 <img width="250" src="https://github.com/user-attachments/assets/63004fae-ad5f-482a-8454-82b1c6ee7da8">
 
@@ -74,9 +78,6 @@ MuzakKit is a SwiftUI-based iOS demo app that integrates with Apple Music throug
 
 ### Album Detail Page
 <img width="250" src="https://github.com/user-attachments/assets/e80dca43-7a7a-4134-86a8-834ef674e813">
-
-### Music Playback
-<img width="250" src="https://github.com/user-attachments/assets/5f8b4ac2-6aca-42e3-a05f-60cb83ec7e2d">
 
 ## Acknowledgements
 
