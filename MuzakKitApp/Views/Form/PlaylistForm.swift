@@ -172,8 +172,10 @@ extension PlaylistForm {
 }
 
 #Preview {
+    let musicKitService = MusicKitServiceFactory.create()
+
     NavigationStack {
         PlaylistForm()
-            .environment(MusicKitService())
+            .environment(musicKitService)
     }.tint(.pink)
 }

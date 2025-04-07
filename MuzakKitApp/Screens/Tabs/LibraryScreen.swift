@@ -82,10 +82,11 @@ extension LibraryScreen {
 }
 
 #Preview {
+    let musicKitService = MusicKitServiceFactory.create()
     AppRootNavigation {
         LibraryScreen()
     }
-    .environment(MusicKitService())
+    .environment(musicKitService)
     .environment(MusicPlayerService())
     .environment(NavPath())
 }

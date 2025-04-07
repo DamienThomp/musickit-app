@@ -24,7 +24,8 @@ struct MenuItems: View {
     var body: some View {
         creatMenu()
             .task {
-                checkLibrary(for: item)
+                guard let item else { return }
+                checkLibrary(item: item)
             }.alert(errorMessage, isPresented: $showAlert) {
                 Button("OK", role: .cancel) {
                     errorMessage = ""
@@ -44,7 +45,7 @@ struct MenuItems: View {
 
         Task {
             do {
-                try await musicService.addToLibrary(item)
+                try await musicService.library.addToLibrary(item)
                 updateLibraryStatus(true)
             } catch {
                 errorMessage = "Failed to add to Lirbary"
@@ -52,14 +53,30 @@ struct MenuItems: View {
         }
     }
 
-    private func checkLibrary(for item: MusicItem?) {
+    // TODO: - improve this method to remove the switch statement casting and repetition
+    private func checkLibrary(item: MusicItem?) {
 
         guard let item else { return }
 
         Task {
+
             do {
-                let response = try await musicService.isInLirabry(item)
-                updateLibraryStatus(response)
+                switch item {
+                case let song as Song:
+                    let response = try await musicService.library.isInLibrary(for: song, idKeyPath: \.id)
+                    updateLibraryStatus(response)
+                case let album as Album:
+                    let response = try await musicService.library.isInLibrary(for: album, idKeyPath: \.id)
+                    updateLibraryStatus(response)
+                case let playlist as Playlist:
+                    let response = try await musicService.library.isInLibrary(for: playlist, idKeyPath: \.id)
+                    updateLibraryStatus(response)
+                case let track as Track:
+                    let response = try await musicService.library.isInLibrary(for: track, idKeyPath: \.id)
+                    updateLibraryStatus(response)
+                default:
+                    print("Item type not supported for library check: \(type(of: item))")
+                }
             } catch {
                 print("failed to check library for item \(item.id) with error: \(error.localizedDescription)")
             }
@@ -134,9 +151,11 @@ struct MenuItems: View {
 
 #Preview {
     @Previewable @State var isInLibrary = false
+    let musickitService = MusicKitServiceFactory.create()
+
     if let album = albumMock {
         MenuItems(item: album, isInLibrary: $isInLibrary)
             .environment(MusicPlayerService())
-            .environment(MusicKitService())
+            .environment(musickitService)
     }
 }

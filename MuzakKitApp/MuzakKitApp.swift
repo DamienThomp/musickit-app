@@ -18,7 +18,7 @@ struct MuzakKitApp: App {
     @State private var selection: AppRootScreen = .browse
 
     init() {
-        self.musicKitSercice = MusicKitService()
+        self.musicKitSercice = MusicKitServiceFactory.create()
         self.musicPlayerManager = MusicPlayerService()
         self.navigation = NavPath()
     }

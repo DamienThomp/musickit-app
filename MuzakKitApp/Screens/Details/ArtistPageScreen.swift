@@ -331,7 +331,7 @@ struct ArtistPageScreen: View {
 extension ArtistPageScreen {
 
     private func fetchData() async throws -> Artist {
-        return try await musicService.getData(
+        return try await musicService.dataFetching.getData(
             for: artist,
             with:
                 [
@@ -352,9 +352,11 @@ extension ArtistPageScreen {
 #Preview {
     if let artist = artistMock {
 
+        let musicKitService = MusicKitServiceFactory.create()
+
         NavigationStack {
             ArtistPageScreen(artist: artist)
-                .environment(MusicKitService())
+                .environment(musicKitService)
                 .environment(MusicPlayerService())
         }
     }

@@ -114,10 +114,12 @@ extension BrowseScreen {
 }
 
 #Preview {
+    let musicKitService = MusicKitServiceFactory.create()
+
     AppRootNavigation {
         BrowseScreen()
     }
     .environment(NavPath())
-    .environment(MusicPlayerService())
-    .environment(MusicKitService())
+    .environment(musicKitService)
+    .environment(musicKitService)
 }
