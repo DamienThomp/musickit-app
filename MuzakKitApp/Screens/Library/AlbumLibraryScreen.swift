@@ -62,7 +62,7 @@ extension AlbumLibraryScreen {
 
             do {
                 
-                let response = try await musicService.searchLibrary(with: query, for: [Album.self])
+                let response = try await musicService.search.searchLibrary(with: query, for: [Album.self])
                 await updateSearchResults(with: response)
             } catch {
                 print("Can't load search results for album with error: \(error.localizedDescription)")

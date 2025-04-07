@@ -96,7 +96,6 @@ struct PlaylistDetailScreen: View {
                 }
             }
             .background(Color(.systemGray6), ignoresSafeAreaEdges: .bottom)
-            .tint(.pink)
             .listStyle(.plain)
             .navigationBarBackButtonHidden(true)
             .toolbar { toolBar() }
@@ -179,7 +178,7 @@ extension PlaylistDetailScreen {
 
         Task { @MainActor in
             do {
-                try await musicService.addToLibrary(playlist)
+                try await musicService.library.addToLibrary(playlist)
                 self.isInLibrary = true
                 haptics.notification(.success)
             } catch {
@@ -191,7 +190,7 @@ extension PlaylistDetailScreen {
 
     private func fetchData() async throws -> Playlist {
 
-        try await musicService.getData(
+        try await musicService.dataFetching.getData(
             for: playlist,
             with: [
                 .tracks,

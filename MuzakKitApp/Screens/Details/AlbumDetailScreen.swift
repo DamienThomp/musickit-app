@@ -263,7 +263,7 @@ extension AlbumDetailScreen {
 
     private func fetchData() async throws -> AlbumDetails {
 
-        let album = try await musicService.getData(for: album, with: [.tracks, .relatedAlbums, .artists])
+        let album = try await musicService.dataFetching.getData(for: album, with: [.tracks, .relatedAlbums, .artists])
         let similarArtist = try await getSimilarArtists(from: album.artists)
 
         return .init(album: album, similarArtist: similarArtist)
@@ -273,7 +273,7 @@ extension AlbumDetailScreen {
 
         guard let artist = artists?.first else { return nil }
 
-        return try await musicService.getData(for: artist, with: [.similarArtists, .albums])
+        return try await musicService.dataFetching.getData(for: artist, with: [.similarArtists, .albums])
     }
 
     private func addToLibrary(_ album: Album) {
@@ -284,7 +284,7 @@ extension AlbumDetailScreen {
 
             do {
                 self.isAddingToLibrary = true
-                try await musicService.addToLibrary(album)
+                try await musicService.library.addToLibrary(album)
                 haptics.notification(.success)
                 self.isAddingToLibrary = false
                 self.isInLibrary = true
@@ -298,7 +298,7 @@ extension AlbumDetailScreen {
 
     private func checkLibraryState(for album: Album) async throws {
 
-        let response = try await musicService.isInLirabry(album)
+        let response = try await musicService.library.isInLibrary(for: album, idKeyPath: \.id)
 
         updateLibraryState(for: response)
     }
@@ -314,12 +314,14 @@ extension AlbumDetailScreen {
 
 #Preview {
 
+    let musicKitService = MusicKitServiceFactory.create()
+
     if let album = albumMock {
         NavigationStack {
             AlbumDetailScreen(album: album)
                 .environment(NavPath())
                 .environment(MusicPlayerService())
-                .environment(MusicKitService())
+                .environment(musicKitService)
         }.tint(.pink)
     }
 }

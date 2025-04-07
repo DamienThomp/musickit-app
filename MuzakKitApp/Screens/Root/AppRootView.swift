@@ -103,8 +103,10 @@ struct AppRootView: View {
 }
 
 #Preview {
+    let musicService = MusicKitServiceFactory.create()
+
     AppRootView(selection: .constant(.browse))
-        .environment(MusicKitService())
+        .environment(musicService)
         .environment(MusicPlayerService())
         .environment(NavPath())
 }
