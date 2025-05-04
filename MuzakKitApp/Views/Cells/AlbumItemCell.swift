@@ -9,7 +9,7 @@ import SwiftUI
 import MusicKit
 
 struct AlbumItemCell: View {
-    
+
     let item: Album?
     let size: CGFloat
 
@@ -57,7 +57,8 @@ struct AlbumItemCell: View {
                 .font(.system(.caption2))
                 .foregroundStyle(.secondary)
                 .lineLimit(1)
-        }.frame(maxWidth: itemWidth)
+        }
+        .frame(maxWidth: itemWidth)
     }
 }
 
