@@ -70,7 +70,8 @@ struct AppRootNavigation<Content: View>: View {
                 .navigationDestination(for: Genre.self) { item in
                     GenreScreen(genre: item)
                         .safeAreaPadding(.bottom, musicPlayer.hasQueue ? 60 : 0)
-                }.navigationDestination(for: AppRootScreen.DetailsView.self) { item in
+                }
+                .navigationDestination(for: AppRootScreen.DetailsView.self) { item in
                     if #available(iOS 18.0, *) {
                         item.destination
                             .navigationBarTitleDisplayMode(.inline)

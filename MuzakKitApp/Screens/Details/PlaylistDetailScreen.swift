@@ -89,7 +89,7 @@ struct PlaylistDetailScreen: View {
                     ItemsSectionView(artists.title ?? "Featured Artists") {
                         ForEach(artists, id: \.self) { artist in
                             NavigationLink(value: artist) {
-                                ArtistItemCell(item: artist, size: 160)
+                                NavigationCellView(item: artist, size: 160)
                             }.tint(.primary)
                         }
                     }
