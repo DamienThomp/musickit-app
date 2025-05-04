@@ -11,6 +11,7 @@ import MusicKit
 struct LibraryScreen: View {
 
     @Environment(NavPath.self) private var navigation
+    @Environment(\.navigationNamespace) private var navigationNamespace
 
     var body: some View {
 
@@ -53,11 +54,19 @@ struct LibraryScreen: View {
                     ) {
                         ForEach(items, id: \.id) { item in
 
-                            AlbumItemCell(item: item, size: width)
-                                .onTapGesture {
-                                    navigation.path.append(item)
+                            NavigationLink(value: item) {
+                                if #available(iOS 18.0, *) {
+                                    AlbumItemCell(item: item, size: width)
+                                        .matchedTransitionSource(id: item.id, in: navigationNamespace!)
+                                        .id(item.id)
+                                } else {
+                                    AlbumItemCell(item: item, size: width)
+                                        .onTapGesture {
+                                            navigation.path.append(item)
+                                        }
+                                        .id(item.id)
                                 }
-                                .id(item.id)
+                            }
                         }
                     }.listRowSeparator(.hidden)
                 }

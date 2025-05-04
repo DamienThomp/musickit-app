@@ -73,14 +73,10 @@ struct BrowseScreen: View {
         case .album(let album):
 
             if #available(iOS 18.0, *) {
-                AlbumItemCell(item: album, size: width)
-                    .matchedTransitionSource(id: album.id, in: navigationNamespace!)
-                    .onTapGesture {
-                        navigation.path
-                            .append(
-                                AppRootScreen.DetailsView.album(album)
-                            )
-                    }
+                NavigationLink(value: album) {
+                    AlbumItemCell(item: album, size: width)
+                        .matchedTransitionSource(id: album.id, in: navigationNamespace!)
+                }
             } else {
                 AlbumItemCell(item: album, size: width)
                     .onTapGesture {
@@ -93,14 +89,10 @@ struct BrowseScreen: View {
         case .playlist(let playlist):
 
             if #available(iOS 18.0, *) {
-                PlaylistItemCell(item: playlist, size: width)
-                    .matchedTransitionSource(id: playlist.id, in: navigationNamespace!)
-                    .onTapGesture {
-                        navigation.path
-                            .append(
-                                AppRootScreen.DetailsView.playlist(playlist)
-                            )
-                    }
+                NavigationLink(value: playlist) {
+                    PlaylistItemCell(item: playlist, size: width)
+                        .matchedTransitionSource(id: playlist.id, in: navigationNamespace!)
+                }
             } else {
                 PlaylistItemCell(item: playlist, size: width)
                     .onTapGesture {

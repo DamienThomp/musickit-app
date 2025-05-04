@@ -86,7 +86,7 @@ struct ArtistPageScreen: View {
                                 HorizontalGrid(grid: 2.4, rows: 1, gutterSize: 12, viewAligned: false, width: size.width) { width in
                                     ForEach(albums, id: \.self) { album in
                                         NavigationLink(value: album) {
-                                            AlbumItemCell(item: album, size: width)
+                                            NavigationCellView(item: album, size: width)
                                         }.tint(.primary)
                                     }
                                 }
@@ -102,7 +102,7 @@ struct ArtistPageScreen: View {
                                 HorizontalGrid(grid: 2.4, rows: 1, gutterSize: 12, viewAligned: false, width: size.width) { width in
                                     ForEach(compilations, id: \.self) { album in
                                         NavigationLink(value: album) {
-                                            AlbumItemCell(item: album, size: width)
+                                            NavigationCellView(item: album, size: width)
                                         }.tint(.primary)
                                     }
                                 }
@@ -118,7 +118,7 @@ struct ArtistPageScreen: View {
                                 HorizontalGrid(grid: 2.4, rows: 1, gutterSize: 12, viewAligned: false, width: size.width) { width in
                                     ForEach(singles, id: \.self) { album in
                                         NavigationLink(value: album) {
-                                            AlbumItemCell(item: album, size: width)
+                                            NavigationCellView(item: album, size: width)
                                         }.tint(.primary)
                                     }
                                 }
@@ -134,7 +134,7 @@ struct ArtistPageScreen: View {
                                 HorizontalGrid(grid: 2.4, rows: 1, gutterSize: 12, viewAligned: false, width: size.width) { width in
                                     ForEach(appearsOn, id: \.self) { album in
                                         NavigationLink(value: album) {
-                                            AlbumItemCell(item: album, size: width)
+                                            NavigationCellView(item: album, size: width)
                                         }.tint(.primary)
                                     }
                                 }
@@ -150,7 +150,7 @@ struct ArtistPageScreen: View {
                                 HorizontalGrid(grid: 2.4, rows: 1, gutterSize: 12, viewAligned: false, width: size.width) { width in
                                     ForEach(featured, id: \.self) { album in
                                         NavigationLink(value: album) {
-                                            AlbumItemCell(item: album, size: width)
+                                            NavigationCellView(item: album, size: width)
                                         }.tint(.primary)
                                     }
                                 }
@@ -166,7 +166,8 @@ struct ArtistPageScreen: View {
                                 HorizontalGrid(grid: 2.4, rows: 1, gutterSize: 12, viewAligned: false, width: size.width) { width in
                                     ForEach(playlists, id: \.self) { item in
                                         NavigationLink(value: item) {
-                                            PlaylistItemCell(item: item, size: width)
+                                           // PlaylistItemCell(item: item, size: width)
+                                            NavigationCellView(item: item, size: width)
                                         }.tint(.primary)
                                     }
                                 }
@@ -182,7 +183,8 @@ struct ArtistPageScreen: View {
                                 HorizontalGrid(grid: 2.4, rows: 1, gutterSize: 12, viewAligned: false, width: size.width) { width in
                                     ForEach(similarArtists, id: \.self) { item in
                                         NavigationLink(value: item) {
-                                            ArtistItemCell(item: item, size: width)
+                                           // ArtistItemCell(item: item, size: width)
+                                            NavigationCellView(item: item, size: width)
                                         }.tint(.primary)
                                     }
                                 }

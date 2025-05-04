@@ -101,7 +101,7 @@ struct AlbumDetailScreen: View {
                     ItemsSectionView("More by \(album.artistName)") {
                         ForEach(artistAlbums, id: \.self) { album in
                             NavigationLink(value: album) {
-                                AlbumItemCell(item: album, size: 160)
+                                NavigationCellView(item: album, size: 160)
                             }.tint(.primary)
                         }
                     }
@@ -112,7 +112,7 @@ struct AlbumDetailScreen: View {
                     ItemsSectionView(related.title) {
                         ForEach(related, id: \.self) { related in
                             NavigationLink(value: related) {
-                                AlbumItemCell(item: related, size: 160)
+                                NavigationCellView(item: related, size: 160)
                             }.tint(.primary)
                         }
                     }
@@ -123,7 +123,7 @@ struct AlbumDetailScreen: View {
                     ItemsSectionView(similarArtists.title) {
                         ForEach(similarArtists, id: \.self) { artist in
                             NavigationLink(value: artist) {
-                                ArtistItemCell(item: artist, size: 160)
+                                NavigationCellView(item: artist, size: 160)
                             }.tint(.primary)
                         }
                     }
