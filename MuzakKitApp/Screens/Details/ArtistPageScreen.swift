@@ -166,7 +166,6 @@ struct ArtistPageScreen: View {
                                 HorizontalGrid(grid: 2.4, rows: 1, gutterSize: 12, viewAligned: false, width: size.width) { width in
                                     ForEach(playlists, id: \.self) { item in
                                         NavigationLink(value: item) {
-                                           // PlaylistItemCell(item: item, size: width)
                                             NavigationCellView(item: item, size: width)
                                         }.tint(.primary)
                                     }
@@ -183,7 +182,6 @@ struct ArtistPageScreen: View {
                                 HorizontalGrid(grid: 2.4, rows: 1, gutterSize: 12, viewAligned: false, width: size.width) { width in
                                     ForEach(similarArtists, id: \.self) { item in
                                         NavigationLink(value: item) {
-                                           // ArtistItemCell(item: item, size: width)
                                             NavigationCellView(item: item, size: width)
                                         }.tint(.primary)
                                     }
