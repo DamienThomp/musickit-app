@@ -16,6 +16,7 @@ struct MuzakKitApp: App {
     let navigation: NavPath
 
     @State private var selection: AppRootScreen = .browse
+    @Namespace private var navigationNamespace
 
     init() {
         self.musicKitSercice = MusicKitServiceFactory.create()
@@ -31,6 +32,7 @@ struct MuzakKitApp: App {
                 .environment(musicKitSercice)
                 .environment(musicPlayerManager)
                 .environment(navigation)
+                .environment(\.navigationNamespace, navigationNamespace)
         }
     }
 }

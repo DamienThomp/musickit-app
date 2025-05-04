@@ -24,9 +24,9 @@ struct MenuItems: View {
     var body: some View {
         creatMenu()
             .task {
-                guard let item else { return }
                 checkLibrary(item: item)
-            }.alert(errorMessage, isPresented: $showAlert) {
+            }
+            .alert(errorMessage, isPresented: $showAlert) {
                 Button("OK", role: .cancel) {
                     errorMessage = ""
                 }
@@ -97,11 +97,25 @@ struct MenuItems: View {
             addToLibrary()
         }
 
+        if let item = item as? Album {
+            playMusicItem(item)
+        }
+
         addToPlaylist()
         Divider()
 
         playNext()
         playLast()
+    }
+
+    @ViewBuilder
+    private func playMusicItem(_ album: Album) -> some View {
+
+        Button {
+            musicPlayer.handlePlayback(for: album)
+        } label: {
+            Label("Play", systemImage: Symbols.play.name)
+        }
     }
 
     @ViewBuilder

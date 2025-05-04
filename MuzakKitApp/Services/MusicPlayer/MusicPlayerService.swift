@@ -11,7 +11,7 @@ import Combine
 import SwiftUI
 
 @Observable
-class MusicPlayerService {
+class MusicPlayerService: MusicPlayerServiceProtocol {
 
     private var player: ApplicationMusicPlayer
     private var playerState: MusicPlayer.State

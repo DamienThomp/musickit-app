@@ -13,6 +13,8 @@ struct BrowseScreen: View {
     @Environment(MusicPlayerService.self) private var musicPlayer
     @Environment(NavPath.self) private var navigation
 
+    @Environment(\.navigationNamespace) private var navigationNamespace
+
     var body: some View {
 
         GeometryReader {
@@ -70,22 +72,44 @@ struct BrowseScreen: View {
         switch item.self {
         case .album(let album):
 
-            AlbumItemCell(item: album, size: width)
-                .onTapGesture {
-                    navigation.path
-                        .append(
-                            AppRootScreen.DetailsView.album(album)
-                        )
-                }
+            if #available(iOS 18.0, *) {
+                AlbumItemCell(item: album, size: width)
+                    .matchedTransitionSource(id: album.id, in: navigationNamespace!)
+                    .onTapGesture {
+                        navigation.path
+                            .append(
+                                AppRootScreen.DetailsView.album(album)
+                            )
+                    }
+            } else {
+                AlbumItemCell(item: album, size: width)
+                    .onTapGesture {
+                        navigation.path
+                            .append(
+                                AppRootScreen.DetailsView.album(album)
+                            )
+                    }
+            }
         case .playlist(let playlist):
 
-            PlaylistItemCell(item: playlist, size: width)
-                .onTapGesture {
-                    navigation.path
-                        .append(
-                            AppRootScreen.DetailsView.playlist(playlist)
-                        )
-                }
+            if #available(iOS 18.0, *) {
+                PlaylistItemCell(item: playlist, size: width)
+                    .matchedTransitionSource(id: playlist.id, in: navigationNamespace!)
+                    .onTapGesture {
+                        navigation.path
+                            .append(
+                                AppRootScreen.DetailsView.playlist(playlist)
+                            )
+                    }
+            } else {
+                PlaylistItemCell(item: playlist, size: width)
+                    .onTapGesture {
+                        navigation.path
+                            .append(
+                                AppRootScreen.DetailsView.playlist(playlist)
+                            )
+                    }
+            }
         case .station(let station):
 
             StationItemCell(item: station, size: width)
