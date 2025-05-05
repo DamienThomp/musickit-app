@@ -22,7 +22,7 @@ struct MenuItems: View {
     @Binding var isInLibrary: Bool
 
     var body: some View {
-        creatMenu()
+        createMenu()
             .task {
                 checkLibrary(item: item)
             }
@@ -91,7 +91,7 @@ struct MenuItems: View {
     }
 
     @ViewBuilder
-    private func creatMenu() -> some View {
+    private func createMenu() -> some View {
 
         if !isInLibrary {
             addToLibrary()

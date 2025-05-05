@@ -54,19 +54,11 @@ struct LibraryScreen: View {
                     ) {
                         ForEach(items, id: \.id) { item in
 
-                            NavigationLink(value: item) {
-                                if #available(iOS 18.0, *) {
-                                    AlbumItemCell(item: item, size: width)
-                                        .matchedTransitionSource(id: item.id, in: navigationNamespace!)
-                                        .id(item.id)
-                                } else {
-                                    AlbumItemCell(item: item, size: width)
-                                        .onTapGesture {
-                                            navigation.path.append(item)
-                                        }
-                                        .id(item.id)
+                            AlbumItemCell(item: item, size: width)
+                                .onTapGesture {
+                                    navigation.path.append(item)
                                 }
-                            }
+                                .id(item.id)
                         }
                     }.listRowSeparator(.hidden)
                 }

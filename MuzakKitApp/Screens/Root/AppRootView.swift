@@ -38,10 +38,11 @@ struct AppRootView: View {
         } else {
             GeometryReader { proxy in
                 TabView(selection: $selection) {
-
-                    ForEach(AppRootScreen.allCases, id: \.self) { screen in
-                        buildTab(for: screen)
-                    }
+                    Group {
+                        ForEach(AppRootScreen.allCases, id: \.self) { screen in
+                            buildTab(for: screen)
+                        }
+                    }.toolbarBackground(.visible, for: .tabBar)
                 }
                 .onChange(of: selection) { navigation.path = NavigationPath() }
                 .tint(.pink)
