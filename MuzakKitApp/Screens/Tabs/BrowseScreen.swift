@@ -23,44 +23,42 @@ struct BrowseScreen: View {
 
             LoadingContainerView(loadingAction: fetchData) { recommendations in
 
-                List {
+                ScrollView {
 
                     ForEach(recommendations, id: \.self) { section in
 
-                        Section {
+                        VStack(alignment: .leading) {
 
-                            VStack(alignment: .leading) {
-
-                                if let title = section.title {
-                                    Text(title)
-                                        .sectionHeader()
-                                }
-
-                                if let reason = section.reason {
-                                    Text(reason)
-                                        .sectionSubtitle()
-                                }
+                            if let title = section.title {
+                                Text(title)
+                                    .sectionHeader()
+                                    .frame(maxWidth: .infinity, alignment: .leading)
                             }
 
-                            if !section.items.isEmpty {
-
-                                HorizontalGrid(
-                                    grid: 2.4,
-                                    rows: 1,
-                                    gutterSize: 12,
-                                    viewAligned: false,
-                                    width: width
-                                ) { width in
-                                    ForEach(section.items, id: \.self) { item in
-                                        renderCard(for: item, with: width)
-                                            .tint(.primary)
-                                    }
-                                }.horizontalDefaultInsets()
+                            if let reason = section.reason {
+                                Text(reason)
+                                    .sectionSubtitle()
+                                    .frame(maxWidth: .infinity, alignment: .leading)
                             }
-                        }.listRowSeparator(.hidden)
+                        }.safeAreaPadding(.horizontal)
+
+                        if !section.items.isEmpty {
+
+                            HorizontalGrid(
+                                grid: 2.4,
+                                rows: 1,
+                                gutterSize: 12,
+                                viewAligned: false,
+                                width: width
+                            ) { width in
+                                ForEach(section.items, id: \.self) { item in
+                                    renderCard(for: item, with: width)
+                                        .tint(.primary)
+                                }.padding(.vertical, 8)
+                            }.horizontalDefaultInsets()
+                        }
                     }
                 }
-                .listStyle(.plain)
             }
         }
         .navigationTitle("Browse")
@@ -76,6 +74,9 @@ struct BrowseScreen: View {
                 NavigationLink(value: album) {
                     AlbumItemCell(item: album, size: width)
                         .matchedTransitionSource(id: album.id, in: navigationNamespace!)
+                        .contextMenu {
+                            CardMenu(item: item)
+                        }
                 }
             } else {
                 AlbumItemCell(item: album, size: width)
@@ -92,6 +93,9 @@ struct BrowseScreen: View {
                 NavigationLink(value: playlist) {
                     PlaylistItemCell(item: playlist, size: width)
                         .matchedTransitionSource(id: playlist.id, in: navigationNamespace!)
+                        .contextMenu {
+                            CardMenu(item: item)
+                        }
                 }
             } else {
                 PlaylistItemCell(item: playlist, size: width)
