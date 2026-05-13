@@ -35,6 +35,7 @@ struct ArtistPageScreen: View {
 
     private func toggleNavigationBar(_ value: CGFloat) {
         showNavigationBar = value < 0
+        print(showNavigationBar)
     }
 
     var body: some View {
@@ -203,7 +204,6 @@ struct ArtistPageScreen: View {
         .navigationBarBackButtonHidden(true)
         .toolbar { toolBar() }
         .navigationBarTitleDisplayMode(.inline)
-        .toolbarBackground(showNavigationBar ? .visible : .hidden, for: .navigationBar)
     }
 
     @ViewBuilder
@@ -222,33 +222,33 @@ struct ArtistPageScreen: View {
                         phase.image?
                             .resizableImage(.fill)
                             .background(Color(.black))
-                            .mask {
-                                LinearGradient(
-                                    colors: [
-                                        .black.opacity(0),
-                                        .black,
-                                        .black
-                                    ],
-                                    startPoint: .top,
-                                    endPoint: .bottom
-                                )
-                            }
+//                            .mask {
+//                                LinearGradient(
+//                                    colors: [
+//                                        .black.opacity(0),
+//                                        .black,
+//                                        .black
+//                                    ],
+//                                    startPoint: .top,
+//                                    endPoint: .bottom
+//                                )
+//                            }
                     }
                 }
             }
 
-            Rectangle()
-                .fill(
-                    LinearGradient(
-                        colors: [
-                            .black.opacity(0.0),
-                            .black.opacity(0.5)
-                        ],
-                        startPoint: .top,
-                        endPoint: .bottom
-                    )
-                )
-                .ignoresSafeArea(.container, edges: .all)
+//            Rectangle()
+//                .fill(
+//                    LinearGradient(
+//                        colors: [
+//                            .black.opacity(0.0),
+//                            .black.opacity(0.5)
+//                        ],
+//                        startPoint: .top,
+//                        endPoint: .bottom
+//                    )
+//                )
+//                .ignoresSafeArea(.container, edges: .all)
 
             HStack {
 
@@ -317,8 +317,9 @@ struct ArtistPageScreen: View {
             }
             .buttonBorderShape(.circle)
             .buttonStyle(.borderedProminent)
-            .tint(showNavigationBar ? .pink : Color(.systemGray2).opacity(0.6))
+            .tint(showNavigationBar ? .pink : .gray)
             .foregroundStyle(.primary)
+            .id(showNavigationBar)
         }
 
         ToolbarItem(placement: .principal) {

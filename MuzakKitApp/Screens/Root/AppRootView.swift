@@ -38,14 +38,23 @@ struct AppRootView: View {
         } else {
             GeometryReader { proxy in
                 TabView(selection: $selection) {
-                    Group {
-                        ForEach(AppRootScreen.allCases, id: \.self) { screen in
-                            buildTab(for: screen)
-                        }
-                    }.toolbarBackground(.visible, for: .tabBar)
+                    Tab(value: AppRootScreen.browse) {
+                        AppRootScreen.browse.destination
+                    } label: {
+                        AppRootScreen.browse.label
+                    }
+
+                    Tab(value: AppRootScreen.library) {  AppRootScreen.library.destination
+                    } label: {
+                        AppRootScreen.library.label
+                    }
+
+                    Tab(value: AppRootScreen.search) { AppRootScreen.search.destination
+                    } label: {
+                        AppRootScreen.search.label
+                    }
                 }
                 .onChange(of: selection) { navigation.path = NavigationPath() }
-                .tint(.pink)
                 .scrollIndicators(.hidden)
                 .safeAreaInset(edge: .bottom) { showMiniPlayer(proxy) }
                 .ignoresSafeArea(.container, edges: .top)
@@ -59,7 +68,7 @@ struct AppRootView: View {
     private func buildTab(for screen: AppRootScreen) -> some View {
         screen.destination
             .tag(screen as AppRootScreen?)
-            .tabItem { screen.label }
+            .tabItem { screen.label.tint(Color(.systemRed)) }
     }
 
     @ViewBuilder

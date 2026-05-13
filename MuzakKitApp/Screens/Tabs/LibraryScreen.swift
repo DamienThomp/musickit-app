@@ -33,7 +33,7 @@ struct LibraryScreen: View {
                                 Image(systemName: item.icon)
                                     .frame(minWidth: 30)
                                     .imageScale(.large)
-                                    .foregroundStyle(.pink)
+                                    .foregroundStyle(.red)
                                     .padding(.horizontal, 6)
                                 Text(item.title).font(.title2)
                             }

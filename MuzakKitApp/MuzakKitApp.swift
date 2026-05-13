@@ -22,6 +22,7 @@ struct MuzakKitApp: App {
         self.musicKitSercice = MusicKitServiceFactory.create()
         self.musicPlayerManager = MusicPlayerService()
         self.navigation = NavPath()
+        UIView.appearance().tintColor = .systemPink
     }
 
     var body: some Scene {

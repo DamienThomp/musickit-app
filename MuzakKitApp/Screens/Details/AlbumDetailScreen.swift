@@ -35,26 +35,13 @@ struct AlbumDetailScreen: View {
         album.artistName
     }
 
-    private var background: LinearGradient {
-        LinearGradient(
-            colors: [
-                Color(.systemBackground),
-                Color(.systemBackground),
-                Color(.systemGray6),
-                Color(.systemGray6)
-            ],
-            startPoint: .top,
-            endPoint: .bottom
-        )
-    }
-
     private func toggleNavigationBar(_ value: CGFloat) {
         showNavigationTitle = value < 0
     }
 
     var body: some View {
 
-        LoadingContainerView(loadingAction: fetchData) { albumDetails in
+        LoadingContainerView(loadingAction: fetchAlbumDetails) { albumDetails in
 
             List {
 
@@ -96,23 +83,23 @@ struct AlbumDetailScreen: View {
                     }
                 }
 
-                if let artistAlbums = albumDetails.album.relatedAlbums, !artistAlbums.isEmpty {
+                if let artistAlbums = albumDetails.similarArtist?.albums, !artistAlbums.isEmpty {
 
-                    ItemsSectionView("More by \(album.artistName)") {
-                        ForEach(artistAlbums, id: \.self) { album in
-                            NavigationLink(value: album) {
-                                NavigationCellView(item: album, size: 160)
+                    ItemsSectionView("More by \(artistName)") {
+                        ForEach(artistAlbums, id: \.self) { related in
+                            NavigationLink(value: related) {
+                                NavigationCellView(item: related, size: 160)
                             }.tint(.primary)
                         }
                     }
                 }
 
-                if let related = albumDetails.similarArtist?.albums, !related.isEmpty {
+                if let relatedAlbums = albumDetails.album.relatedAlbums, !relatedAlbums.isEmpty {
 
-                    ItemsSectionView(related.title) {
-                        ForEach(related, id: \.self) { related in
-                            NavigationLink(value: related) {
-                                NavigationCellView(item: related, size: 160)
+                    ItemsSectionView(relatedAlbums.title) {
+                        ForEach(relatedAlbums, id: \.self) { album in
+                            NavigationLink(value: album) {
+                                NavigationCellView(item: album, size: 160)
                             }.tint(.primary)
                         }
                     }
@@ -129,12 +116,12 @@ struct AlbumDetailScreen: View {
                     }
                 }
             }
-            .background(background.ignoresSafeArea())
+            .background(LinearGradient.albumDetailsGradient.ignoresSafeArea())
             .listStyle(.plain)
         }
         .navigationBarBackButtonHidden(true)
         .toolbar { toolBar() }
-        .task(getData)
+        .task(checkLibraryStatus)
     }
 
     @ViewBuilder
@@ -192,11 +179,10 @@ struct AlbumDetailScreen: View {
 
     private var actions: some View {
 
-        DetailPageActions {
-            musicPlayer.handlePlayback(for: album)
-        } _: {
-            musicPlayer.shufflePlayback(for: album)
-        }
+        DetailPageActions(
+            onPlay: { musicPlayer.handlePlayback(for: album) },
+            onShuffle: { musicPlayer.shufflePlayback(for: album) }
+        )
     }
 
     @ToolbarContentBuilder
@@ -207,7 +193,7 @@ struct AlbumDetailScreen: View {
                 dismiss()
             } label: {
                 Symbols.chevronBack.image
-                    .padding([.trailing, .vertical])
+                    .padding([ .vertical])
             }
         }
 
@@ -244,7 +230,7 @@ struct AlbumDetailScreen: View {
 }
 
 struct AlbumDetails: Codable {
-    
+
     let album: Album
     let similarArtist: Artist?
 }
@@ -252,7 +238,7 @@ struct AlbumDetails: Codable {
 extension AlbumDetailScreen {
 
     @Sendable
-    private func getData() async {
+    private func checkLibraryStatus() async {
 
         do {
             try await checkLibraryState(for: album)
@@ -261,7 +247,7 @@ extension AlbumDetailScreen {
         }
     }
 
-    private func fetchData() async throws -> AlbumDetails {
+    private func fetchAlbumDetails() async throws -> AlbumDetails {
 
         let album = try await musicService.dataFetching.getData(for: album, with: [.tracks, .relatedAlbums, .artists])
         let similarArtist = try await getSimilarArtists(from: album.artists)
