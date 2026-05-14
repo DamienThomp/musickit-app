@@ -19,8 +19,6 @@ struct ArtistPageScreen: View {
     }
 
     let initialHeight = UIScreen.main.bounds.width
-    let screenHeight = UIScreen.main.bounds.height
-
     let artist: Artist
 
     @State private var showNavigationBar: Bool = false
@@ -79,114 +77,65 @@ struct ArtistPageScreen: View {
 
                         if let albums = artistDetails.albums, !albums.isEmpty {
 
-                            VStack(alignment: .leading) {
-
-                                SectionTitle(title: albums.title ?? "Albums by \(artist.name)")
-
-                                HorizontalGrid(grid: 2.4, rows: 1, gutterSize: 12, viewAligned: false, width: size.width) { width in
-                                    ForEach(albums, id: \.self) { album in
-                                        NavigationLink(value: album) {
-                                            NavigationCellView(item: album, size: width)
-                                        }.tint(.primary)
-                                    }
-                                }
-                            }
+                            MusicItemSection(
+                                collection: albums,
+                                fallbackTitle: "Albums by \(artist.name)",
+                                width: size.width
+                            )
                         }
 
                         if let compilations = artistDetails.compilationAlbums, !compilations.isEmpty {
 
-                            VStack(alignment: .leading) {
-
-                                SectionTitle(title: compilations.title ?? "Compilations by \(artist.name)")
-
-                                HorizontalGrid(grid: 2.4, rows: 1, gutterSize: 12, viewAligned: false, width: size.width) { width in
-                                    ForEach(compilations, id: \.self) { album in
-                                        NavigationLink(value: album) {
-                                            NavigationCellView(item: album, size: width)
-                                        }.tint(.primary)
-                                    }
-                                }
-                            }
+                            MusicItemSection(
+                                collection: compilations,
+                                fallbackTitle: "Compilations by \(artist.name)",
+                                width: size.width
+                            )
                         }
 
                         if let singles = artistDetails.singles, !singles.isEmpty {
 
-                            VStack(alignment: .leading) {
-
-                                SectionTitle(title: singles.title ?? "Singles by \(artist.name)")
-
-                                HorizontalGrid(grid: 2.4, rows: 1, gutterSize: 12, viewAligned: false, width: size.width) { width in
-                                    ForEach(singles, id: \.self) { album in
-                                        NavigationLink(value: album) {
-                                            NavigationCellView(item: album, size: width)
-                                        }.tint(.primary)
-                                    }
-                                }
-                            }
+                            MusicItemSection(
+                                collection: singles,
+                                fallbackTitle: "Singles by \(artist.name)",
+                                width: size.width
+                            )
                         }
 
                         if let appearsOn = artistDetails.appearsOnAlbums, !appearsOn.isEmpty {
 
-                            VStack(alignment: .leading) {
-
-                                SectionTitle(title: appearsOn.title ?? "Appears on")
-
-                                HorizontalGrid(grid: 2.4, rows: 1, gutterSize: 12, viewAligned: false, width: size.width) { width in
-                                    ForEach(appearsOn, id: \.self) { album in
-                                        NavigationLink(value: album) {
-                                            NavigationCellView(item: album, size: width)
-                                        }.tint(.primary)
-                                    }
-                                }
-                            }
+                            MusicItemSection(
+                                collection: appearsOn,
+                                fallbackTitle: "Appears on",
+                                width: size.width
+                            )
                         }
 
                         if let featured = artistDetails.featuredAlbums, !featured.isEmpty {
 
-                            VStack(alignment: .leading) {
-
-                                SectionTitle(title: featured.title ?? "Featured on")
-
-                                HorizontalGrid(grid: 2.4, rows: 1, gutterSize: 12, viewAligned: false, width: size.width) { width in
-                                    ForEach(featured, id: \.self) { album in
-                                        NavigationLink(value: album) {
-                                            NavigationCellView(item: album, size: width)
-                                        }.tint(.primary)
-                                    }
-                                }
-                            }
+                            MusicItemSection(
+                                collection: featured,
+                                fallbackTitle: "Featured on",
+                                width: size.width
+                            )
                         }
 
                         if let playlists = artistDetails.playlists, !playlists.isEmpty {
 
-                            VStack(alignment: .leading) {
-
-                                SectionTitle(title: playlists.title ?? "Playlists")
-
-                                HorizontalGrid(grid: 2.4, rows: 1, gutterSize: 12, viewAligned: false, width: size.width) { width in
-                                    ForEach(playlists, id: \.self) { item in
-                                        NavigationLink(value: item) {
-                                            NavigationCellView(item: item, size: width)
-                                        }.tint(.primary)
-                                    }
-                                }
-                            }
+                            MusicItemSection(
+                                collection: playlists,
+                                fallbackTitle: "Playlists",
+                                width: size.width
+                            )
                         }
 
                         if let similarArtists = artistDetails.similarArtists, !similarArtists.isEmpty {
 
-                            VStack(alignment: .leading) {
-
-                                SectionTitle(title: similarArtists.title ?? "Similar Artists")
-
-                                HorizontalGrid(grid: 2.4, rows: 1, gutterSize: 12, viewAligned: false, width: size.width) { width in
-                                    ForEach(similarArtists, id: \.self) { item in
-                                        NavigationLink(value: item) {
-                                            NavigationCellView(item: item, size: width)
-                                        }.tint(.primary)
-                                    }
-                                }
-                            }
+                            MusicItemSection(
+                                collection: similarArtists,
+                                fallbackTitle: "Similar Artists",
+                                width: size.width
+                            )
                         }
                     }
                     .padding(.top, 20)
@@ -203,8 +152,11 @@ struct ArtistPageScreen: View {
         .navigationBarBackButtonHidden(true)
         .toolbar { toolBar() }
         .navigationBarTitleDisplayMode(.inline)
-        .toolbarBackground(showNavigationBar ? .visible : .hidden, for: .navigationBar)
     }
+}
+
+// MARK: - View Builders
+extension ArtistPageScreen {
 
     @ViewBuilder
     private func header(_ artistDetails: Artist) -> some View {
@@ -216,39 +168,15 @@ struct ArtistPageScreen: View {
                 defaultHeight: initialHeight
             ) {
 
-                if let artworkUrk = artist.artwork?.url(width: Int(initialHeight * 1.85), height: Int(initialHeight * 1.85)) {
-
-                    AsyncImage(url: artworkUrk, transaction: Transaction(animation: .spring())) { phase in
-                        phase.image?
-                            .resizableImage(.fill)
-                            .background(Color(.black))
-                            .mask {
-                                LinearGradient(
-                                    colors: [
-                                        .black.opacity(0),
-                                        .black,
-                                        .black
-                                    ],
-                                    startPoint: .top,
-                                    endPoint: .bottom
-                                )
-                            }
-                    }
+                if let artworkUrl = artist.artwork?.url(
+                    width: Int(initialHeight * 1.85),
+                    height: Int(initialHeight * 1.85)
+                ) {
+                    artworkHeader(artworkUrl: artworkUrl)
                 }
             }
 
-            Rectangle()
-                .fill(
-                    LinearGradient(
-                        colors: [
-                            .black.opacity(0.0),
-                            .black.opacity(0.5)
-                        ],
-                        startPoint: .top,
-                        endPoint: .bottom
-                    )
-                )
-                .ignoresSafeArea(.container, edges: .all)
+            headerOverlay()
 
             HStack {
 
@@ -317,8 +245,9 @@ struct ArtistPageScreen: View {
             }
             .buttonBorderShape(.circle)
             .buttonStyle(.borderedProminent)
-            .tint(showNavigationBar ? .pink : Color(.systemGray2).opacity(0.6))
+            .tint(showNavigationBar ? .pink : .gray)
             .foregroundStyle(.primary)
+            .id(showNavigationBar)
         }
 
         ToolbarItem(placement: .principal) {
@@ -326,8 +255,55 @@ struct ArtistPageScreen: View {
                 .opacity(showNavigationBar ? 1.0 : 0)
         }
     }
+
+    @ViewBuilder
+    private func artworkHeader(artworkUrl: URL) -> some View {
+
+        AsyncImage(url: artworkUrl, transaction: Transaction(animation: .spring())) { phase in
+
+            if #available(iOS 26, *) {
+                phase.image?
+                    .resizableImage(.fill)
+                    .background(Color(.black))
+            } else {
+                phase.image?
+                    .resizableImage(.fill)
+                    .background(Color(.black))
+                    .mask {
+                        LinearGradient(
+                            colors: [.black.opacity(0), .black, .black],
+                            startPoint: .top,
+                            endPoint: .bottom
+                        )
+                }
+            }
+        }
+    }
+
+    @ViewBuilder
+    private func headerOverlay() -> some View {
+
+        if #available(iOS 26, *) {
+            // iOS 26 — overlay causes issues
+            EmptyView()
+        } else {
+            Rectangle()
+                .fill(
+                    LinearGradient(
+                        colors: [
+                            .black.opacity(0.0),
+                            .black.opacity(0.5)
+                        ],
+                        startPoint: .top,
+                        endPoint: .bottom
+                    )
+                )
+                .ignoresSafeArea(.container, edges: .all)
+        }
+    }
 }
 
+// MARK: - Data Fetching
 extension ArtistPageScreen {
 
     private func fetchData() async throws -> Artist {

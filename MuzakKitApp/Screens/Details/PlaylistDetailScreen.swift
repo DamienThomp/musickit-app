@@ -132,11 +132,10 @@ struct PlaylistDetailScreen: View {
 
     private var actions: some View {
 
-        DetailPageActions {
-            musicPlayer.handlePlayback(for: playlist)
-        } _: {
-            musicPlayer.shufflePlayback(for: playlist)
-        }
+        DetailPageActions(
+            onPlay: { musicPlayer.handlePlayback(for: playlist) },
+            onShuffle: { musicPlayer.shufflePlayback(for: playlist) }
+        )
     }
 
     @ToolbarContentBuilder
