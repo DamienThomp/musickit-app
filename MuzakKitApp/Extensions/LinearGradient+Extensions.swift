@@ -8,6 +8,7 @@
 import SwiftUI
 
 extension LinearGradient {
+
     static let albumDetailsGradient = LinearGradient(
             colors: [
                 Color(.systemBackground),
