@@ -12,6 +12,9 @@ MuzakKit is a SwiftUI-based iOS demo app that integrates with Apple Music throug
   - Fix mocked data for SwiftUI previews.
 - This app was built to experiment with SwiftUI features by building a complete app that connects to a framework (in this case MusicKit).
 - This app loosely followed the [MV pattern](https://azamsharp.com/2022/08/09/intro-to-mv-state-pattern.html) for state management.
+- Protocol driven service layer with factory pattern for dependency injection
+- Enum based navigation using NavigationStack
+- @Observable for state management throughout
 
 ## Features
 
