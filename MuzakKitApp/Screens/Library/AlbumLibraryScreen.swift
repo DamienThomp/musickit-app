@@ -172,7 +172,7 @@ struct AlbumsLibraryContainer: View {
 
                 ForEach(albums, id: \.key) { section, value in
 
-                    Text("\(section)")
+                    Text("\(String(section))")
                         .sectionHeader()
                         .padding(.leading, 8)
 

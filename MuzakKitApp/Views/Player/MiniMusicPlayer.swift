@@ -29,66 +29,74 @@ struct MiniMusicPlayer: View {
     }
 
     var body: some View {
-        Rectangle()
-            .fill(Color(.systemGray5))
-            .clipShape(RoundedRectangle(cornerRadius: 8))
-            .matchedGeometryEffect(
-                id: PlayerMatchedGeometry.background.name,
-                in: nameSpace,
-                isSource: true
-            )
-            .frame(maxWidth: .infinity, maxHeight: 60)
-            .overlay {
-                HStack(spacing: 12) {
 
-                    playerArtwork()
+        Group {
 
-                    playerInfo
-
-                    Spacer()
-
-                    playerActions
-                }
-                .padding(.horizontal, 6)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .artworkCornerRadius(.medium)
-                .padding(8)
+            if #available(iOS 26, *) {
+                playerContent
+                    .glassEffect(.regular, in: RoundedRectangle(cornerRadius: 8))
+            } else {
+                Rectangle()
+                    .fill(Color(.systemGray5))
+                    .clipShape(RoundedRectangle(cornerRadius: 8))
+                    .overlay { playerContent }
             }
+        }
+        .matchedGeometryEffect(
+            id: PlayerMatchedGeometry.background.name,
+            in: nameSpace,
+            isSource: true
+        )
+        .frame(maxWidth: .infinity, maxHeight: 60)
     }
+}
+
+// MARK: - Computed Views
+extension MiniMusicPlayer {
 
     @ViewBuilder
     private func playerArtwork() -> some View {
 
-        if let artwork {
-            ArtworkImage(artwork, width: 34, height: 34)
-                .matchedGeometryEffect(
-                    id: PlayerMatchedGeometry.coverImage.name,
-                    in: nameSpace,
-                    isSource: true
-                )
-                .frame(width: 34, height: 34)
-                .artworkCornerRadius(.small)
-                .onTapGesture {
-                    withAnimation(PlayerMatchedGeometry.animation) {
-                        toggleView.toggle()
-                    }
-                }
-        } else {
-            Rectangle()
-                .fill(.secondary)
-                .matchedGeometryEffect(
-                    id: PlayerMatchedGeometry.coverImage.name,
-                    in: nameSpace,
-                    isSource: true
-                )
-                .frame(width: 34, height: 34)
-                .artworkCornerRadius(.small)
-                .onTapGesture {
-                    withAnimation(PlayerMatchedGeometry.animation) {
-                        toggleView.toggle()
-                    }
-                }
+        Group {
+
+            if let artwork {
+                ArtworkImage(artwork, width: 34, height: 34)
+                    .artworkCornerRadius(.small)
+            } else {
+                Rectangle()
+                    .fill(.secondary)
+                    .artworkCornerRadius(.small)
+            }
         }
+        .matchedGeometryEffect(
+            id: PlayerMatchedGeometry.coverImage.name,
+            in: nameSpace,
+            isSource: true
+        )
+        .frame(width: 34, height: 34)
+        .onTapGesture {
+            withAnimation(PlayerMatchedGeometry.animation) {
+                toggleView.toggle()
+            }
+        }
+    }
+
+    private var playerContent: some View {
+
+        HStack(spacing: 12) {
+
+            playerArtwork()
+
+            playerInfo
+
+            Spacer()
+
+            playerActions
+        }
+        .padding(.horizontal, 6)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .artworkCornerRadius(.medium)
+        .padding(8)
     }
 
     private var playerInfo: some View {

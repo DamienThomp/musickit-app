@@ -29,4 +29,5 @@ extension FormatStyle where Self == TimerDurationFormat {
     }
 }
 
-extension DateComponentsFormatter.UnitsStyle: Codable, @retroactive Hashable {}
+extension DateComponentsFormatter.UnitsStyle: @retroactive Codable {}
+extension DateComponentsFormatter.UnitsStyle: @retroactive Hashable {}
