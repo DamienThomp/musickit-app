@@ -14,7 +14,6 @@ struct FullScreenPlayer: View {
 
     @Binding var toggleView: Bool
 
-    @State private var volume = 0.5
     @State private var playerOffset = 0.0
 
     let proxy: GeometryProxy
@@ -114,39 +113,10 @@ struct FullScreenPlayer: View {
         .gesture(modalGesture)
         .onAppear { playerOffset = .zero }
     }
+}
 
-    private var modalGesture: some Gesture {
-
-        DragGesture()
-            .onChanged { gesture in
-
-                let translationY = gesture.translation.height
-
-                withAnimation {
-                    playerOffset = (translationY > 0 ? translationY : 0)
-                }
-            }.onEnded { value in
-
-                let velocity = CGSize(
-                    width: value.predictedEndLocation.x - value.location.x,
-                    height: value.predictedEndLocation.y - value.location.y
-                )
-
-                withAnimation(PlayerMatchedGeometry.animation) {
-                    if velocity.height > 500.0 {
-                        toggleView.toggle()
-                        return
-                    }
-
-                    if playerOffset > proxy.size.height / 3 {
-                        toggleView.toggle()
-                        return
-                    }
-
-                    playerOffset = .zero
-                }
-            }
-    }
+// MARK: - View Builders
+extension FullScreenPlayer {
 
     @ViewBuilder
     private var playerBackground: some View {
@@ -185,74 +155,54 @@ struct FullScreenPlayer: View {
         Group {
 
             if let artwork = artwork {
-
                 ArtworkImage(artwork, width: width, height: width)
-                    .matchedGeometryEffect(
-                        id: PlayerMatchedGeometry.coverImage.name,
-                        in: nameSpace
-                    )
-                    .frame(width: width, height: width)
-                    .artworkCornerRadius(.large)
-                    .shadow(
-                        color: .black.opacity(0.2),
-                        radius: 30,
-                        y: 15
-                    )
                     .scaleEffect(isPlaying ? 1 : 0.8)
                     .animation(
-                        .interpolatingSpring(
-                            duration: 0.5,
-                            bounce: 0.5
-                        ),
+                        .interpolatingSpring(duration: 0.5, bounce: 0.5),
                         value: isPlaying
                     )
             } else {
-
-                Rectangle()
-                    .fill(.tertiary)
-                    .matchedGeometryEffect(
-                        id: PlayerMatchedGeometry.coverImage.name,
-                        in: nameSpace
-                    )
-                    .frame(width: width, height: width)
-                    .artworkCornerRadius(.large)
-                    .shadow(
-                        color: .black.opacity(0.2),
-                        radius: 30,
-                        y: 15
-                    )
+                Rectangle().fill(.tertiary)
             }
         }
+        .matchedGeometryEffect(
+            id: PlayerMatchedGeometry.coverImage.name,
+            in: nameSpace
+        )
+        .frame(width: width, height: width)
+        .artworkCornerRadius(.large)
+        .shadow(
+            color: .black.opacity(0.2),
+            radius: 30,
+            y: 15
+        )
     }
 
     private var playerInfo: some View {
 
         VStack {
 
-            Group {
+            Text(title)
+                .font(.title3)
+                .fontWeight(.bold)
+                .foregroundStyle(.primary)
+                .lineLimit(1)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .matchedGeometryEffect(
+                    id: PlayerMatchedGeometry.title.name,
+                    in: nameSpace
+                )
 
-                Text(title)
-                    .font(.title3)
-                    .fontWeight(.bold)
-                    .foregroundStyle(.primary)
-                    .lineLimit(1)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .matchedGeometryEffect(
-                        id: PlayerMatchedGeometry.title.name,
-                        in: nameSpace
-                    )
-
-                Text(subtitle)
-                    .font(.title3)
-                    .foregroundStyle(.secondary.opacity(opacity))
-                    .lineLimit(1)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .matchedGeometryEffect(
-                        id: PlayerMatchedGeometry.subtitle.name,
-                        in: nameSpace
-                    )
-                    .padding(.bottom, 20)
-            }
+            Text(subtitle)
+                .font(.title3)
+                .foregroundStyle(.secondary.opacity(opacity))
+                .lineLimit(1)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .matchedGeometryEffect(
+                    id: PlayerMatchedGeometry.subtitle.name,
+                    in: nameSpace
+                )
+                .padding(.bottom, 20)
 
             if let duration {
 
@@ -315,6 +265,40 @@ struct FullScreenPlayer: View {
         }
         .foregroundStyle(.secondary)
         .padding(.top)
+    }
+
+    private var modalGesture: some Gesture {
+
+        DragGesture()
+            .onChanged { gesture in
+
+                let translationY = gesture.translation.height
+
+                withAnimation {
+                    playerOffset = (translationY > 0 ? translationY : 0)
+                }
+            }
+            .onEnded { value in
+
+                let velocity = CGSize(
+                    width: value.predictedEndLocation.x - value.location.x,
+                    height: value.predictedEndLocation.y - value.location.y
+                )
+
+                withAnimation(PlayerMatchedGeometry.animation) {
+                    if velocity.height > 500.0 {
+                        toggleView.toggle()
+                        return
+                    }
+
+                    if playerOffset > proxy.size.height / 3 {
+                        toggleView.toggle()
+                        return
+                    }
+
+                    playerOffset = .zero
+                }
+            }
     }
 }
 
